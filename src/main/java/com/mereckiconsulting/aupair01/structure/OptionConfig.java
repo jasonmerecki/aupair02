@@ -13,13 +13,14 @@ public interface OptionConfig {
     OptionType getOptionType();
     String getStrike();
     String getExpiry();
+    static final String OPTION_EXPIRATION_DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     class OptionConfigBuilder {
         private String optionRootSymbol;
         private OptionType optionType;
         private String strike;
         private String expiry;
-        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(OPTION_EXPIRATION_DATE_FORMAT);
         private OptionConfigBuilder() {};
         public OptionConfigBuilder setOptionRoot(String optionRoot) {
             this.optionRootSymbol = optionRoot;

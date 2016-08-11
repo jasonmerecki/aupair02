@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
+import com.mereckiconsulting.aupair01.structure.OptionConfig.OptionConfigBuilder;
 
 public interface Leg {
     String getSymbol();
@@ -15,6 +16,7 @@ public interface Leg {
         private String symbol;
         private Integer qty;
         private OptionConfig optionConfig;
+        private OptionConfigBuilder optionConfigBuilder;
         public LegBuilder setSymbol(String symbol) {
             this.symbol = symbol;
             return this;
@@ -23,12 +25,28 @@ public interface Leg {
             this.qty = qty;
             return this;
         }
-        public LegBuilder setOptionConfig(OptionConfig optionConfig) {
-            this.optionConfig = optionConfig;
+        public LegBuilder setOptionRoot(String optionRoot) {
+            if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
+            optionConfigBuilder.setOptionRoot(optionRoot);
+            return this;
+        }
+        public LegBuilder setOptionType(OptionType optionType) {
+            if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
+            optionConfigBuilder.setOptionType(optionType);
+            return this;
+        }
+        public LegBuilder setOptionStrike(String strike) {
+            if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
+            optionConfigBuilder.setStrike(strike);
+            return this;
+        }
+        public LegBuilder setOptionExpiry(String expiry) {
+            if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
+            optionConfigBuilder.setExpiry(expiry);
             return this;
         }
         public Leg build() {
-            if (symbol == null || qty == null || optionConfig == null) {
+            if (symbol == null || qty == null /* || optionConfig == null */) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Leg, missing data: ");
                 if (symbol == null) {
@@ -37,11 +55,16 @@ public interface Leg {
                 if (qty == null) {
                     missing.add("qty");
                 }
+                /*
                 if (optionConfig == null) {
                     missing.add("optionConfig");
                 }
+                */
                 err.append(missing);
                 throw new BuilderException(err.toString());
+            }
+            if (optionConfigBuilder != null) {
+                optionConfig = optionConfigBuilder.build();
             }
             Leg leg = new LegImpl(symbol, qty, optionConfig);
             return leg;

@@ -1,5 +1,9 @@
 package com.mereckiconsulting.aupair01.structure;
 
-public interface Deliverable {
+import java.math.BigDecimal;
 
+public interface Deliverable {
+    String getSymbol();
+    BigDecimal getQty();
+    DeliverableType getDeliverableType();
 }
