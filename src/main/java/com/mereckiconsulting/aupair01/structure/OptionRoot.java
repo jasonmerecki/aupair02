@@ -1,6 +1,5 @@
 package com.mereckiconsulting.aupair01.structure;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public interface OptionRoot {
             deliverablesBuilder.setDeliverableSymbol(symbol);
             return this;
         }
-        public OptionRootBuilder setDeliverableQty(BigDecimal qty) {
+        public OptionRootBuilder setDeliverableQty(String qty) {
             deliverablesBuilder.setDeliverableQty(qty);
             return this;
         }

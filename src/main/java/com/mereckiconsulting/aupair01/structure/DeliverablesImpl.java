@@ -11,5 +11,13 @@ public class DeliverablesImpl implements Deliverables {
     public List<Deliverable> getDeliverableList() {
         return deliverableList;
     }
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("DeliverablesImpl: {deliverableList:");
+        builder.append(deliverableList);
+        builder.append("}");
+        return builder.toString();
+    }
 
 }

@@ -22,4 +22,15 @@ public class PairingRequestImpl implements PairingRequest {
     public List<OptionRoot> getOptionRoots() {
         return optionRoots;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("PairingRequestImpl: {legs:");
+        builder.append(legs);
+        builder.append(", optionRoots:");
+        builder.append(optionRoots);
+        builder.append("}");
+        return builder.toString();
+    }
 }

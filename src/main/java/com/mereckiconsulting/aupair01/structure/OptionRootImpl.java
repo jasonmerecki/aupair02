@@ -28,4 +28,18 @@ public class OptionRootImpl implements OptionRoot {
     public Deliverables getDeliverables() {
         return deliverables;
     }
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("OptionRootImpl: {optionRootSymbol:");
+        builder.append(optionRootSymbol);
+        builder.append(", exerciseStyle:");
+        builder.append(exerciseStyle);
+        builder.append(", underlyerType:");
+        builder.append(underlyerType);
+        builder.append(", deliverables:");
+        builder.append(deliverables);
+        builder.append("}");
+        return builder.toString();
+    }
 }

@@ -22,4 +22,17 @@ public class DeliverableImpl implements Deliverable {
     public DeliverableType getDeliverableType() {
         return deliverableType;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("DeliverableImpl: {symbol:");
+        builder.append(symbol);
+        builder.append(", qty:");
+        builder.append(qty);
+        builder.append(", deliverableType:");
+        builder.append(deliverableType);
+        builder.append("}");
+        return builder.toString();
+    }
 }

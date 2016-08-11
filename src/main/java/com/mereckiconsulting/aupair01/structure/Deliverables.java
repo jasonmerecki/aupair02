@@ -19,8 +19,12 @@ public interface Deliverables {
             this.symbol = symbol;
             return this;
         }
-        public DeliverablesBuilder setDeliverableQty(BigDecimal qty) {
-            this.qty = qty;
+        public DeliverablesBuilder setDeliverableQty(String qty) {
+            try {
+                this.qty = new BigDecimal(qty);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid deliverable quantity: " + qty);
+            }
             return this;
         }
         public DeliverablesBuilder setDeliverableType(DeliverableType deliverableType) {
