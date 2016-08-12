@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
-import com.mereckiconsulting.aupair01.impl.ImplFactory;
 import com.mereckiconsulting.aupair01.structure.Deliverables.DeliverablesBuilder;
+import com.mereckiconsulting.aupair01.structure.impl.StructureImplFactory;
 
 public interface OptionRoot {
     String getOptionRootSymbol();
@@ -68,7 +68,10 @@ public interface OptionRoot {
                 throw new BuilderException(err.toString());
             }
             this.deliverables = deliverablesBuilder.build();
-            OptionRoot optionRoot = ImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
+            OptionRoot optionRoot = StructureImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
+            optionRootSymbol = null;
+            exerciseStyle = null;
+            underlyerType = null;
             return optionRoot;
         }
     }

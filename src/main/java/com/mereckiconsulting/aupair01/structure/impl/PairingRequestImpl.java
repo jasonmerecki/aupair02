@@ -1,23 +1,23 @@
-package com.mereckiconsulting.aupair01.impl;
+package com.mereckiconsulting.aupair01.structure.impl;
 
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.pairing.PairingRequest;
-import com.mereckiconsulting.aupair01.structure.Leg;
+import com.mereckiconsulting.aupair01.structure.Account;
 import com.mereckiconsulting.aupair01.structure.OptionRoot;
 
 class PairingRequestImpl implements PairingRequest {
-    private final List<Leg> legs;
+    private final List<Account> accounts;
     private final List<OptionRoot> optionRoots;
     
-    PairingRequestImpl (List<Leg> legs, List<OptionRoot> optionRoots) {
-        this.legs = legs;
+    PairingRequestImpl (List<Account> accounts, List<OptionRoot> optionRoots) {
+        this.accounts = accounts;
         this.optionRoots = optionRoots;
     }
     
     @Override
-    public List<Leg> getLegs() {
-        return legs;
+    public List<Account> getAccounts() {
+        return accounts;
     }
     @Override
     public List<OptionRoot> getOptionRoots() {
@@ -27,8 +27,8 @@ class PairingRequestImpl implements PairingRequest {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("PairingRequestImpl: {legs:");
-        builder.append(legs);
+        builder.append("PairingRequest: {accounts:");
+        builder.append(accounts);
         builder.append(", optionRoots:");
         builder.append(optionRoots);
         builder.append("}");

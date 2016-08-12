@@ -1,10 +1,11 @@
-package com.mereckiconsulting.aupair01.impl;
+package com.mereckiconsulting.aupair01.structure.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.pairing.PairingRequest;
+import com.mereckiconsulting.aupair01.structure.Account;
 import com.mereckiconsulting.aupair01.structure.Deliverable;
 import com.mereckiconsulting.aupair01.structure.DeliverableType;
 import com.mereckiconsulting.aupair01.structure.Deliverables;
@@ -15,7 +16,7 @@ import com.mereckiconsulting.aupair01.structure.OptionRoot;
 import com.mereckiconsulting.aupair01.structure.OptionType;
 import com.mereckiconsulting.aupair01.structure.UnderlyerType;
 
-public final class ImplFactory {
+public final class StructureImplFactory {
     public static Leg buildLeg(String symbol, Integer qty, OptionConfig optionConfig) {
         return new LegImpl(symbol, qty, optionConfig);
     }
@@ -33,8 +34,11 @@ public final class ImplFactory {
             Deliverables deliverables) {
         return new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
     }
+    public static Account buildAccount(String accountId, List<Leg> legs) {
+        return new AccountImpl(accountId, legs);
+    }
     
-    public static PairingRequest buildPairingRequest(List<Leg> legs, List<OptionRoot> optionRoots) {
-        return new PairingRequestImpl(legs, optionRoots);
+    public static PairingRequest buildPairingRequest(List<Account> accounts, List<OptionRoot> optionRoots) {
+        return new PairingRequestImpl(accounts, optionRoots);
     }
 }

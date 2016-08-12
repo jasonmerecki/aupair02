@@ -46,13 +46,15 @@ public class PairingRequestBuilderTest {
         builder.setLegSymbol("CSCO Jan-16 67.50 Call").setLegOptionRoot("CSCO").setLegQty(6)
             .setLegOptionType(OptionType.C).setLegOptionStrike("67.50").setLegOptionExpiry("2016-01-15 16:00").addLeg();
     
+        builder.addAccount("account1234");
+        
         PairingRequest pairingRequest = builder.build();
         System.out.println(pairingRequest);
         assertNotNull(pairingRequest);
-        assertEquals(pairingRequest.getLegs().get(0).getSymbol(), "MSFT  160115C00047500");
-        assertEquals(pairingRequest.getLegs().get(4).getSymbol(), "MSFT  160115P00082000");
-        assertEquals(pairingRequest.getLegs().get(3).getOptionConfig().getOptionType(), OptionType.P);
-        assertEquals(pairingRequest.getLegs().get(6).getQty(), new Integer(6));
+        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(0).getSymbol(), "MSFT  160115C00047500");
+        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(4).getSymbol(), "MSFT  160115P00082000");
+        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(3).getOptionConfig().getOptionType(), OptionType.P);
+        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(6).getQty(), new Integer(6));
 
     }
 }

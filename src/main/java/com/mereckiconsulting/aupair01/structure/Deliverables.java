@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
-import com.mereckiconsulting.aupair01.impl.ImplFactory;
+import com.mereckiconsulting.aupair01.structure.impl.StructureImplFactory;
 
 public interface Deliverables {
     List<Deliverable> getDeliverableList();
@@ -14,7 +14,7 @@ public interface Deliverables {
         private String symbol;
         private BigDecimal qty;
         private DeliverableType deliverableType;
-        private final List<Deliverable> deliverableList = new ArrayList<>();
+        private List<Deliverable> deliverableList = new ArrayList<>();
         private DeliverablesBuilder() {}
         public DeliverablesBuilder setDeliverableSymbol(String symbol) {
             this.symbol = symbol;
@@ -48,7 +48,7 @@ public interface Deliverables {
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            Deliverable deliverable = ImplFactory.buildDeliverable(symbol, qty, deliverableType);
+            Deliverable deliverable = StructureImplFactory.buildDeliverable(symbol, qty, deliverableType);
             deliverableList.add(deliverable);
             symbol = null; qty = null; deliverableType = null;
             return this;
@@ -57,7 +57,8 @@ public interface Deliverables {
             if (deliverableList.isEmpty()) {
                 throw new BuilderException("Cannot build Deliverables, no Deliverable added");
             }
-            Deliverables deliverables = ImplFactory.buildDeliverables(deliverableList);
+            Deliverables deliverables = StructureImplFactory.buildDeliverables(deliverableList);
+            deliverableList = new ArrayList<>();
             return deliverables;
         }
     }

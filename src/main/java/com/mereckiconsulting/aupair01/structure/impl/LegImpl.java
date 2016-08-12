@@ -1,4 +1,4 @@
-package com.mereckiconsulting.aupair01.impl;
+package com.mereckiconsulting.aupair01.structure.impl;
 
 import com.mereckiconsulting.aupair01.structure.Leg;
 

@@ -3,7 +3,8 @@ package com.mereckiconsulting.aupair01.pairing;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mereckiconsulting.aupair01.impl.ImplFactory;
+import com.mereckiconsulting.aupair01.structure.Account;
+import com.mereckiconsulting.aupair01.structure.Account.AccountBuilder;
 import com.mereckiconsulting.aupair01.structure.DeliverableType;
 import com.mereckiconsulting.aupair01.structure.ExerciseStyle;
 import com.mereckiconsulting.aupair01.structure.Leg;
@@ -12,16 +13,19 @@ import com.mereckiconsulting.aupair01.structure.OptionRoot;
 import com.mereckiconsulting.aupair01.structure.OptionType;
 import com.mereckiconsulting.aupair01.structure.UnderlyerType;
 import com.mereckiconsulting.aupair01.structure.OptionRoot.OptionRootBuilder;
+import com.mereckiconsulting.aupair01.structure.impl.StructureImplFactory;
 
 public interface PairingRequest {
-    List<Leg> getLegs();
+    List<Account> getAccounts();
     List<OptionRoot> getOptionRoots();
 
     public class PairingRequestBuilder {
-        private final List<Leg> legs = new ArrayList<>();
+        private final List<Account> accounts = new ArrayList<>();
+        private List<Leg> legs = new ArrayList<>();
         private final List<OptionRoot> optionRoots = new ArrayList<>();
         private final LegBuilder legBuilder = Leg.newBuilder();
         private final OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
+        private final AccountBuilder accountBuilder = Account.newBuilder();
         
         private PairingRequestBuilder() {}
         
@@ -51,6 +55,14 @@ public interface PairingRequest {
         }
         public PairingRequestBuilder addLeg() {
             legs.add(legBuilder.build());
+            return this;
+        }
+        
+        public PairingRequestBuilder addAccount(String accountId) {
+            accountBuilder.setAccountId(accountId);
+            accountBuilder.setAccountLegs(legs);
+            accounts.add(accountBuilder.build());
+            legs = new ArrayList<>();
             return this;
         }
         
@@ -88,7 +100,7 @@ public interface PairingRequest {
         } 
         
         public PairingRequest build() {
-            PairingRequest pairingRequest = ImplFactory.buildPairingRequest(legs, optionRoots);
+            PairingRequest pairingRequest = StructureImplFactory.buildPairingRequest(accounts, optionRoots);
             return pairingRequest;
         }
     }
