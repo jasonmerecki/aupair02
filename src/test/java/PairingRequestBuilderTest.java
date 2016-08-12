@@ -1,12 +1,12 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.mereckiconsulting.aupair01.pairing.PairingRequest;
-import com.mereckiconsulting.aupair01.pairing.PairingRequest.PairingRequestBuilder;
-import com.mereckiconsulting.aupair01.structure.DeliverableType;
-import com.mereckiconsulting.aupair01.structure.ExerciseStyle;
-import com.mereckiconsulting.aupair01.structure.OptionType;
-import com.mereckiconsulting.aupair01.structure.UnderlyerType;
+import com.jkmcllc.aupair01.pairing.PairingRequest;
+import com.jkmcllc.aupair01.pairing.PairingRequest.PairingRequestBuilder;
+import com.jkmcllc.aupair01.structure.DeliverableType;
+import com.jkmcllc.aupair01.structure.ExerciseStyle;
+import com.jkmcllc.aupair01.structure.OptionType;
+import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 
 /*
@@ -48,6 +48,20 @@ public class PairingRequestBuilderTest {
     
         builder.addAccount("account1234");
         
+        // Build NKE root (non-standard deliverables, maybe an acquisition)
+        builder.setDeliverableSymbol("NKE").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setDeliverableSymbol("LULU").setDeliverableQty("45").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("NKE1").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
+        
+        // add some non-standard options
+        builder.setLegSymbol("NKE1  160115C00055000").setLegOptionRoot("NKE1").setLegQty(7)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("55.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setLegSymbol("NKE1  160115C00060000").setLegOptionRoot("NKE1").setLegQty(-3)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("60.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        
+        builder.addAccount("Nike account 1");
+        
         PairingRequest pairingRequest = builder.build();
         System.out.println(pairingRequest);
         assertNotNull(pairingRequest);
@@ -55,6 +69,9 @@ public class PairingRequestBuilderTest {
         assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(4).getSymbol(), "MSFT  160115P00082000");
         assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(3).getOptionConfig().getOptionType(), OptionType.P);
         assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(6).getQty(), new Integer(6));
-
+        
+        assertEquals(pairingRequest.getAccounts().get(1).getAccountId(), "Nike account 1");
+        assertEquals(pairingRequest.getAccounts().get(1).getLegs().get(1).getOptionConfig().getOptionRoot(), "NKE1");
+        
     }
 }
