@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
+import com.mereckiconsulting.aupair01.impl.ImplFactory;
 import com.mereckiconsulting.aupair01.structure.OptionConfig.OptionConfigBuilder;
 
 public interface Leg {
@@ -66,7 +67,7 @@ public interface Leg {
             if (optionConfigBuilder != null) {
                 optionConfig = optionConfigBuilder.build();
             }
-            Leg leg = new LegImpl(symbol, qty, optionConfig);
+            Leg leg = ImplFactory.buildLeg(symbol, qty, optionConfig);
             return leg;
         }
     }

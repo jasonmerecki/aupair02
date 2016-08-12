@@ -1,13 +1,16 @@
-package com.mereckiconsulting.aupair01.structure;
+package com.mereckiconsulting.aupair01.impl;
 
 import java.math.BigDecimal;
 
-public class DeliverableImpl implements Deliverable {
+import com.mereckiconsulting.aupair01.structure.Deliverable;
+import com.mereckiconsulting.aupair01.structure.DeliverableType;
+
+class DeliverableImpl implements Deliverable {
     private final String symbol;
     private final BigDecimal qty;
     private final DeliverableType deliverableType;
     
-    public DeliverableImpl(String symbol, BigDecimal qty, DeliverableType type) {
+    DeliverableImpl(String symbol, BigDecimal qty, DeliverableType type) {
         this.symbol = symbol;
         this.qty = qty;
         this.deliverableType = type;
@@ -26,7 +29,7 @@ public class DeliverableImpl implements Deliverable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("DeliverableImpl: {symbol:");
+        builder.append("Deliverable: {symbol:");
         builder.append(symbol);
         builder.append(", qty:");
         builder.append(qty);

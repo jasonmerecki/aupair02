@@ -1,10 +1,13 @@
-package com.mereckiconsulting.aupair01.structure;
+package com.mereckiconsulting.aupair01.impl;
 
 import java.util.List;
 
-public class DeliverablesImpl implements Deliverables {
+import com.mereckiconsulting.aupair01.structure.Deliverable;
+import com.mereckiconsulting.aupair01.structure.Deliverables;
+
+class DeliverablesImpl implements Deliverables {
     private final List<Deliverable> deliverableList;
-    public DeliverablesImpl(List<Deliverable> deliverableList) {
+    DeliverablesImpl(List<Deliverable> deliverableList) {
         this.deliverableList = deliverableList;
     }
     @Override
@@ -14,9 +17,9 @@ public class DeliverablesImpl implements Deliverables {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("DeliverablesImpl: {deliverableList:");
+        // builder.append("Deliverables: {deliverableList:");
         builder.append(deliverableList);
-        builder.append("}");
+        // builder.append("}");
         return builder.toString();
     }
 

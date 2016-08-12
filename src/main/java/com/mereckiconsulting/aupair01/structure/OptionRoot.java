@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
+import com.mereckiconsulting.aupair01.impl.ImplFactory;
 import com.mereckiconsulting.aupair01.structure.Deliverables.DeliverablesBuilder;
 
 public interface OptionRoot {
@@ -67,7 +68,7 @@ public interface OptionRoot {
                 throw new BuilderException(err.toString());
             }
             this.deliverables = deliverablesBuilder.build();
-            OptionRoot optionRoot = new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
+            OptionRoot optionRoot = ImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
             return optionRoot;
         }
     }

@@ -3,6 +3,7 @@ package com.mereckiconsulting.aupair01.pairing;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mereckiconsulting.aupair01.impl.ImplFactory;
 import com.mereckiconsulting.aupair01.structure.DeliverableType;
 import com.mereckiconsulting.aupair01.structure.ExerciseStyle;
 import com.mereckiconsulting.aupair01.structure.Leg;
@@ -87,7 +88,7 @@ public interface PairingRequest {
         } 
         
         public PairingRequest build() {
-            PairingRequest pairingRequest = new PairingRequestImpl (legs, optionRoots);
+            PairingRequest pairingRequest = ImplFactory.buildPairingRequest(legs, optionRoots);
             return pairingRequest;
         }
     }

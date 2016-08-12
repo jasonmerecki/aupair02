@@ -18,21 +18,41 @@ public class PairingRequestBuilderTest {
     @Test public void build1() {
         PairingRequestBuilder builder = PairingRequest.newBuilder();
         
-        // MSFT holdings, 3 call options symbols, 2 put option symbols
-        builder.setLegSymbol("MSFT  160116C00047500").setLegOptionRoot("MSFT").setLegQty(6)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("47.50").setLegOptionExpiry("2016-01-16 16:00").addLeg();
-        builder.setLegSymbol("MSFT  160116C00050000").setLegOptionRoot("MSFT").setLegQty(-8)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("50.00").setLegOptionExpiry("2016-01-16 16:00").addLeg();
-        builder.setLegSymbol("MSFT  160116C00055000").setLegOptionRoot("MSFT").setLegQty(5)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("55.00").setLegOptionExpiry("2016-01-16 16:00").addLeg();
-        
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
-        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A).setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
         
+        // MSFT holdings, 3 call options symbols, 2 put option symbols, using OSI standard (https://en.wikipedia.org/wiki/Option_symbol)
+        builder.setLegSymbol("MSFT  160115C00047500").setLegOptionRoot("MSFT").setLegQty(6)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("47.50").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setLegSymbol("MSFT  160115C00050000").setLegOptionRoot("MSFT").setLegQty(-8)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("50.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setLegSymbol("MSFT  160115C00055000").setLegOptionRoot("MSFT").setLegQty(5)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("55.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setLegSymbol("MSFT  160115P00080000").setLegOptionRoot("MSFT").setLegQty(-4)
+            .setLegOptionType(OptionType.P).setLegOptionStrike("80.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setLegSymbol("MSFT  160115P00082000").setLegOptionRoot("MSFT").setLegQty(5)
+            .setLegOptionType(OptionType.P).setLegOptionStrike("82.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
         
+        // Build CSCO root
+        builder.setDeliverableSymbol("CSCO").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("CSCO").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
+        
+        // the symbol can be any String, including the standard OSI symbol or a description
+        builder.setLegSymbol("CSCO Jan-16 60 Call").setLegOptionRoot("CSCO").setLegQty(-2)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("60.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setLegSymbol("CSCO Jan-16 67.50 Call").setLegOptionRoot("CSCO").setLegQty(6)
+            .setLegOptionType(OptionType.C).setLegOptionStrike("67.50").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+    
         PairingRequest pairingRequest = builder.build();
         System.out.println(pairingRequest);
         assertNotNull(pairingRequest);
+        assertEquals(pairingRequest.getLegs().get(0).getSymbol(), "MSFT  160115C00047500");
+        assertEquals(pairingRequest.getLegs().get(4).getSymbol(), "MSFT  160115P00082000");
+        assertEquals(pairingRequest.getLegs().get(3).getOptionConfig().getOptionType(), OptionType.P);
+        assertEquals(pairingRequest.getLegs().get(6).getQty(), new Integer(6));
+
     }
 }

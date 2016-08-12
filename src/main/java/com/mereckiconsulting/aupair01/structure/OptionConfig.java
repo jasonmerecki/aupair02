@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
+import com.mereckiconsulting.aupair01.impl.ImplFactory;
 
 public interface OptionConfig {
     String getOptionRoot();
@@ -69,7 +70,7 @@ public interface OptionConfig {
             } catch (Exception e) {
                 throw new BuilderException("Cannot parse expiry to date/time value: " + expiry);
             }
-            OptionConfig optionConfig = new OptionConfigImpl(optionRootSymbol, optionType, strike, strikePrice, expiry, expiryTime);
+            OptionConfig optionConfig = ImplFactory.buildOptionConfig(optionRootSymbol, optionType, strike, strikePrice, expiry, expiryTime);
             return optionConfig;
         }
     }

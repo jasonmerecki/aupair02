@@ -1,9 +1,12 @@
-package com.mereckiconsulting.aupair01.structure;
+package com.mereckiconsulting.aupair01.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class OptionConfigImpl implements OptionConfig {
+import com.mereckiconsulting.aupair01.structure.OptionConfig;
+import com.mereckiconsulting.aupair01.structure.OptionType;
+
+class OptionConfigImpl implements OptionConfig {
     private final String optionRootSymbol;
     private final OptionType optionType;
     private final String strike;
@@ -11,7 +14,7 @@ public class OptionConfigImpl implements OptionConfig {
     private final BigDecimal strikePrice;
     private final LocalDateTime expiryTime;
     
-    public OptionConfigImpl(String optionRoot, OptionType optionType, 
+    OptionConfigImpl(String optionRoot, OptionType optionType, 
             String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTime) {
         this.optionRootSymbol = optionRoot;
         this.optionType = optionType;
@@ -24,7 +27,7 @@ public class OptionConfigImpl implements OptionConfig {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("OptionConfigImpl: {optionRoot:");
+        builder.append("OptionConfig: {optionRoot:");
         builder.append(optionRootSymbol);
         builder.append(", optionType:");
         builder.append(optionType);

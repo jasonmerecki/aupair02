@@ -1,11 +1,16 @@
-package com.mereckiconsulting.aupair01.structure;
+package com.mereckiconsulting.aupair01.impl;
 
-public class OptionRootImpl implements OptionRoot {
+import com.mereckiconsulting.aupair01.structure.Deliverables;
+import com.mereckiconsulting.aupair01.structure.ExerciseStyle;
+import com.mereckiconsulting.aupair01.structure.OptionRoot;
+import com.mereckiconsulting.aupair01.structure.UnderlyerType;
+
+class OptionRootImpl implements OptionRoot {
     private final String optionRootSymbol;
     private final ExerciseStyle exerciseStyle;
     private final UnderlyerType underlyerType;
     private final Deliverables deliverables;
-    public OptionRootImpl(String optionRootSymbol, ExerciseStyle exerciseStyle, UnderlyerType underlyerType,
+    OptionRootImpl(String optionRootSymbol, ExerciseStyle exerciseStyle, UnderlyerType underlyerType,
             Deliverables deliverables) {
         this.optionRootSymbol = optionRootSymbol;
         this.exerciseStyle = exerciseStyle;
@@ -31,7 +36,7 @@ public class OptionRootImpl implements OptionRoot {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("OptionRootImpl: {optionRootSymbol:");
+        builder.append("OptionRoot: {optionRootSymbol:");
         builder.append(optionRootSymbol);
         builder.append(", exerciseStyle:");
         builder.append(exerciseStyle);

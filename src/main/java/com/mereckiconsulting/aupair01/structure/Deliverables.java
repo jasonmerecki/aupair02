@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mereckiconsulting.aupair01.exception.BuilderException;
+import com.mereckiconsulting.aupair01.impl.ImplFactory;
 
 public interface Deliverables {
     List<Deliverable> getDeliverableList();
@@ -47,7 +48,7 @@ public interface Deliverables {
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            Deliverable deliverable = new DeliverableImpl(symbol, qty, deliverableType);
+            Deliverable deliverable = ImplFactory.buildDeliverable(symbol, qty, deliverableType);
             deliverableList.add(deliverable);
             symbol = null; qty = null; deliverableType = null;
             return this;
@@ -56,7 +57,7 @@ public interface Deliverables {
             if (deliverableList.isEmpty()) {
                 throw new BuilderException("Cannot build Deliverables, no Deliverable added");
             }
-            Deliverables deliverables = new DeliverablesImpl(deliverableList);
+            Deliverables deliverables = ImplFactory.buildDeliverables(deliverableList);
             return deliverables;
         }
     }
