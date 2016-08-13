@@ -7,18 +7,18 @@ import com.jkmcllc.aupair01.exception.BuilderException;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public interface Account {
-    public List<Leg> getLegs();
+    public List<Position> getPositions();
     public String getAccountId();
     
     public class AccountBuilder {
-        private List<Leg> legs = new ArrayList<>();
+        private List<Position> legs = new ArrayList<>();
         private String accountId;
         private AccountBuilder() {};
         public AccountBuilder setAccountId(String accountId) {
             this.accountId = accountId;
             return this;
         }
-        public AccountBuilder setAccountLegs(List<Leg> legs) {
+        public AccountBuilder setAccountLegs(List<Position> legs) {
             this.legs = legs;
             return this;
         }

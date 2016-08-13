@@ -55,4 +55,16 @@ class OptionConfigImpl implements OptionConfig {
         return expiry;
     }
 
+    public String getOptionRootSymbol() {
+        return optionRootSymbol;
+    }
+
+    public BigDecimal getStrikePrice() {
+        return strikePrice;
+    }
+
+    public LocalDateTime getExpiryTime() {
+        return expiryTime;
+    }
+
 }

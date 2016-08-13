@@ -7,12 +7,12 @@ import com.jkmcllc.aupair01.connect.Request;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
-import com.jkmcllc.aupair01.structure.Leg;
+import com.jkmcllc.aupair01.structure.Position;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 import com.jkmcllc.aupair01.structure.Account.AccountBuilder;
-import com.jkmcllc.aupair01.structure.Leg.LegBuilder;
+import com.jkmcllc.aupair01.structure.Position.PositionBuilder;
 import com.jkmcllc.aupair01.structure.OptionRoot.OptionRootBuilder;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
@@ -24,40 +24,40 @@ public interface PairingRequest extends Request {
 
     public class PairingRequestBuilder {
         private final List<Account> accounts = new ArrayList<>();
-        private List<Leg> legs = new ArrayList<>();
+        private List<Position> legs = new ArrayList<>();
         private final List<OptionRoot> optionRoots = new ArrayList<>();
-        private final LegBuilder legBuilder = Leg.newBuilder();
+        private final PositionBuilder positionBuilder = Position.newBuilder();
         private final OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
         private final AccountBuilder accountBuilder = Account.newBuilder();
         
         private PairingRequestBuilder() {}
         
-        public PairingRequestBuilder setLegSymbol(String symbol) {
-            legBuilder.setSymbol(symbol);
+        public PairingRequestBuilder setPositionSymbol(String symbol) {
+            positionBuilder.setSymbol(symbol);
             return this;
         }
-        public PairingRequestBuilder setLegQty(Integer qty) {
-            legBuilder.setQty(qty);
+        public PairingRequestBuilder setPositionQty(Integer qty) {
+            positionBuilder.setQty(qty);
             return this;
         }
-        public PairingRequestBuilder setLegOptionRoot(String optionRoot) {
-            legBuilder.setOptionRoot(optionRoot);
+        public PairingRequestBuilder setPositionOptionRoot(String optionRoot) {
+            positionBuilder.setOptionRoot(optionRoot);
             return this;
         }
-        public PairingRequestBuilder setLegOptionType(OptionType optionType) {
-            legBuilder.setOptionType(optionType);
+        public PairingRequestBuilder setPositionOptionType(OptionType optionType) {
+            positionBuilder.setOptionType(optionType);
             return this;
         }
-        public PairingRequestBuilder setLegOptionStrike(String strike) {
-            legBuilder.setOptionStrike(strike);
+        public PairingRequestBuilder setPositionOptionStrike(String strike) {
+            positionBuilder.setOptionStrike(strike);
             return this;
         }
-        public PairingRequestBuilder setLegOptionExpiry(String expiry) {
-            legBuilder.setOptionExpiry(expiry);
+        public PairingRequestBuilder setPositionOptionExpiry(String expiry) {
+            positionBuilder.setOptionExpiry(expiry);
             return this;
         }
-        public PairingRequestBuilder addLeg() {
-            legs.add(legBuilder.build());
+        public PairingRequestBuilder addPosition() {
+            legs.add(positionBuilder.build());
             return this;
         }
         

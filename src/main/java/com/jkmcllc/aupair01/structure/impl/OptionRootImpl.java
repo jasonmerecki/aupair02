@@ -47,4 +47,15 @@ class OptionRootImpl implements OptionRoot {
         builder.append("}");
         return builder.toString();
     }
+    @Override
+    public int hashCode() {
+        return optionRootSymbol.hashCode();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OptionRootImpl == false) {
+            return false;
+        }
+        return optionRootSymbol.equals( ((OptionRootImpl) obj).optionRootSymbol );
+    }
 }

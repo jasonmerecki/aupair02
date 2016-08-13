@@ -4,52 +4,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jkmcllc.aupair01.exception.BuilderException;
+import com.jkmcllc.aupair01.store.Constants;
 import com.jkmcllc.aupair01.structure.OptionConfig.OptionConfigBuilder;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
-public interface Leg {
+public interface Position {
     String getSymbol();
     Integer getQty();
     OptionConfig getOptionConfig();
     
-    class LegBuilder {
-        private LegBuilder() {};
+    class PositionBuilder {
+        private PositionBuilder() {};
         private String symbol;
         private Integer qty;
         private OptionConfig optionConfig;
         private OptionConfigBuilder optionConfigBuilder;
-        public LegBuilder setSymbol(String symbol) {
+        public PositionBuilder setSymbol(String symbol) {
             this.symbol = symbol;
             return this;
         }
-        public LegBuilder setQty(Integer qty) {
+        public PositionBuilder setQty(Integer qty) {
+            if (qty == null || Constants.ZERO.compareTo(qty) == 0) {
+                throw new BuilderException("Invalid qty: " + qty);
+            }
             this.qty = qty;
             return this;
         }
-        public LegBuilder setOptionRoot(String optionRoot) {
+        public PositionBuilder setOptionRoot(String optionRoot) {
             if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
             optionConfigBuilder.setOptionRoot(optionRoot);
             return this;
         }
-        public LegBuilder setOptionType(OptionType optionType) {
+        public PositionBuilder setOptionType(OptionType optionType) {
             if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
             optionConfigBuilder.setOptionType(optionType);
             return this;
         }
-        public LegBuilder setOptionStrike(String strike) {
+        public PositionBuilder setOptionStrike(String strike) {
             if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
             optionConfigBuilder.setStrike(strike);
             return this;
         }
-        public LegBuilder setOptionExpiry(String expiry) {
+        public PositionBuilder setOptionExpiry(String expiry) {
             if (optionConfigBuilder == null) optionConfigBuilder = OptionConfig.newBuilder();
             optionConfigBuilder.setExpiry(expiry);
             return this;
         }
-        public Leg build() {
+        public Position build() {
             if (symbol == null || qty == null /* || optionConfig == null */) {
                 List<String> missing = new ArrayList<>();
-                StringBuilder err = new StringBuilder("Cannot build Leg, missing data: ");
+                StringBuilder err = new StringBuilder("Cannot build Position, missing data: ");
                 if (symbol == null) {
                     missing.add("symbol");
                 }
@@ -67,15 +71,15 @@ public interface Leg {
             if (optionConfigBuilder != null) {
                 optionConfig = optionConfigBuilder.build();
             }
-            Leg leg = StructureImplFactory.buildLeg(symbol, qty, optionConfig);
+            Position position = StructureImplFactory.buildPosition(symbol, qty, optionConfig);
             symbol = null;
             qty = null;
             optionConfig = null;
-            return leg;
+            return position;
         }
     }
-    static LegBuilder newBuilder() {
-        return new LegBuilder();
+    static PositionBuilder newBuilder() {
+        return new PositionBuilder();
     }
 
 }

@@ -10,15 +10,15 @@ import com.jkmcllc.aupair01.structure.Deliverable;
 import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.Deliverables;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
-import com.jkmcllc.aupair01.structure.Leg;
+import com.jkmcllc.aupair01.structure.Position;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 public final class StructureImplFactory {
-    public static Leg buildLeg(String symbol, Integer qty, OptionConfig optionConfig) {
-        return new LegImpl(symbol, qty, optionConfig);
+    public static Position buildPosition(String symbol, Integer qty, OptionConfig optionConfig) {
+        return new PositionImpl(symbol, qty, optionConfig);
     }
     public static Deliverables buildDeliverables(List<Deliverable> deliverableList) {
         return new DeliverablesImpl(deliverableList);
@@ -34,7 +34,7 @@ public final class StructureImplFactory {
             Deliverables deliverables) {
         return new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
     }
-    public static Account buildAccount(String accountId, List<Leg> legs) {
+    public static Account buildAccount(String accountId, List<Position> legs) {
         return new AccountImpl(accountId, legs);
     }
     

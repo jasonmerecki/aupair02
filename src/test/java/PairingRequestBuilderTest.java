@@ -24,16 +24,16 @@ public class PairingRequestBuilderTest {
             .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
         
         // MSFT holdings, 3 call options symbols, 2 put option symbols, using OSI standard (https://en.wikipedia.org/wiki/Option_symbol)
-        builder.setLegSymbol("MSFT  160115C00047500").setLegOptionRoot("MSFT").setLegQty(6)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("47.50").setLegOptionExpiry("2016-01-15 16:00").addLeg();
-        builder.setLegSymbol("MSFT  160115C00050000").setLegOptionRoot("MSFT").setLegQty(-8)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("50.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
-        builder.setLegSymbol("MSFT  160115C00055000").setLegOptionRoot("MSFT").setLegQty(5)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("55.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
-        builder.setLegSymbol("MSFT  160115P00080000").setLegOptionRoot("MSFT").setLegQty(-4)
-            .setLegOptionType(OptionType.P).setLegOptionStrike("80.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
-        builder.setLegSymbol("MSFT  160115P00082000").setLegOptionRoot("MSFT").setLegQty(5)
-            .setLegOptionType(OptionType.P).setLegOptionStrike("82.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setPositionSymbol("MSFT  160115C00047500").setPositionOptionRoot("MSFT").setPositionQty(6)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("47.50").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("MSFT  160115C00050000").setPositionOptionRoot("MSFT").setPositionQty(-8)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("MSFT  160115C00055000").setPositionOptionRoot("MSFT").setPositionQty(5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00080000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("80.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00082000").setPositionOptionRoot("MSFT").setPositionQty(5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("82.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
         
         // Build CSCO root
         builder.setDeliverableSymbol("CSCO").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
@@ -41,10 +41,10 @@ public class PairingRequestBuilderTest {
             .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
         
         // the symbol can be any String, including the standard OSI symbol or a description
-        builder.setLegSymbol("CSCO Jan-16 60 Call").setLegOptionRoot("CSCO").setLegQty(-2)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("60.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
-        builder.setLegSymbol("CSCO Jan-16 67.50 Call").setLegOptionRoot("CSCO").setLegQty(6)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("67.50").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setPositionSymbol("CSCO Jan-16 60 Call").setPositionOptionRoot("CSCO").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("CSCO Jan-16 67.50 Call").setPositionOptionRoot("CSCO").setPositionQty(6)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("67.50").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
     
         builder.addAccount("account1234");
         
@@ -55,23 +55,23 @@ public class PairingRequestBuilderTest {
             .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
         
         // add some non-standard options
-        builder.setLegSymbol("NKE1  160115C00055000").setLegOptionRoot("NKE1").setLegQty(7)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("55.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
-        builder.setLegSymbol("NKE1  160115C00060000").setLegOptionRoot("NKE1").setLegQty(-3)
-            .setLegOptionType(OptionType.C).setLegOptionStrike("60.00").setLegOptionExpiry("2016-01-15 16:00").addLeg();
+        builder.setPositionSymbol("NKE1  160115C00055000").setPositionOptionRoot("NKE1").setPositionQty(7)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("NKE1  160115C00060000").setPositionOptionRoot("NKE1").setPositionQty(-3)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
         
         builder.addAccount("Nike account 1");
         
         PairingRequest pairingRequest = builder.build();
         System.out.println(pairingRequest);
         assertNotNull(pairingRequest);
-        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(0).getSymbol(), "MSFT  160115C00047500");
-        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(4).getSymbol(), "MSFT  160115P00082000");
-        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(3).getOptionConfig().getOptionType(), OptionType.P);
-        assertEquals(pairingRequest.getAccounts().get(0).getLegs().get(6).getQty(), new Integer(6));
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(0).getSymbol(), "MSFT  160115C00047500");
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(4).getSymbol(), "MSFT  160115P00082000");
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(3).getOptionConfig().getOptionType(), OptionType.P);
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(6).getQty(), new Integer(6));
         
         assertEquals(pairingRequest.getAccounts().get(1).getAccountId(), "Nike account 1");
-        assertEquals(pairingRequest.getAccounts().get(1).getLegs().get(1).getOptionConfig().getOptionRoot(), "NKE1");
+        assertEquals(pairingRequest.getAccounts().get(1).getPositions().get(1).getOptionConfig().getOptionRoot(), "NKE1");
         
     }
 }
