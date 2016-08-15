@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
@@ -27,8 +28,11 @@ public class PairingService {
             OptionRootStore.addRoot(optionRoot);
         }
         for (Account account : pairingRequest.getAccounts()) {
-            PairingInfo pairingInfo = PairingInfo.from(account);
-            List<CallVerticalLong> callVertLongs = CallVerticalLongFinder.newInstance().findIn(pairingInfo);
+            Map<String, PairingInfo> pairingInfos = PairingInfo.from(account);
+            for (Map.Entry<String, PairingInfo> entry : pairingInfos.entrySet()) {
+                List<CallVerticalLong> callVertLongs = CallVerticalLongFinder.newInstance().findIn(entry.getValue());
+            }
+            
         }
         return null;
     }

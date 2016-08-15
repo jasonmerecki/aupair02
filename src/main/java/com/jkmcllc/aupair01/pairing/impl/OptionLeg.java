@@ -9,4 +9,16 @@ class OptionLeg extends AbstractLeg {
         super(symbol, qty);
         this.optionConfig = optionConfig;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("OptionLeg: {");
+        builder.append(super.basicLegInfo()).append(",");
+        builder.append(optionConfig);
+        builder.append("}");
+        return builder.toString();
+    }
+    
+    
 }

@@ -27,7 +27,7 @@ class OptionConfigImpl implements OptionConfig {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("OptionConfig: {optionRoot:");
+        builder.append("optionConfig: {optionRoot:");
         builder.append(optionRootSymbol);
         builder.append(", optionType:");
         builder.append(optionType);

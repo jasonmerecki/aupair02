@@ -8,4 +8,7 @@ class AbstractLeg implements Leg {
         this.symbol = symbol;
         this.qty = qty;
     }
+    protected String basicLegInfo() {
+        return "symbol: \"" + symbol + "\", qty: " + qty;
+    }
 }
