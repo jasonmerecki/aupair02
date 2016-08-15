@@ -1,8 +1,11 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.junit.Before;
+
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingRequest.PairingRequestBuilder;
+import com.jkmcllc.aupair01.pairing.impl.PairingService;
 import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.OptionType;
@@ -15,7 +18,35 @@ import com.jkmcllc.aupair01.structure.UnderlyerType;
  * @author Jason Merecki, @date 8/9/16 4:59 PM
  */
 public class PairingRequestBuilderTest {
-    @Test public void build1() {
+   
+    private PairingService pairingService = null;
+    
+    @Before
+    public void setUp() {
+        pairingService = PairingService.getInstance();
+    }
+    
+    @Test 
+    public void build1() {
+        PairingRequest pairingRequest = buildRequest1();
+        System.out.println(pairingRequest);
+        assertNotNull(pairingRequest);
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(0).getSymbol(), "MSFT  160115C00047500");
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(4).getSymbol(), "MSFT  160115P00082000");
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(3).getOptionConfig().getOptionType(), OptionType.P);
+        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(6).getQty(), new Integer(6));
+        
+        assertEquals(pairingRequest.getAccounts().get(1).getAccountId(), "Nike account 1");
+        assertEquals(pairingRequest.getAccounts().get(1).getPositions().get(1).getOptionConfig().getOptionRoot(), "NKE1");
+        
+    }
+    
+    @Test
+    public void build1AndPair() {
+        PairingRequest pairingRequest = buildRequest1();
+        pairingService.service(pairingRequest);
+    }
+    private PairingRequest buildRequest1() {
         PairingRequestBuilder builder = PairingRequest.newBuilder();
         
         // Build MSFT root, first deliverables then root information
@@ -63,15 +94,6 @@ public class PairingRequestBuilderTest {
         builder.addAccount("Nike account 1");
         
         PairingRequest pairingRequest = builder.build();
-        System.out.println(pairingRequest);
-        assertNotNull(pairingRequest);
-        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(0).getSymbol(), "MSFT  160115C00047500");
-        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(4).getSymbol(), "MSFT  160115P00082000");
-        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(3).getOptionConfig().getOptionType(), OptionType.P);
-        assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(6).getQty(), new Integer(6));
-        
-        assertEquals(pairingRequest.getAccounts().get(1).getAccountId(), "Nike account 1");
-        assertEquals(pairingRequest.getAccounts().get(1).getPositions().get(1).getOptionConfig().getOptionRoot(), "NKE1");
-        
+        return pairingRequest;
     }
 }

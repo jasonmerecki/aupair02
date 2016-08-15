@@ -9,13 +9,13 @@ import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.Position;
 
 class PairingInfo {
-    private List<LongCall> longCalls = new ArrayList<>();
-    private List<ShortCall> shortCalls = new ArrayList<>();
-    private List<LongPut> longPuts = new ArrayList<>();
-    private List<ShortPut> shortPuts = new ArrayList<>();
-    private List<LongStock> longStocks = new ArrayList<>();
-    private List<ShortStock> shortStocks = new ArrayList<>();
-    private AccountInfo accountInfo;
+    List<LongCall> longCalls = new ArrayList<>();
+    List<ShortCall> shortCalls = new ArrayList<>();
+    List<LongPut> longPuts = new ArrayList<>();
+    List<ShortPut> shortPuts = new ArrayList<>();
+    List<LongStock> longStocks = new ArrayList<>();
+    List<ShortStock> shortStocks = new ArrayList<>();
+    AccountInfo accountInfo;
     
     private PairingInfo() {};
     
