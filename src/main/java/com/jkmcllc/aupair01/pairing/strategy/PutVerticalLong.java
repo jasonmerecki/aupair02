@@ -1,5 +1,5 @@
 package com.jkmcllc.aupair01.pairing.strategy;
 
-public interface PutVerticalLong {
+public interface PutVerticalLong extends Strategy {
 
 }

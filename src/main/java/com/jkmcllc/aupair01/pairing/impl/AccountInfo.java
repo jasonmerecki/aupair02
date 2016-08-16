@@ -1,6 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
-class AccountInfo {
+public class AccountInfo {
     private final String accountId;
     AccountInfo(String accountId) {
         this.accountId = accountId;

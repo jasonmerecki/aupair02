@@ -27,10 +27,10 @@ class AccountImpl implements Account {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Account ");
-        builder.append("{accountId:");
+        builder.append("account ");
+        builder.append("{accountId: ");
         builder.append(accountId);
-        builder.append(", positions:");
+        builder.append(", positions: ");
         builder.append(positions);
         builder.append("}");
         return builder.toString();

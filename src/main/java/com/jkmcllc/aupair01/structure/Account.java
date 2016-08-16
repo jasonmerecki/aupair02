@@ -43,9 +43,9 @@ public interface Account {
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
-            builder.append("AccountBuilder {legs:");
+            builder.append("AccountBuilder {legs: ");
             builder.append(legs);
-            builder.append(", accountId:");
+            builder.append(", accountId: ");
             builder.append(accountId);
             builder.append("}");
             return builder.toString();

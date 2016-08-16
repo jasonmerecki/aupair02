@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionType;
 
-class OptionConfigImpl implements OptionConfig {
+public class OptionConfigImpl implements OptionConfig {
     private final String optionRootSymbol;
     private final OptionType optionType;
     private final String strike;
@@ -27,15 +27,15 @@ class OptionConfigImpl implements OptionConfig {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("optionConfig: {optionRoot:");
+        builder.append("optionConfig: {optionRoot: ");
         builder.append(optionRootSymbol);
-        builder.append(", optionType:");
+        builder.append(", optionType: ");
         builder.append(optionType);
-        builder.append(", strike:");
+        builder.append(", strike: ");
         builder.append(strike);
-        builder.append(", expiry:");
+        builder.append(", expiry: \"");
         builder.append(expiry);
-        builder.append("}");
+        builder.append("\"}");
         return builder.toString();
     }
     @Override

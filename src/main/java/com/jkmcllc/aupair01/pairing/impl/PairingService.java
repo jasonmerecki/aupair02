@@ -6,6 +6,7 @@ import java.util.Map;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.CallVerticalLong;
+import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.OptionRoot;
@@ -23,6 +24,7 @@ public class PairingService {
         }
         return pairingServiceImpl;
     }
+    
     public PairingResponse service(PairingRequest pairingRequest) {
         for (OptionRoot optionRoot : pairingRequest.getOptionRoots()) {
             OptionRootStore.addRoot(optionRoot);
@@ -30,7 +32,7 @@ public class PairingService {
         for (Account account : pairingRequest.getAccounts()) {
             Map<String, PairingInfo> pairingInfos = PairingInfo.from(account);
             for (Map.Entry<String, PairingInfo> entry : pairingInfos.entrySet()) {
-                List<CallVerticalLong> callVertLongs = CallVerticalLongFinder.newInstance().findIn(entry.getValue());
+                List<? extends Strategy> callVertLongs = CallVerticalLongFinder.newInstance(entry.getValue()).find();
             }
             
         }

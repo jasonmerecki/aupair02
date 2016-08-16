@@ -10,11 +10,15 @@ class OptionLeg extends AbstractLeg {
         this.optionConfig = optionConfig;
     }
 
+    public OptionConfig getOptionConfig() {
+        return optionConfig;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("OptionLeg: {");
-        builder.append(super.basicLegInfo()).append(",");
+        builder.append("optionLeg: {");
+        builder.append(super.basicLegInfo()).append(", ");
         builder.append(optionConfig);
         builder.append("}");
         return builder.toString();
