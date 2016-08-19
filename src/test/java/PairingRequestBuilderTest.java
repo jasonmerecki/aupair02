@@ -67,8 +67,8 @@ public class PairingRequestBuilderTest {
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("30.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
         builder.setPositionSymbol("CSCO Jan-16 35.00 Put").setPositionOptionRoot("CSCO").setPositionQty(-5)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("35.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
-        builder.setPositionSymbol("CSCO Jan-16 45.00 Put").setPositionOptionRoot("CSCO").setPositionQty(2)
-            .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        // builder.setPositionSymbol("CSCO Jan-16 45.00 Put").setPositionOptionRoot("CSCO").setPositionQty(2)
+        //     .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
 
         builder.addAccount("account1234");
         

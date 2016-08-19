@@ -1,5 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.OptionRoot;
+import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public class PairingService {
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
@@ -30,11 +33,13 @@ public class PairingService {
     }
     
     public PairingResponse service(PairingRequest pairingRequest) {
+        Map<String, List<Strategy>> resultMap = new HashMap<>();
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
         for (OptionRoot optionRoot : pairingRequest.getOptionRoots()) {
             optionRootStore.addRoot(optionRoot);
         }
         for (Account account : pairingRequest.getAccounts()) {
+            List<Strategy> found = new ArrayList<>();
             Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
             for (Map.Entry<String, PairingInfo> entry : pairingInfos.entrySet()) {
                 // TODO: build collections of finders in strategy prioritization order, reset info and sort after each collection
@@ -49,9 +54,15 @@ public class PairingService {
                         + "\nputVerticalLongs=" + putVertLongs
                         + "\nputVerticalShorts=" + putVertShorts
                         );
+                found.addAll(callVertLongs);
+                found.addAll(callVertShorts);
+                found.addAll(putVertLongs);
+                found.addAll(putVertShorts);
             }
+            resultMap.put(account.getAccountId(), found);
             
         }
-        return null;
+        PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);
+        return response;
     }
 }

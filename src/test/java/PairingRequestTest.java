@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 
 import com.jkmcllc.aupair01.pairing.PairingRequest;
+import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.impl.PairingService;
 
 
@@ -24,7 +25,8 @@ public class PairingRequestTest {
     @Test
     public void build1AndPair() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1();
-        pairingService.service(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        assertNotNull(pairingResponse);
     }
     
 }

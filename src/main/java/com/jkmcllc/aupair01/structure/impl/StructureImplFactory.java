@@ -3,8 +3,11 @@ package com.jkmcllc.aupair01.structure.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import com.jkmcllc.aupair01.pairing.PairingRequest;
+import com.jkmcllc.aupair01.pairing.PairingResponse;
+import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.Deliverable;
 import com.jkmcllc.aupair01.structure.DeliverableType;
@@ -40,5 +43,8 @@ public final class StructureImplFactory {
     
     public static PairingRequest buildPairingRequest(List<Account> accounts, List<OptionRoot> optionRoots) {
         return new PairingRequestImpl(accounts, optionRoots);
+    }
+    public static PairingResponse buildPairingResponse(Map<String, List<Strategy>> resultMap) {
+        return new PairingResponseImpl(resultMap);
     }
 }
