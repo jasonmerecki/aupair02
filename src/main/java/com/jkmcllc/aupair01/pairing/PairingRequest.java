@@ -86,6 +86,10 @@ public interface PairingRequest extends Request {
             optionRootBuilder.setUnderlyerType(underlyerType);
             return this;
         }
+        public PairingRequestBuilder setOptionRootMultiplier(String multiplierString) {
+            optionRootBuilder.setMultiplier(multiplierString);
+            return this;
+        }
         public PairingRequestBuilder setDeliverableSymbol(String symbol) {
             optionRootBuilder.setDeliverableSymbol(symbol);
             return this;

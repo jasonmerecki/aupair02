@@ -4,9 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.MapContext;
 
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.Constants;
@@ -14,7 +12,7 @@ import com.jkmcllc.aupair01.store.Constants;
 abstract class AbstractFinder {
     
     protected final PairingInfo pairingInfo;
-    protected static final JexlEngine jexlEngine = (new JexlBuilder()).cache(512).strict(true).silent(false).create();
+    protected static final JexlEngine JEXL_ENGINE = (new JexlBuilder()).cache(512).strict(true).silent(false).create();
     
     protected AbstractFinder(PairingInfo pairingInfo) {
         this.pairingInfo = pairingInfo;
@@ -40,13 +38,6 @@ abstract class AbstractFinder {
             }
             
         }
-    }
-    
-    protected JexlContext buildStandardContext(Leg[] legs) {
-        JexlContext context = new MapContext();
-        context.set("legs", legs);
-        context.set("accountInfo", pairingInfo.accountInfo);
-        return context;
     }
     
     protected Integer findAndReduceMaxQty(Leg[] legs) {

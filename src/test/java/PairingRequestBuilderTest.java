@@ -1,11 +1,8 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
-
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingRequest.PairingRequestBuilder;
-import com.jkmcllc.aupair01.pairing.impl.PairingService;
 import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.OptionType;
@@ -18,13 +15,6 @@ import com.jkmcllc.aupair01.structure.UnderlyerType;
  * @author Jason Merecki, @date 8/9/16 4:59 PM
  */
 public class PairingRequestBuilderTest {
-   
-    private PairingService pairingService = null;
-    
-    @Before
-    public void setUp() {
-        pairingService = PairingService.getInstance();
-    }
     
     @Test 
     public void build1() {
@@ -41,18 +31,13 @@ public class PairingRequestBuilderTest {
         
     }
     
-    @Test
-    public void build1AndPair() {
-        PairingRequest pairingRequest = buildRequest1();
-        pairingService.service(pairingRequest);
-    }
-    private PairingRequest buildRequest1() {
+    public static PairingRequest buildRequest1() {
         PairingRequestBuilder builder = PairingRequest.newBuilder();
         
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // MSFT holdings, 3 call options symbols, 2 put option symbols, using OSI standard (https://en.wikipedia.org/wiki/Option_symbol)
         builder.setPositionSymbol("MSFT  160115C00047500").setPositionOptionRoot("MSFT").setPositionQty(6)
@@ -69,7 +54,7 @@ public class PairingRequestBuilderTest {
         // Build CSCO root
         builder.setDeliverableSymbol("CSCO").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("CSCO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // the symbol can be any String, including the standard OSI symbol or a description
         builder.setPositionSymbol("CSCO Jan-16 60 Call").setPositionOptionRoot("CSCO").setPositionQty(-2)
@@ -83,7 +68,7 @@ public class PairingRequestBuilderTest {
         builder.setDeliverableSymbol("NKE").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setDeliverableSymbol("LULU").setDeliverableQty("45").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("NKE1").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).addOptionRoot();
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // add some non-standard options
         builder.setPositionSymbol("NKE1  160115C00055000").setPositionOptionRoot("NKE1").setPositionQty(7)

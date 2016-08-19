@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.structure;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +13,14 @@ public interface OptionRoot {
     ExerciseStyle getExerciseStyle();
     UnderlyerType getUnderlyerType();
     Deliverables getDeliverables();
+    BigDecimal getMultiplier();
 
     class OptionRootBuilder {
         private String optionRootSymbol;
         private ExerciseStyle exerciseStyle;
         private UnderlyerType underlyerType;
         private Deliverables deliverables;
+        private BigDecimal multiplier;
         private final DeliverablesBuilder deliverablesBuilder = Deliverables.newBuilder();
         private OptionRootBuilder() {}
         public OptionRootBuilder setOptionRootSymbol(String optionRootSymbol) {
@@ -30,6 +33,11 @@ public interface OptionRoot {
         }
         public OptionRootBuilder setUnderlyerType(UnderlyerType underlyerType) {
             this.underlyerType = underlyerType;
+            return this;
+        }
+        public OptionRootBuilder setMultiplier(String mulitplierString) {
+            BigDecimal multiplier = new BigDecimal(mulitplierString);
+            this.multiplier = multiplier;
             return this;
         }
         public OptionRootBuilder setDeliverableSymbol(String symbol) {
@@ -49,7 +57,7 @@ public interface OptionRoot {
             return this;
         }
         public OptionRoot build() {
-            if (optionRootSymbol == null || exerciseStyle == null || underlyerType == null) {
+            if (optionRootSymbol == null || exerciseStyle == null || underlyerType == null || multiplier == null) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build OptionRoot, missing data: ");
                 if (optionRootSymbol == null) {
@@ -64,11 +72,14 @@ public interface OptionRoot {
                 if (deliverables == null) {
                     missing.add("deliverables");
                 }
+                if (multiplier == null) {
+                    missing.add("multiplier");
+                }
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
             this.deliverables = deliverablesBuilder.build();
-            OptionRoot optionRoot = StructureImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
+            OptionRoot optionRoot = StructureImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, multiplier, deliverables);
             optionRootSymbol = null;
             exerciseStyle = null;
             underlyerType = null;

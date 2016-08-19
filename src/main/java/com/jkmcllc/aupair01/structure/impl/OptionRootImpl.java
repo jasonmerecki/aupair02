@@ -1,5 +1,7 @@
 package com.jkmcllc.aupair01.structure.impl;
 
+import java.math.BigDecimal;
+
 import com.jkmcllc.aupair01.structure.Deliverables;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.OptionRoot;
@@ -10,12 +12,14 @@ class OptionRootImpl implements OptionRoot {
     private final ExerciseStyle exerciseStyle;
     private final UnderlyerType underlyerType;
     private final Deliverables deliverables;
+    private final BigDecimal multiplier;
     OptionRootImpl(String optionRootSymbol, ExerciseStyle exerciseStyle, UnderlyerType underlyerType,
-            Deliverables deliverables) {
+            BigDecimal multiplier, Deliverables deliverables) {
         this.optionRootSymbol = optionRootSymbol;
         this.exerciseStyle = exerciseStyle;
         this.underlyerType = underlyerType;
         this.deliverables = deliverables;
+        this.multiplier = multiplier;
     }
     @Override
     public String getOptionRootSymbol() {
@@ -32,6 +36,10 @@ class OptionRootImpl implements OptionRoot {
     @Override
     public Deliverables getDeliverables() {
         return deliverables;
+    }
+    @Override
+    public BigDecimal getMultiplier() {
+        return multiplier;
     }
     @Override
     public String toString() {

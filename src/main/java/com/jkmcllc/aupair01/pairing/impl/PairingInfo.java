@@ -5,24 +5,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.OptionConfig;
+import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.Position;
 
 class PairingInfo {
-    String optionRoot;
-    List<LongCall> longCalls = new ArrayList<>();
-    List<ShortCall> shortCalls = new ArrayList<>();
-    List<LongPut> longPuts = new ArrayList<>();
-    List<ShortPut> shortPuts = new ArrayList<>();
-    List<LongStock> longStocks = new ArrayList<>();
-    List<ShortStock> shortStocks = new ArrayList<>();
-    AccountInfo accountInfo;
+    final String optionRootSymbol;
+    final OptionRoot optionRoot;
+    final List<LongCall> longCalls = new ArrayList<>();
+    final List<ShortCall> shortCalls = new ArrayList<>();
+    final List<LongPut> longPuts = new ArrayList<>();
+    final List<ShortPut> shortPuts = new ArrayList<>();
+    final List<LongStock> longStocks = new ArrayList<>();
+    final List<ShortStock> shortStocks = new ArrayList<>();
+    final AccountInfo accountInfo;
     
-    private PairingInfo() {};
+    private PairingInfo(OptionRoot optionRoot, Account account) {
+        this.accountInfo = new AccountInfo(account.getAccountId());
+        this.optionRootSymbol = optionRoot.getOptionRootSymbol();
+        this.optionRoot = optionRoot;
+    };
     
-    public static Map<String, PairingInfo> from (Account account) {
+    public static Map<String, PairingInfo> from (Account account, OptionRootStore optionRootStore) {
         Map<String, PairingInfo> pairingInfoMap = new HashMap<>();
         for (Position position : account.getPositions()) {
             OptionConfig optionConfig = position.getOptionConfig();
@@ -33,10 +40,12 @@ class PairingInfo {
                 // throw exception here
             } 
             if (optionConfig != null) {
+                String optionRootSymbol = optionConfig.getOptionRoot();
                 PairingInfo pairingInfo = pairingInfoMap.get(optionConfig.getOptionRoot());
                 if (pairingInfo == null) {
-                    pairingInfo = new PairingInfo();
-                    pairingInfo.accountInfo = new AccountInfo(account.getAccountId());
+                    OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
+                    // throw exception if no option root config
+                    pairingInfo = new PairingInfo(optionRoot, account);
                     pairingInfoMap.put(optionConfig.getOptionRoot(), pairingInfo);
                 }
                 if (OptionType.C.equals(optionConfig.getOptionType())) {
@@ -57,10 +66,11 @@ class PairingInfo {
             } else {
                 // assume it's a stock
                 // for POC, assume stock is underlyer symbol too
+                String optionRootSymbol = position.getSymbol();
                 PairingInfo pairingInfo = pairingInfoMap.get(position.getSymbol());
                 if (pairingInfo == null) {
-                    pairingInfo = new PairingInfo();
-                    pairingInfo.accountInfo = new AccountInfo(account.getAccountId());
+                    OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
+                    pairingInfo = new PairingInfo(optionRoot, account);
                     pairingInfoMap.put(position.getSymbol(), pairingInfo);
                 }
                 if (sign == 1) {

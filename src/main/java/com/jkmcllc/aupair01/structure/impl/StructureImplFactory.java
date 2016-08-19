@@ -31,8 +31,8 @@ public final class StructureImplFactory {
         return new OptionConfigImpl(optionRoot, optionType, strike, strikePrice, expiry, expiryTime);
     }
     public static OptionRoot buildOptionRoot(String optionRootSymbol, ExerciseStyle exerciseStyle, UnderlyerType underlyerType,
-            Deliverables deliverables) {
-        return new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, deliverables);
+            BigDecimal multiplier, Deliverables deliverables) {
+        return new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, multiplier, deliverables);
     }
     public static Account buildAccount(String accountId, List<Position> legs) {
         return new AccountImpl(accountId, legs);
