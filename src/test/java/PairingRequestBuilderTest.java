@@ -61,7 +61,15 @@ public class PairingRequestBuilderTest {
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
         builder.setPositionSymbol("CSCO Jan-16 67.50 Call").setPositionOptionRoot("CSCO").setPositionQty(6)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("67.50").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
-    
+        builder.setPositionSymbol("CSCO Jan-16 75.00 Call").setPositionOptionRoot("CSCO").setPositionQty(-1)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("75.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("CSCO Jan-16 30.00 Put").setPositionOptionRoot("CSCO").setPositionQty(3)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("30.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("CSCO Jan-16 35.00 Put").setPositionOptionRoot("CSCO").setPositionQty(-5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("35.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("CSCO Jan-16 45.00 Put").setPositionOptionRoot("CSCO").setPositionQty(2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+
         builder.addAccount("account1234");
         
         // Build NKE root (non-standard deliverables, maybe an acquisition)

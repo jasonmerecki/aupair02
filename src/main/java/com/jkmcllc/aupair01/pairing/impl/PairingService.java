@@ -40,10 +40,14 @@ public class PairingService {
                 // TODO: build collections of finders in strategy prioritization order, reset info and sort after each collection
                 List<? extends Strategy> callVertLongs = CallVerticalLongFinder.newInstance(entry.getValue()).find();
                 List<? extends Strategy> callVertShorts = CallVerticalShortFinder.newInstance(entry.getValue()).find();
+                List<? extends Strategy> putVertLongs = PutVerticalLongFinder.newInstance(entry.getValue()).find();
+                List<? extends Strategy> putVertShorts = PutVerticalShortFinder.newInstance(entry.getValue()).find();
                 
-                logger.info("Found for option root symbol: " + entry.getValue().optionRootSymbol 
+                logger.info("Found for account id '" + account.getAccountId() + "' and option root symbol: " + entry.getValue().optionRootSymbol 
                         + "\ncallVerticalLongs=" + callVertLongs
                         + "\ncallVerticalShorts=" + callVertShorts
+                        + "\nputVerticalLongs=" + putVertLongs
+                        + "\nputVerticalShorts=" + putVertShorts
                         );
             }
             

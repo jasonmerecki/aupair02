@@ -6,4 +6,9 @@ public class ShortCall extends OptionLeg {
     ShortCall(String symbol, Integer qty, OptionConfig optionConfig) {
         super(symbol, qty, optionConfig);
     }
+    @Override
+    protected Leg newLegWith(Integer used) {
+        ShortCall t = new ShortCall(this.symbol, used, this.optionConfig);
+        return t;
+    }
 }

@@ -1,6 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
-class AbstractLeg implements Leg {
+abstract class AbstractLeg implements Leg {
     protected final String symbol;
     protected final Integer qty;
     protected Integer remainQty;
@@ -11,7 +11,7 @@ class AbstractLeg implements Leg {
     public String basicLegInfo() {
         return "symbol: \"" + symbol + "\", qty: " + qty;
     }
-    protected void reduceBy(Integer used) {
+    protected Leg reduceBy(Integer used) {
         int startSign = Integer.signum(remainQty);
         if (startSign == -1) {
             remainQty = remainQty + used;
@@ -24,6 +24,7 @@ class AbstractLeg implements Leg {
         if (endSign != 0 && endSign != startSign) {
             // throw exception here, cannot cross zero
         }
+        return newLegWith(used);
     }
     protected void resetQty() {
         remainQty = qty;
@@ -31,4 +32,5 @@ class AbstractLeg implements Leg {
     protected Integer getRemainQty() {
         return remainQty;
     }
+    protected abstract Leg newLegWith(Integer used);
 }

@@ -8,6 +8,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 class CallVerticalLongFinder extends AbstractVerticalFinder {
     private CallVerticalLongFinder(PairingInfo pairingInfo) {
         super(pairingInfo);
+        strategyPattern = TacoCat.getJexlEngine().createExpression( "legs.get(0).optionConfig.strikePrice.compareTo(legs.get(1).optionConfig.strikePrice) <= 0" );
     };
     protected static CallVerticalLongFinder newInstance(PairingInfo pairingInfo) {
         return new CallVerticalLongFinder(pairingInfo);
@@ -20,7 +21,7 @@ class CallVerticalLongFinder extends AbstractVerticalFinder {
         return recursiveLists;
     }
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, "legs.get(0).optionConfig.strikePrice.compareTo(legs.get(1).optionConfig.strikePrice) <= 0", Strategy.CALL_VERTICAL_LONG); 
+        testLegs(legs, Strategy.CALL_VERTICAL_LONG); 
     }
     
 }
