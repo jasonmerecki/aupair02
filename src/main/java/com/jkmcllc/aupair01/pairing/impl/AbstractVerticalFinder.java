@@ -21,7 +21,7 @@ public abstract class AbstractVerticalFinder extends AbstractFinder {
         super(pairingInfo);
     }
 
-    protected void testLegs(Leg[] legs, String strategyName) {
+    protected void testLegs(Leg[] legs, String strategyName, JexlExpression marginExpression) {
         List<Leg> legList = Arrays.asList(legs);
         if (logger.isTraceEnabled()) {
             logger.trace("testLegs, legs=" + Arrays.asList(legs));
@@ -38,7 +38,7 @@ public abstract class AbstractVerticalFinder extends AbstractFinder {
                 Leg newLeg2 = sourceLeg2.reduceBy(strategyQty);
                 strategyLegs.add(newLeg1);
                 strategyLegs.add(newLeg2);
-                Strategy callVerticalLong = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, "zero");
+                Strategy callVerticalLong = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, marginExpression);
                 foundStrategies.add(callVerticalLong);
             }
         }

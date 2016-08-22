@@ -1,11 +1,15 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.impl.PairingService;
+import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
 
 /*
@@ -25,8 +29,20 @@ public class PairingRequestTest {
     @Test
     public void build1AndPair() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1();
+        System.out.println("Input for " + pairingRequest + "");
+        System.out.println("");
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         assertNotNull(pairingResponse);
+        Map<String, List<Strategy>> responseByAccount = pairingResponse.getResultsByAccount();
+        assertNotNull(responseByAccount);
+        assertEquals(responseByAccount.size(), 2);
+        for (Map.Entry<String, List<Strategy>> entry : responseByAccount.entrySet()) {
+            String accountId = entry.getKey();
+            System.out.println("Strateiges for account '" + accountId + "'");
+            for (Strategy strategy : entry.getValue()) {
+                System.out.println(strategy);
+            }
+        }
     }
     
 }

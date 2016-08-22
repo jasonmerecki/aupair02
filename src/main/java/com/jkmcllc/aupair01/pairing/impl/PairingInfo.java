@@ -42,23 +42,22 @@ class PairingInfo {
             if (optionConfig != null) {
                 String optionRootSymbol = optionConfig.getOptionRoot();
                 PairingInfo pairingInfo = pairingInfoMap.get(optionConfig.getOptionRoot());
+                OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
                 if (pairingInfo == null) {
-                    OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
-                    // throw exception if no option root config
                     pairingInfo = new PairingInfo(optionRoot, account);
                     pairingInfoMap.put(optionConfig.getOptionRoot(), pairingInfo);
                 }
                 if (OptionType.C.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        pairingInfo.longCalls.add(new LongCall(symbol, qty, optionConfig));
+                        pairingInfo.longCalls.add(new LongCall(symbol, qty, optionConfig, optionRoot));
                     } else {
-                        pairingInfo.shortCalls.add(new ShortCall(symbol, qty, optionConfig));
+                        pairingInfo.shortCalls.add(new ShortCall(symbol, qty, optionConfig, optionRoot));
                     }
                 } else if (OptionType.P.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        pairingInfo.longPuts.add(new LongPut(symbol, qty, optionConfig));
+                        pairingInfo.longPuts.add(new LongPut(symbol, qty, optionConfig, optionRoot));
                     } else {
-                        pairingInfo.shortPuts.add(new ShortPut(symbol, qty, optionConfig));
+                        pairingInfo.shortPuts.add(new ShortPut(symbol, qty, optionConfig, optionRoot));
                     }
                 } else {
                     // throw exception here

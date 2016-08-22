@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.structure.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.structure.Account;
@@ -8,9 +9,9 @@ import com.jkmcllc.aupair01.structure.OptionRoot;
 
 class PairingRequestImpl implements PairingRequest {
     private final List<Account> accounts;
-    private final List<OptionRoot> optionRoots;
+    private final Map<String, OptionRoot> optionRoots;
     
-    PairingRequestImpl (List<Account> accounts, List<OptionRoot> optionRoots) {
+    PairingRequestImpl (List<Account> accounts, Map<String, OptionRoot> optionRoots) {
         this.accounts = accounts;
         this.optionRoots = optionRoots;
     }
@@ -20,7 +21,7 @@ class PairingRequestImpl implements PairingRequest {
         return accounts;
     }
     @Override
-    public List<OptionRoot> getOptionRoots() {
+    public Map<String, OptionRoot> getOptionRoots() {
         return optionRoots;
     }
 

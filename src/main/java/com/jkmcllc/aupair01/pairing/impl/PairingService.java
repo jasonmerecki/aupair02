@@ -14,7 +14,6 @@ import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
-import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public class PairingService {
@@ -35,9 +34,7 @@ public class PairingService {
     public PairingResponse service(PairingRequest pairingRequest) {
         Map<String, List<Strategy>> resultMap = new HashMap<>();
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
-        for (OptionRoot optionRoot : pairingRequest.getOptionRoots()) {
-            optionRootStore.addRoot(optionRoot);
-        }
+        optionRootStore.addRoots(pairingRequest.getOptionRoots());
         for (Account account : pairingRequest.getAccounts()) {
             List<Strategy> found = new ArrayList<>();
             Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
@@ -47,13 +44,14 @@ public class PairingService {
                 List<? extends Strategy> callVertShorts = CallVerticalShortFinder.newInstance(entry.getValue()).find();
                 List<? extends Strategy> putVertLongs = PutVerticalLongFinder.newInstance(entry.getValue()).find();
                 List<? extends Strategy> putVertShorts = PutVerticalShortFinder.newInstance(entry.getValue()).find();
-                
-                logger.info("Found for account id '" + account.getAccountId() + "' and option root symbol: " + entry.getValue().optionRootSymbol 
-                        + "\ncallVerticalLongs=" + callVertLongs
-                        + "\ncallVerticalShorts=" + callVertShorts
-                        + "\nputVerticalLongs=" + putVertLongs
-                        + "\nputVerticalShorts=" + putVertShorts
-                        );
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Found for account id '" + account.getAccountId() + "' and option root symbol: " + entry.getValue().optionRootSymbol 
+                            + "\ncallVerticalLongs=" + callVertLongs
+                            + "\ncallVerticalShorts=" + callVertShorts
+                            + "\nputVerticalLongs=" + putVertLongs
+                            + "\nputVerticalShorts=" + putVertShorts
+                            );
+                }
                 found.addAll(callVertLongs);
                 found.addAll(callVertShorts);
                 found.addAll(putVertLongs);

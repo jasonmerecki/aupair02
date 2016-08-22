@@ -15,13 +15,12 @@ class AbstractStrategy implements Strategy {
     final BigDecimal margin;
     final Integer quantity;
     
-    AbstractStrategy(String strategyName, List<Leg> legs, Integer quantity, AccountInfo accountInfo, String marginExpression) {
+    AbstractStrategy(String strategyName, List<Leg> legs, Integer quantity, AccountInfo accountInfo, JexlExpression marginExpression) {
         this.strategyName = strategyName;
         this.legs = legs;
         this.quantity = quantity;
-        JexlExpression e = TacoCat.getJexlEngine().createExpression( marginExpression );
         JexlContext context = TacoCat.buildStandardContext(legs, accountInfo);
-        BigDecimal margin = (BigDecimal) e.evaluate(context);
+        BigDecimal margin = (BigDecimal) marginExpression.evaluate(context);
         this.margin = margin;
     }
     

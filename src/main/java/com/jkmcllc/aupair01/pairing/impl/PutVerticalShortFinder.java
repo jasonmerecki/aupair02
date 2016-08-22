@@ -3,6 +3,7 @@ package com.jkmcllc.aupair01.pairing.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jkmcllc.aupair01.pairing.impl.DefaultMargins;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
 class PutVerticalShortFinder extends AbstractVerticalFinder {
@@ -21,7 +22,7 @@ class PutVerticalShortFinder extends AbstractVerticalFinder {
         return recursiveLists;
     }
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, Strategy.PUT_VERTICAL_SHORT); 
+        testLegs(legs, Strategy.PUT_VERTICAL_SHORT, DefaultMargins.shortVerticalMargin); 
     }
     
 }

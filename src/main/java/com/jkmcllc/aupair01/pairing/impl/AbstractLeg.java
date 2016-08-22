@@ -1,14 +1,18 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
+
 abstract class AbstractLeg implements Leg {
     protected final String symbol;
     protected final Integer qty;
     protected Integer remainQty;
+    protected final BigDecimal bigDecimalQty;
     protected AbstractLeg(String symbol, Integer qty) {
         this.symbol = symbol;
         this.remainQty = this.qty = qty;
+        this.bigDecimalQty = new BigDecimal(qty);
     }
-    public String basicLegInfo() {
+    protected String basicLegInfo() {
         return "symbol: \"" + symbol + "\", qty: " + qty;
     }
     protected Leg reduceBy(Integer used) {
@@ -33,4 +37,7 @@ abstract class AbstractLeg implements Leg {
         return remainQty;
     }
     protected abstract Leg newLegWith(Integer used);
+    public BigDecimal getQty() {
+        return bigDecimalQty;
+    }
 }

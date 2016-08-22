@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.store;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -36,7 +37,15 @@ public class OptionRootStore {
     public void addRoot(OptionRoot optionRoot) {
         if (usePermStore) {
             getPermInstance().optionRootMap.put(optionRoot.getOptionRootSymbol(), optionRoot);
+        } else {
+            optionRootMap.put(optionRoot.getOptionRootSymbol(), optionRoot);
         }
-        optionRootMap.put(optionRoot.getOptionRootSymbol(), optionRoot);
+    }
+    public void addRoots(Map<String, OptionRoot> optionRoots) {
+        if (usePermStore) {
+            getPermInstance().optionRootMap.putAll(optionRoots);
+        } else {
+            optionRootMap.putAll(optionRoots);
+        }
     }
 }

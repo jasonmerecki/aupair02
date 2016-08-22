@@ -36,8 +36,12 @@ public interface OptionRoot {
             return this;
         }
         public OptionRootBuilder setMultiplier(String mulitplierString) {
-            BigDecimal multiplier = new BigDecimal(mulitplierString);
-            this.multiplier = multiplier;
+            try {
+                BigDecimal multiplier = new BigDecimal(mulitplierString);
+                this.multiplier = multiplier;
+            } catch (Exception e) {
+                throw new BuilderException("Unable to parse option root multiplier: " + mulitplierString);
+            }
             return this;
         }
         public OptionRootBuilder setDeliverableSymbol(String symbol) {

@@ -1,9 +1,12 @@
 package com.jkmcllc.aupair01.pairing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.jkmcllc.aupair01.connect.Request;
+import com.jkmcllc.aupair01.exception.BuilderException;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
@@ -20,12 +23,12 @@ public interface PairingRequest extends Request {
     public static final String NAME = "PairingRequest";
     default String requestType() {return NAME;}
     List<Account> getAccounts();
-    List<OptionRoot> getOptionRoots();
+    Map<String, OptionRoot> getOptionRoots();
 
     public class PairingRequestBuilder {
         private final List<Account> accounts = new ArrayList<>();
         private List<Position> legs = new ArrayList<>();
-        private final List<OptionRoot> optionRoots = new ArrayList<>();
+        private final Map<String, OptionRoot> optionRoots = new HashMap<>();
         private final PositionBuilder positionBuilder = Position.newBuilder();
         private final OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
         private final AccountBuilder accountBuilder = Account.newBuilder();
@@ -107,16 +110,28 @@ public interface PairingRequest extends Request {
             return this;
         }
         public PairingRequestBuilder addOptionRoot() {
-            optionRoots.add(optionRootBuilder.build());
+            OptionRoot optionRoot = optionRootBuilder.build();
+            optionRoots.put(optionRoot.getOptionRootSymbol(), optionRoot);
             return this;
         } 
         
         public PairingRequestBuilder addOptionRoot(OptionRoot optionRoot) {
-            optionRoots.add(optionRoot);
+            optionRoots.put(optionRoot.getOptionRootSymbol(), optionRoot);
             return this;
         }
         
         public PairingRequest build() {
+            for (Account account : accounts) {
+                for (Position position : account.getPositions()) {
+                    if (position.getOptionConfig() != null) {
+                        String optionRootSymbol = position.getOptionConfig().getOptionRoot();
+                        OptionRoot root = optionRoots.get(optionRootSymbol);
+                        if (root == null) {
+                            throw new BuilderException("Option position with no matching root configuration: " + position);
+                        }
+                    }
+                }
+            }
             PairingRequest pairingRequest = StructureImplFactory.buildPairingRequest(accounts, optionRoots);
             return pairingRequest;
         }

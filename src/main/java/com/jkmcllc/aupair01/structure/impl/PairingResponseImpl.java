@@ -19,4 +19,15 @@ class PairingResponseImpl implements PairingResponse {
         return resultMap;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("PairingResponseImpl {resultMap: ");
+        builder.append(resultMap);
+        builder.append("}");
+        return builder.toString();
+    }
+    
+    
+
 }

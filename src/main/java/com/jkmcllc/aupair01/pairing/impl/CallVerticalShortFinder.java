@@ -22,7 +22,7 @@ class CallVerticalShortFinder extends AbstractVerticalFinder {
         return recursiveLists;
     }
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, Strategy.CALL_VERTICAL_SHORT); 
+        testLegs(legs, Strategy.CALL_VERTICAL_SHORT, DefaultMargins.shortVerticalMargin); 
     }
     
 }

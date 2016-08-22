@@ -41,7 +41,7 @@ public final class StructureImplFactory {
         return new AccountImpl(accountId, legs);
     }
     
-    public static PairingRequest buildPairingRequest(List<Account> accounts, List<OptionRoot> optionRoots) {
+    public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots) {
         return new PairingRequestImpl(accounts, optionRoots);
     }
     public static PairingResponse buildPairingResponse(Map<String, List<Strategy>> resultMap) {
