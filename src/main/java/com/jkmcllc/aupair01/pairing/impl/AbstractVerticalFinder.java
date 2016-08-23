@@ -14,6 +14,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 public abstract class AbstractVerticalFinder extends AbstractFinder {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractVerticalFinder.class);
+    protected final String equalTwoDatesExpressionFrag = " && legs.get(0).optionConfig.expiryDateExpression.compareTo(legs.get(1).optionConfig.expiryDateExpression) == 0 ";
     protected JexlExpression strategyPattern;
     protected final List<Strategy> foundStrategies = new ArrayList<>();
 

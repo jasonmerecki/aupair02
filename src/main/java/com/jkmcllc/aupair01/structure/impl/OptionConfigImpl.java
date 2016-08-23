@@ -2,6 +2,7 @@ package com.jkmcllc.aupair01.structure.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionType;
@@ -12,16 +13,18 @@ public class OptionConfigImpl implements OptionConfig {
     private final String strike;
     private final String expiry;
     private final BigDecimal strikePrice;
-    private final LocalDateTime expiryTime;
+    private final LocalDateTime expiryTimeLocal;
+    private final Date expiryDate;
     
     OptionConfigImpl(String optionRoot, OptionType optionType, 
-            String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTime) {
+            String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTime, Date expiryDate) {
         this.optionRootSymbol = optionRoot;
         this.optionType = optionType;
         this.strike = strike;
         this.expiry = expiry;
         this.strikePrice = strikePrice;
-        this.expiryTime = expiryTime;
+        this.expiryTimeLocal = expiryTime;
+        this.expiryDate = expiryDate;
     }
     
     @Override
@@ -63,8 +66,16 @@ public class OptionConfigImpl implements OptionConfig {
         return strikePrice;
     }
 
-    public LocalDateTime getExpiryTime() {
-        return expiryTime;
+    public LocalDateTime getExpiryTimeLocal() {
+        return expiryTimeLocal;
+    }
+    
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+    
+    public Object getExpiryDateExpression() {
+        return expiryTimeLocal;
     }
 
 }

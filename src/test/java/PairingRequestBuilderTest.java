@@ -89,4 +89,26 @@ public class PairingRequestBuilderTest {
         PairingRequest pairingRequest = builder.build();
         return pairingRequest;
     }
+    
+    public static PairingRequest buildRequest2() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // MSFT holdings, 3 call options symbols, 2 put option symbols, using OSI standard (https://en.wikipedia.org/wiki/Option_symbol)
+        builder.setPositionSymbol("MSFT  160115C00047500").setPositionOptionRoot("MSFT").setPositionQty(6)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("47.50").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("MSFT  160115C00050000").setPositionOptionRoot("MSFT").setPositionQty(-8)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-02-19 16:00").addPosition();
+        builder.setPositionSymbol("MSFT  160115C00055000").setPositionOptionRoot("MSFT").setPositionQty(5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-02-19 16:00").addPosition();
+
+        builder.addAccount("account1234");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+    }
 }

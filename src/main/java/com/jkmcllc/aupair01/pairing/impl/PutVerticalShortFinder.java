@@ -9,7 +9,8 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 class PutVerticalShortFinder extends AbstractVerticalFinder {
     private PutVerticalShortFinder(PairingInfo pairingInfo) {
         super(pairingInfo);
-        strategyPattern = TacoCat.getJexlEngine().createExpression( "legs.get(0).optionConfig.strikePrice.compareTo(legs.get(1).optionConfig.strikePrice) < 0" );
+        strategyPattern = TacoCat.getJexlEngine().createExpression( "legs.get(0).optionConfig.strikePrice.compareTo(legs.get(1).optionConfig.strikePrice) < 0"  
+                + equalTwoDatesExpressionFrag );
     };
     protected static PutVerticalShortFinder newInstance(PairingInfo pairingInfo) {
         return new PutVerticalShortFinder(pairingInfo);

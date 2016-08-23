@@ -2,6 +2,7 @@ package com.jkmcllc.aupair01.structure.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +31,8 @@ public final class StructureImplFactory {
         return new DeliverableImpl(symbol, qty, type);
     }
     public static OptionConfig buildOptionConfig(String optionRoot, OptionType optionType, 
-            String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTime) {
-        return new OptionConfigImpl(optionRoot, optionType, strike, strikePrice, expiry, expiryTime);
+            String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTimeLocal, Date expiryDate) {
+        return new OptionConfigImpl(optionRoot, optionType, strike, strikePrice, expiry, expiryTimeLocal, expiryDate);
     }
     public static OptionRoot buildOptionRoot(String optionRootSymbol, ExerciseStyle exerciseStyle, UnderlyerType underlyerType,
             BigDecimal multiplier, Deliverables deliverables) {

@@ -27,7 +27,7 @@ public class PairingRequestTest {
     }
     
     @Test
-    public void build1AndPair() {
+    public void build1AndPair1() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1();
         System.out.println("Input for " + pairingRequest + "");
         System.out.println("");
@@ -36,6 +36,25 @@ public class PairingRequestTest {
         Map<String, List<Strategy>> responseByAccount = pairingResponse.getResultsByAccount();
         assertNotNull(responseByAccount);
         assertEquals(responseByAccount.size(), 2);
+        for (Map.Entry<String, List<Strategy>> entry : responseByAccount.entrySet()) {
+            String accountId = entry.getKey();
+            System.out.println("Strateiges for account '" + accountId + "'");
+            for (Strategy strategy : entry.getValue()) {
+                System.out.println(strategy);
+            }
+        }
+    }
+    
+    @Test
+    public void build1AndPair2() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest2();
+        System.out.println("Input for " + pairingRequest + "");
+        System.out.println("");
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        assertNotNull(pairingResponse);
+        Map<String, List<Strategy>> responseByAccount = pairingResponse.getResultsByAccount();
+        assertNotNull(responseByAccount);
+        assertEquals(responseByAccount.size(), 1);
         for (Map.Entry<String, List<Strategy>> entry : responseByAccount.entrySet()) {
             String accountId = entry.getKey();
             System.out.println("Strateiges for account '" + accountId + "'");

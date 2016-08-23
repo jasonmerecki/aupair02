@@ -1,9 +1,11 @@
 package com.jkmcllc.aupair01.structure;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.jkmcllc.aupair01.exception.BuilderException;
@@ -22,6 +24,14 @@ public interface OptionConfig {
         private String strike;
         private String expiry;
         private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(OPTION_EXPIRATION_DATE_FORMAT);
+        private final ThreadLocal<SimpleDateFormat> localSDF = new ThreadLocal<SimpleDateFormat>() {
+            @Override
+            protected SimpleDateFormat initialValue() {
+                SimpleDateFormat formatter = new SimpleDateFormat(OPTION_EXPIRATION_DATE_FORMAT);
+                return formatter;
+            }
+            
+        };
         private OptionConfigBuilder() {};
         public OptionConfigBuilder setOptionRoot(String optionRoot) {
             this.optionRootSymbol = optionRoot;
@@ -64,13 +74,15 @@ public interface OptionConfig {
             } catch (Exception e) {
                 throw new BuilderException("Cannot parse strike to numerical value: " + strike);
             }
-            LocalDateTime expiryTime;
+            LocalDateTime expiryTimeLocal;
+            Date expiryTimeDate;
             try {
-                expiryTime = LocalDateTime.parse(expiry, formatter);
+                expiryTimeLocal = LocalDateTime.parse(expiry, formatter);
+                expiryTimeDate = localSDF.get().parse(expiry);
             } catch (Exception e) {
                 throw new BuilderException("Cannot parse expiry to date/time value: " + expiry);
             }
-            OptionConfig optionConfig = StructureImplFactory.buildOptionConfig(optionRootSymbol, optionType, strike, strikePrice, expiry, expiryTime);
+            OptionConfig optionConfig = StructureImplFactory.buildOptionConfig(optionRootSymbol, optionType, strike, strikePrice, expiry, expiryTimeLocal, expiryTimeDate);
             optionRootSymbol = null;
             optionType = null;
             strike = null;

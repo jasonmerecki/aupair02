@@ -27,6 +27,9 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-jexl3', version: '3+'
     compile group: 'org.ini4j', name: 'ini4j', version: '0.5+'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7+'
+    compile group: 'jetty', name: 'embedded', version: '6+'
+    // compile group: 'org.eclipse.jetty', name: 'jetty-client', version: '9+'
+    // compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9+'
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
