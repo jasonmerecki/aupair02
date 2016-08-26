@@ -35,6 +35,7 @@ class PairingInfo {
             OptionConfig optionConfig = position.getOptionConfig();
             Integer qty = position.getQty();
             String symbol = position.getSymbol();
+            String description = position.getDescription();
             int sign = Integer.signum(position.getQty());
             if (sign == 0) {
                 // throw exception here
@@ -49,15 +50,15 @@ class PairingInfo {
                 }
                 if (OptionType.C.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        pairingInfo.longCalls.add(new LongCall(symbol, qty, optionConfig, optionRoot));
+                        pairingInfo.longCalls.add(new LongCall(symbol, description, qty, optionConfig, optionRoot));
                     } else {
-                        pairingInfo.shortCalls.add(new ShortCall(symbol, qty, optionConfig, optionRoot));
+                        pairingInfo.shortCalls.add(new ShortCall(symbol, description, qty, optionConfig, optionRoot));
                     }
                 } else if (OptionType.P.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        pairingInfo.longPuts.add(new LongPut(symbol, qty, optionConfig, optionRoot));
+                        pairingInfo.longPuts.add(new LongPut(symbol, description, qty, optionConfig, optionRoot));
                     } else {
-                        pairingInfo.shortPuts.add(new ShortPut(symbol, qty, optionConfig, optionRoot));
+                        pairingInfo.shortPuts.add(new ShortPut(symbol, description, qty, optionConfig, optionRoot));
                     }
                 } else {
                     // throw exception here
@@ -73,9 +74,9 @@ class PairingInfo {
                     pairingInfoMap.put(position.getSymbol(), pairingInfo);
                 }
                 if (sign == 1) {
-                    pairingInfo.longStocks.add(new LongStock(position.getSymbol(), position.getQty()));
+                    pairingInfo.longStocks.add(new LongStock(position.getSymbol(), description, position.getQty()));
                 } else {
-                    pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), position.getQty()));
+                    pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty()));
                 }
                 
             }

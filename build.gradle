@@ -27,6 +27,11 @@ subprojects {
 project(':pairlib') {
     task hello << cl
 }
+project(':pairtest') {
+    dependencies {
+        testCompile project(':pairlib')
+    }
+}
 project(':pairweb') {
     task hello << cl
     dependencies {

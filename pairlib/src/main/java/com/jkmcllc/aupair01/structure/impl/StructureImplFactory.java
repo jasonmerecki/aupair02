@@ -21,8 +21,8 @@ import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 public final class StructureImplFactory {
-    public static Position buildPosition(String symbol, Integer qty, OptionConfig optionConfig) {
-        return new PositionImpl(symbol, qty, optionConfig);
+    public static Position buildPosition(String symbol, String description, Integer qty, OptionConfig optionConfig) {
+        return new PositionImpl(symbol, description, qty, optionConfig);
     }
     public static Deliverables buildDeliverables(List<Deliverable> deliverableList) {
         return new DeliverablesImpl(deliverableList);

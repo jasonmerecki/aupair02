@@ -3,12 +3,12 @@ package com.jkmcllc.aupair01.pairing.impl;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 
-abstract class OptionLeg extends AbstractLeg {
+abstract class AbstractOptionLeg extends AbstractLeg {
     protected final OptionConfig optionConfig;
     protected final OptionRoot optionRoot;
     
-    protected OptionLeg(String symbol, Integer qty, OptionConfig optionConfig, OptionRoot optionRoot) {
-        super(symbol, qty);
+    protected AbstractOptionLeg(String symbol, String description, Integer qty, OptionConfig optionConfig, OptionRoot optionRoot) {
+        super(symbol, description, qty);
         this.optionConfig = optionConfig;
         this.optionRoot = optionRoot;
     }

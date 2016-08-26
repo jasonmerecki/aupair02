@@ -4,16 +4,18 @@ import java.math.BigDecimal;
 
 abstract class AbstractLeg implements Leg {
     protected final String symbol;
+    protected final String description;
     protected final Integer qty;
     protected Integer remainQty;
     protected final BigDecimal bigDecimalQty;
-    protected AbstractLeg(String symbol, Integer qty) {
+    protected AbstractLeg(String symbol, String description, Integer qty) {
         this.symbol = symbol;
+        this.description = description;
         this.remainQty = this.qty = qty;
         this.bigDecimalQty = new BigDecimal(qty);
     }
     protected String basicLegInfo() {
-        return "symbol: \"" + symbol + "\", qty: " + qty;
+        return "symbol: \"" + symbol + "\", description: " + description + "\", qty: " + qty;
     }
     protected Leg reduceBy(Integer used) {
         int startSign = Integer.signum(remainQty);

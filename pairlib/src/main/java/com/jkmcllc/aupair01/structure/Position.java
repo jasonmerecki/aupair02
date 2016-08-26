@@ -10,17 +10,23 @@ import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public interface Position {
     String getSymbol();
+    String getDescription();
     Integer getQty();
     OptionConfig getOptionConfig();
     
     class PositionBuilder {
         private PositionBuilder() {};
         private String symbol;
+        private String description;
         private Integer qty;
         private OptionConfig optionConfig;
         private OptionConfigBuilder optionConfigBuilder;
         public PositionBuilder setSymbol(String symbol) {
             this.symbol = symbol;
+            return this;
+        }
+        public PositionBuilder setDescription(String description) {
+            this.description = description;
             return this;
         }
         public PositionBuilder setQty(Integer qty) {
@@ -71,7 +77,7 @@ public interface Position {
             if (optionConfigBuilder != null) {
                 optionConfig = optionConfigBuilder.build();
             }
-            Position position = StructureImplFactory.buildPosition(symbol, qty, optionConfig);
+            Position position = StructureImplFactory.buildPosition(symbol, description, qty, optionConfig);
             symbol = null;
             qty = null;
             optionConfig = null;
