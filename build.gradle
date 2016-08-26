@@ -1,0 +1,36 @@
+
+Closure cl = { task -> println "I'm $task.project.name" }
+task hello << cl
+
+subprojects {
+    apply plugin: 'java'
+    // apply plugin: 'eclipse-wtp'
+    
+    repositories {
+       jcenter()
+    }
+    
+    dependencies {
+        // testCompile 'junit:junit:4.12'
+    }
+    
+    version = '1.0'
+    
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+    hello << {println "- I depend on aupair"}
+}
+
+
+
+project(':pairlib') {
+    task hello << cl
+}
+project(':pairweb') {
+    task hello << cl
+    dependencies {
+        compile project(':pairlib')
+    }
+}
+
