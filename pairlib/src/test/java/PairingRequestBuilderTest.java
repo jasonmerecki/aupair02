@@ -56,16 +56,16 @@ public class PairingRequestBuilderTest {
         builder.setOptionRootSymbol("CSCO").setOptionRootExerciseStyle(ExerciseStyle.A)
             .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
-        // the symbol can be any String, including the standard OSI symbol or a description
-        builder.setPositionSymbol("CSCO Jan-16 60 Call").setPositionOptionRoot("CSCO").setPositionQty(-2)
+        // the description can be any String,
+        builder.setPositionSymbol("CSCO  160115C00060000").setPositionDescription("CSCO Jan-16 60 Call").setPositionOptionRoot("CSCO").setPositionQty(-2)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
-        builder.setPositionSymbol("CSCO Jan-16 67.50 Call").setPositionOptionRoot("CSCO").setPositionQty(6)
+        builder.setPositionSymbol("CSCO  160115C00067500").setPositionDescription("CSCO Jan-16 67.50 Call").setPositionOptionRoot("CSCO").setPositionQty(6)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("67.50").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
-        builder.setPositionSymbol("CSCO Jan-16 75.00 Call").setPositionOptionRoot("CSCO").setPositionQty(-1)
+        builder.setPositionSymbol("CSCO  160115C00075000").setPositionDescription("CSCO Jan-16 75.00 Call").setPositionOptionRoot("CSCO").setPositionQty(-1)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("75.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
-        builder.setPositionSymbol("CSCO Jan-16 30.00 Put").setPositionOptionRoot("CSCO").setPositionQty(3)
+        builder.setPositionSymbol("CSCO  160115C00030000").setPositionDescription("CSCO Jan-16 30.00 Put").setPositionOptionRoot("CSCO").setPositionQty(3)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("30.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
-        builder.setPositionSymbol("CSCO Jan-16 35.00 Put").setPositionOptionRoot("CSCO").setPositionQty(-5)
+        builder.setPositionSymbol("CSCO  160115C00035000").setPositionDescription("CSCO Jan-16 35.00 Put").setPositionOptionRoot("CSCO").setPositionQty(-5)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("35.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
         // builder.setPositionSymbol("CSCO Jan-16 45.00 Put").setPositionOptionRoot("CSCO").setPositionQty(2)
         //     .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();

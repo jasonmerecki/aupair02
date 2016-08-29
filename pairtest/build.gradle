@@ -6,8 +6,9 @@ repositories {
 }
 
 dependencies {
+    compile fileTree(dir: 'lib', include: '*.jar') 
+    // dependencies used by the pairlib
     compile 'org.slf4j:slf4j-api:1.7.21'
-    
     compile group: 'org.apache.commons', name: 'commons-jexl3', version: '3+'
     compile group: 'org.ini4j', name: 'ini4j', version: '0.5+'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7+'

@@ -4,14 +4,12 @@ task hello << cl
 
 subprojects {
     apply plugin: 'java'
-    // apply plugin: 'eclipse-wtp'
     
     repositories {
        jcenter()
     }
     
     dependencies {
-        // testCompile 'junit:junit:4.12'
     }
     
     version = '1.0'
@@ -28,9 +26,7 @@ project(':pairlib') {
     task hello << cl
 }
 project(':pairtest') {
-    dependencies {
-        testCompile project(':pairlib')
-    }
+
 }
 project(':pairweb') {
     task hello << cl

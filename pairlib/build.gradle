@@ -4,6 +4,14 @@ apply plugin: 'java'
 // In this section you declare where to find the dependencies of your project
 repositories {
     jcenter()
+    flatDir {
+        name "pairlibout"
+        dirs "outputlib"
+    }
+    flatDir {
+        name "testlib"
+        dirs "../pairtest/lib"
+    }
 }
 
 
@@ -16,4 +24,29 @@ dependencies {
     compile group: 'org.ini4j', name: 'ini4j', version: '0.5+'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7+'
 
+    testCompile 'junit:junit:4.12'
+}
+
+jar {
+    manifest {
+        attributes("Implementation-Title": "Pairing Library",
+                   "Implementation-Version": "0.0.1")
+    }
+    baseName 'pairing'
+    version '0.0.1'
+}
+
+/*
+task pairlibJar(type: Jar)
+
+artifacts {
+    archives pairlibJar
+}
+*/
+
+uploadArchives {
+    repositories {
+        add project.repositories.pairlibout
+        add project.repositories.testlib
+    }
 }

@@ -39,6 +39,10 @@ public interface PairingRequest extends Request {
             positionBuilder.setSymbol(symbol);
             return this;
         }
+        public PairingRequestBuilder setPositionDescription(String description) {
+            positionBuilder.setDescription(description);
+            return this;
+        }
         public PairingRequestBuilder setPositionQty(Integer qty) {
             positionBuilder.setQty(qty);
             return this;
