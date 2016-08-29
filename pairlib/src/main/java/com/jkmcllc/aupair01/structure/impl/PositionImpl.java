@@ -21,9 +21,9 @@ class PositionImpl implements Position {
         StringBuilder builder = new StringBuilder();
         builder.append("Posotion: {symbol:");
         builder.append(symbol);
-        builder.append(", description:");
+        builder.append(", description: \"");
         builder.append(description);
-        builder.append(", qty:");
+        builder.append("\", qty:");
         builder.append(qty);
         if (optionConfig != null) {
             builder.append(", optionConfig:");

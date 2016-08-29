@@ -15,7 +15,7 @@ abstract class AbstractLeg implements Leg {
         this.bigDecimalQty = new BigDecimal(qty);
     }
     protected String basicLegInfo() {
-        return "symbol: \"" + symbol + "\", description: " + description + "\", qty: " + qty;
+        return "symbol: \"" + symbol + "\", description: \"" + description + "\", qty: " + qty;
     }
     protected Leg reduceBy(Integer used) {
         int startSign = Integer.signum(remainQty);

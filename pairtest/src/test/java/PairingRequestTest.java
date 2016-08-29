@@ -61,6 +61,7 @@ public class PairingRequestTest {
             for (Strategy strategy : entry.getValue()) {
                 System.out.println(strategy);
             }
+            System.out.println("");
         }
     }
     
