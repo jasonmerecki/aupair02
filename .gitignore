@@ -2,7 +2,7 @@
 /build
 .gradle
 ./.settings
-/outputlib
+/pairlib/outputlib
 .settings/
 .classpath
 .project
