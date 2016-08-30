@@ -3,7 +3,7 @@
 .gradle
 ./.settings
 /pairlib/outputlib
-.settings/
+.settings
 .classpath
 .project
 /*/bin
