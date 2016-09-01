@@ -38,14 +38,14 @@ public final class StructureImplFactory {
             BigDecimal multiplier, Deliverables deliverables) {
         return new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, multiplier, deliverables);
     }
-    public static Account buildAccount(String accountId, List<Position> legs) {
-        return new AccountImpl(accountId, legs);
+    public static Account buildAccount(String accountId, List<Position> legs, String strategyGroupName, Map<String, String> customProperties) {
+        return new AccountImpl(accountId, legs, strategyGroupName, customProperties);
     }
     
     public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots) {
         return new PairingRequestImpl(accounts, optionRoots);
     }
-    public static PairingResponse buildPairingResponse(Map<String, List<Strategy>> resultMap) {
+    public static PairingResponse buildPairingResponse(Map<String, Map<String, List<Strategy>>> resultMap) {
         return new PairingResponseImpl(resultMap);
     }
 }

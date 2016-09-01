@@ -8,14 +8,14 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
 class PairingResponseImpl implements PairingResponse {
 
-    private final Map<String, List<Strategy>> resultMap ;
+    private final Map<String, Map<String, List<Strategy>>> resultMap ;
     
-    PairingResponseImpl(Map<String, List<Strategy>> resultMap) {
+    PairingResponseImpl(Map<String, Map<String, List<Strategy>>> resultMap) {
         this.resultMap = resultMap;
     };
     
     @Override
-    public Map<String, List<Strategy>> getResultsByAccount() {
+    public Map<String, Map<String,List<Strategy>>> getResultsByAccount() {
         return resultMap;
     }
 

@@ -21,6 +21,7 @@ class PairingInfo {
     final List<ShortPut> shortPuts = new ArrayList<>();
     final List<LongStock> longStocks = new ArrayList<>();
     final List<ShortStock> shortStocks = new ArrayList<>();
+    final List<AbstractOptionLeg> allOptions = new ArrayList<>();
     final AccountInfo accountInfo;
     
     private PairingInfo(OptionRoot optionRoot, Account account) {
@@ -29,7 +30,7 @@ class PairingInfo {
         this.optionRoot = optionRoot;
     };
     
-    public static Map<String, PairingInfo> from (Account account, OptionRootStore optionRootStore) {
+    static Map<String, PairingInfo> from (Account account, OptionRootStore optionRootStore) {
         Map<String, PairingInfo> pairingInfoMap = new HashMap<>();
         for (Position position : account.getPositions()) {
             OptionConfig optionConfig = position.getOptionConfig();
@@ -38,30 +39,42 @@ class PairingInfo {
             String description = position.getDescription();
             int sign = Integer.signum(position.getQty());
             if (sign == 0) {
-                // throw exception here
+                // TODO: throw exception here, can't have zero position qaty for pairing
             } 
             if (optionConfig != null) {
                 String optionRootSymbol = optionConfig.getOptionRoot();
                 PairingInfo pairingInfo = pairingInfoMap.get(optionConfig.getOptionRoot());
                 OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
+                AbstractOptionLeg optionLeg = null;
                 if (pairingInfo == null) {
                     pairingInfo = new PairingInfo(optionRoot, account);
                     pairingInfoMap.put(optionConfig.getOptionRoot(), pairingInfo);
                 }
                 if (OptionType.C.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        pairingInfo.longCalls.add(new LongCall(symbol, description, qty, optionConfig, optionRoot));
+                        LongCall leg = new LongCall(symbol, description, qty, optionConfig, optionRoot);
+                        pairingInfo.longCalls.add(leg);
+                        optionLeg = leg;
                     } else {
-                        pairingInfo.shortCalls.add(new ShortCall(symbol, description, qty, optionConfig, optionRoot));
+                        ShortCall leg = new ShortCall(symbol, description, qty, optionConfig, optionRoot);
+                        pairingInfo.shortCalls.add(leg);
+                        optionLeg = leg;
                     }
                 } else if (OptionType.P.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        pairingInfo.longPuts.add(new LongPut(symbol, description, qty, optionConfig, optionRoot));
+                        LongPut leg = new LongPut(symbol, description, qty, optionConfig, optionRoot);
+                        pairingInfo.longPuts.add(leg);
+                        optionLeg = leg;
                     } else {
-                        pairingInfo.shortPuts.add(new ShortPut(symbol, description, qty, optionConfig, optionRoot));
+                        ShortPut leg = new ShortPut(symbol, description, qty, optionConfig, optionRoot);
+                        pairingInfo.shortPuts.add(leg);
+                        optionLeg = leg;
                     }
                 } else {
                     // throw exception here
+                }
+                if (optionLeg != null) {
+                    pairingInfo.allOptions.add(optionLeg);
                 }
             } else {
                 // assume it's a stock
@@ -78,9 +91,27 @@ class PairingInfo {
                 } else {
                     pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty()));
                 }
-                
             }
         }
         return pairingInfoMap;
+    }
+    
+    List<? extends Leg> getLegsByType(String type) {
+        switch (type) {
+        case StrategyConfigs.LONG_CALLS:
+            return longCalls;
+        case StrategyConfigs.SHORT_CALLS:
+            return shortCalls;
+        case StrategyConfigs.LONG_PUTS:
+            return longPuts;
+        case StrategyConfigs.SHORT_PUTS:
+            return shortPuts;
+        case StrategyConfigs.LONG_STOCKS:
+            return longStocks;
+        case StrategyConfigs.SHORT_STOCKS:
+            return shortStocks;
+        }
+        // TODO: throw a meaningful exception here
+        return null;
     }
 }

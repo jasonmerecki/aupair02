@@ -18,49 +18,52 @@ import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public class PairingService {
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
-    private static PairingService pairingServiceImpl;
+    private static PairingService pairingServiceInstance;
+    
+    private StrategyConfigs strategyConfigs;
+    
     private PairingService() {};
+    
     public static PairingService getInstance() {
-        if (pairingServiceImpl == null) {
+        if (pairingServiceInstance == null) {
             synchronized (PairingService.class) {
-                if (pairingServiceImpl == null) {
-                    pairingServiceImpl = new PairingService();
+                if (pairingServiceInstance == null) {
+                    pairingServiceInstance = new PairingService();
                 }
+                pairingServiceInstance.strategyConfigs = StrategyConfigs.getInstance();
             }
         }
-        return pairingServiceImpl;
+        return pairingServiceInstance;
     }
     
     public PairingResponse service(PairingRequest pairingRequest) {
-        Map<String, List<Strategy>> resultMap = new HashMap<>();
+        Map<String, Map<String,List<Strategy>>> resultMap = new HashMap<>();
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
         optionRootStore.addRoots(pairingRequest.getOptionRoots());
         for (Account account : pairingRequest.getAccounts()) {
-            List<Strategy> found = new ArrayList<>();
+            Map<String,List<Strategy>> optionRootResults = new HashMap<>();
             Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
             for (Map.Entry<String, PairingInfo> entry : pairingInfos.entrySet()) {
-                // TODO: build collections of finders in strategy prioritization order, reset info and sort after each collection
-                List<? extends Strategy> callVertLongs = CallVerticalLongFinder.newInstance(entry.getValue()).find();
-                List<? extends Strategy> callVertShorts = CallVerticalShortFinder.newInstance(entry.getValue()).find();
-                List<? extends Strategy> putVertLongs = PutVerticalLongFinder.newInstance(entry.getValue()).find();
-                List<? extends Strategy> putVertShorts = PutVerticalShortFinder.newInstance(entry.getValue()).find();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Found for account id '" + account.getAccountId() + "' and option root symbol: " + entry.getValue().optionRootSymbol 
-                            + "\ncallVerticalLongs=" + callVertLongs
-                            + "\ncallVerticalShorts=" + callVertShorts
-                            + "\nputVerticalLongs=" + putVertLongs
-                            + "\nputVerticalShorts=" + putVertShorts
-                            );
+                // for each option root that has pairing info, loop through strategies
+                List<Strategy> found = new ArrayList<>();
+                String strategyGroupName = account.getStrategyGroupName();
+                // TODO: validation, group config must be non null
+                List<List<StrategyMeta>> strategyMetasList = strategyConfigs.getStrategyGroup(strategyGroupName);
+                PairingInfo pairingInfo = entry.getValue();
+                String optionRoot = entry.getKey();
+                for (List<StrategyMeta> strategyMetas : strategyMetasList) {
+                    for (StrategyMeta strategyMeta : strategyMetas) {
+                        List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyMeta).find() ;
+                        found.addAll(foundForMeta);
+                    }
+                    // TODO: compare with previously found and keep this one if lower or equal margin
                 }
-                found.addAll(callVertLongs);
-                found.addAll(callVertShorts);
-                found.addAll(putVertLongs);
-                found.addAll(putVertShorts);
+                optionRootResults.put(optionRoot, found);
             }
-            resultMap.put(account.getAccountId(), found);
-            
+            resultMap.put(account.getAccountId(), optionRootResults);
         }
         PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);
         return response;
     }
+    
 }

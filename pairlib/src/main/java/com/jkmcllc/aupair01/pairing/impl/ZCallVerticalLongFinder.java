@@ -1,18 +1,22 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.jexl3.JexlExpression;
 
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
-class CallVerticalLongFinder extends AbstractVerticalFinder {
-    private CallVerticalLongFinder(PairingInfo pairingInfo) {
+class ZCallVerticalLongFinder extends ZAbstractVerticalFinder {
+    private final JexlExpression strategyPattern;
+    private ZCallVerticalLongFinder(PairingInfo pairingInfo) {
         super(pairingInfo);
         strategyPattern = TacoCat.getJexlEngine().createExpression( "legs.get(0).optionConfig.strikePrice.compareTo(legs.get(1).optionConfig.strikePrice) <= 0"  
                 + equalTwoDatesExpressionFrag );
     };
-    protected static CallVerticalLongFinder newInstance(PairingInfo pairingInfo) {
-        return new CallVerticalLongFinder(pairingInfo);
+    protected static ZCallVerticalLongFinder newInstance(PairingInfo pairingInfo) {
+        return new ZCallVerticalLongFinder(pairingInfo);
     }
     
     protected List<List<? extends Leg>> getRecursiveLists(PairingInfo pairingInfo) {
@@ -22,7 +26,7 @@ class CallVerticalLongFinder extends AbstractVerticalFinder {
         return recursiveLists;
     }
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, Strategy.CALL_VERTICAL_LONG, DefaultMargins.longVerticalMargin); 
+        testLegs(legs, Strategy.CALL_VERTICAL_LONG, Collections.singletonList(strategyPattern), DefaultMargins.longVerticalMargin); 
     }
     
 }

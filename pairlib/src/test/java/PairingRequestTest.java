@@ -32,17 +32,7 @@ public class PairingRequestTest {
         System.out.println("Input for " + pairingRequest + "");
         System.out.println("");
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        assertNotNull(pairingResponse);
-        Map<String, List<Strategy>> responseByAccount = pairingResponse.getResultsByAccount();
-        assertNotNull(responseByAccount);
-        assertEquals(responseByAccount.size(), 2);
-        for (Map.Entry<String, List<Strategy>> entry : responseByAccount.entrySet()) {
-            String accountId = entry.getKey();
-            System.out.println("Strateiges for account '" + accountId + "'");
-            for (Strategy strategy : entry.getValue()) {
-                System.out.println(strategy);
-            }
-        }
+        commonTestAndPrintOutput(pairingResponse, 2);
     }
     
     @Test
@@ -51,17 +41,23 @@ public class PairingRequestTest {
         System.out.println("Input for " + pairingRequest + "");
         System.out.println("");
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+    }
+    
+    private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {
         assertNotNull(pairingResponse);
-        Map<String, List<Strategy>> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
         assertNotNull(responseByAccount);
-        assertEquals(responseByAccount.size(), 1);
-        for (Map.Entry<String, List<Strategy>> entry : responseByAccount.entrySet()) {
+        assertEquals(accountsInRequest, responseByAccount.size());
+        for (Map.Entry<String, Map<String, List<Strategy>>> entry : responseByAccount.entrySet()) {
             String accountId = entry.getKey();
             System.out.println("Strateiges for account '" + accountId + "'");
-            for (Strategy strategy : entry.getValue()) {
-                System.out.println(strategy);
+            for (Map.Entry<String, List<Strategy>> entry2 : entry.getValue().entrySet()) {
+                System.out.println("Option root '" + entry2.getKey() + "'");
+                for (Strategy strategy : entry2.getValue()) {
+                    System.out.println(strategy);
+                }
             }
-            System.out.println("");
         }
     }
     

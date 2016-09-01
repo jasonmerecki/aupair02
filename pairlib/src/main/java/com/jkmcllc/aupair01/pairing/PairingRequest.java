@@ -67,6 +67,14 @@ public interface PairingRequest extends Request {
             legs.add(positionBuilder.build());
             return this;
         }
+        public PairingRequestBuilder setAccountStrategyGroupName(String strategyGroupName) {
+            accountBuilder.setStrategyGroupName(strategyGroupName);
+            return this;
+        }
+        public PairingRequestBuilder addAccountCustomProperty(String name, String value) {
+            accountBuilder.addAccountProperty(name, value);
+            return this;
+        }
         
         public PairingRequestBuilder addAccount(String accountId) {
             accountBuilder.setAccountId(accountId);

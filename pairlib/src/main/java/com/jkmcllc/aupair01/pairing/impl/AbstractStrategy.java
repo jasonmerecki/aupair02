@@ -12,7 +12,7 @@ class AbstractStrategy implements Strategy {
 
     final String strategyName;
     final List<? extends Leg> legs;
-    final BigDecimal margin;
+    BigDecimal margin = BigDecimal.ZERO;
     final Integer quantity;
     
     AbstractStrategy(String strategyName, List<Leg> legs, Integer quantity, AccountInfo accountInfo, JexlExpression marginExpression) {
