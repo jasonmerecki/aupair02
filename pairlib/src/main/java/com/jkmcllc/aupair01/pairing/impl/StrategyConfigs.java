@@ -1,12 +1,8 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -49,7 +45,9 @@ public class StrategyConfigs {
                     strategyConfigsInstance = new StrategyConfigs();
                 }
             }
-            strategyConfigsInstance.loadConfigs("paircore.ini", true);
+            Reader reader = new InputStreamReader(strategyConfigsInstance.getClass().getClassLoader()
+                    .getResourceAsStream("paircore.ini"));
+            strategyConfigsInstance.loadConfigs(reader, true);
         }
         return strategyConfigsInstance;
     }
@@ -63,18 +61,8 @@ public class StrategyConfigs {
         return group;
     }
     
-    private void loadConfigs(String filePath, boolean core) {
-        StrategyConfigs strategyConfigs = StrategyConfigs.getInstance();
-        Reader reader;
+    private void loadConfigs(Reader reader, boolean core) {
         try {
-            /*
-            Path paircoreinipath = Paths.get(strategyConfigs.getClass().getClassLoader()
-                    .getResource(filePath)
-                    .toURI()); */
-            Path paircoreinipath = Paths.get(strategyConfigs.getClass().getClassLoader()
-                    .getSystemResource(filePath)
-                    .toURI());
-            reader = Files.newBufferedReader(paircoreinipath, StandardCharsets.UTF_8);
             Ini paircoreini = new Ini(reader);
             // initialize core
             Ini.Section strategies = paircoreini.get(STRATEGY_GROUP);
@@ -90,7 +78,7 @@ public class StrategyConfigs {
                 }
             }
             
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             String reallyBadError = "Missing core configuration file; exiting! " + e;
             logger.error(reallyBadError, e);
             throw new RuntimeException(reallyBadError);

@@ -54,7 +54,7 @@ public class OptionConfigImpl implements OptionConfig {
         return strike;
     }
     @Override
-    public String getExpiry() {
+    public String getExpiryString() {
         return expiry;
     }
 
@@ -70,11 +70,12 @@ public class OptionConfigImpl implements OptionConfig {
         return expiryTimeLocal;
     }
     
-    public Date getExpiryDate() {
+    public Date getExpiryDateDate() {
         return expiryDate;
     }
     
-    public Object getExpiryDateExpression() {
+    @SuppressWarnings("unchecked")
+    public LocalDateTime getExpiryDate() {
         return expiryTimeLocal;
     }
 

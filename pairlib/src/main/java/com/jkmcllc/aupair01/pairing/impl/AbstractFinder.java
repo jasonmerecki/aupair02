@@ -2,7 +2,6 @@ package com.jkmcllc.aupair01.pairing.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.jexl3.JexlContext;
@@ -30,18 +29,17 @@ abstract class AbstractFinder {
         return getFoundStrategies();
     }
     
-    protected void recurseList(List<List<? extends Leg>> recursiveLists, int listIndex, Leg[] legs) {
-        Iterator<? extends Leg> iter = recursiveLists.get(listIndex).iterator();
-        int nextIndex = listIndex + 1;
-        while (iter.hasNext()) {
-            Leg nextLeg = iter.next();
-            legs[listIndex] = nextLeg;
-            if (nextIndex == recursiveLists.size()) {
+    protected void recurseList(List<List<? extends Leg>> recursiveLists, int recursiveListIndex, Leg[] legs) {
+        List<? extends Leg> nextList = recursiveLists.get(recursiveListIndex);
+        int nextRecursiveListIndex = recursiveListIndex + 1;
+        for (int i = 0; i < nextList.size(); i++) {
+            Leg nextLeg = nextList.get(i);
+            legs[recursiveListIndex] = nextLeg;
+            if (nextRecursiveListIndex == recursiveLists.size()) {
                 testLegs(legs);
             }  else {
-                recurseList(recursiveLists, nextIndex, legs);
+                recurseList(recursiveLists, nextRecursiveListIndex, legs);
             }
-            
         }
     }
     

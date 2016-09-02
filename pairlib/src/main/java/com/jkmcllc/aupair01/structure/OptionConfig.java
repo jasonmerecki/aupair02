@@ -15,7 +15,8 @@ public interface OptionConfig {
     String getOptionRoot();
     OptionType getOptionType();
     String getStrike();
-    String getExpiry();
+    String getExpiryString();
+    <T extends Comparable<T>> T getExpiryDate();
     static final String OPTION_EXPIRATION_DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     class OptionConfigBuilder {

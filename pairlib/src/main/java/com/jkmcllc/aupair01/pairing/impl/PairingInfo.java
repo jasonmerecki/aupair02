@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,15 @@ import com.jkmcllc.aupair01.structure.Position;
 class PairingInfo {
     final String optionRootSymbol;
     final OptionRoot optionRoot;
+    final Comparator<AbstractOptionLeg> ASC_DATE = (AbstractOptionLeg o1, AbstractOptionLeg o2)-> {
+        return o1.getOptionConfig().getExpiryDate().compareTo(o2.getOptionConfig().getExpiryDate());
+    };
+    final Comparator<AbstractOptionLeg> ASC_STRIKE_ASC_DATE = (AbstractOptionLeg o1, AbstractOptionLeg o2)-> {
+        return o1.getOptionConfig().getStrike().compareTo(o2.getOptionConfig().getStrike());
+    };
+    final Comparator<AbstractOptionLeg> DESC_STRIKE_ASC_DATE = (AbstractOptionLeg o1, AbstractOptionLeg o2)-> {
+        return o2.getOptionConfig().getStrike().compareTo(o1.getOptionConfig().getStrike());
+    };
     final List<LongCall> longCalls = new ArrayList<>();
     final List<ShortCall> shortCalls = new ArrayList<>();
     final List<LongPut> longPuts = new ArrayList<>();
