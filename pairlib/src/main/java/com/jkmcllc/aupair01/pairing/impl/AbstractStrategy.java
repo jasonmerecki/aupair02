@@ -38,6 +38,11 @@ class AbstractStrategy implements Strategy {
     public BigDecimal getMargin() {
         return margin;
     }
+    
+    @Override
+    public Integer getQuantity() {
+        return quantity;
+    }
 
     @Override
     public String toString() {

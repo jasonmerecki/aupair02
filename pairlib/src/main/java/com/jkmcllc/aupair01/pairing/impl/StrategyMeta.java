@@ -8,18 +8,25 @@ import org.apache.commons.jexl3.JexlExpression;
 class StrategyMeta implements Cloneable {
     final String strategyName;
     final String[] legs;
+    final Integer[] legsRatio;
     final List<JexlExpression> strategyPatterns = new ArrayList<>();
     final List<String> strategyPatternStrings = new ArrayList<>();
     final List<JexlExpression> marginPatterns = new ArrayList<>();
     final List<String> marginPatternStrings = new ArrayList<>();
     
-    StrategyMeta(String strategyName, String legs) {
+    StrategyMeta(String strategyName, String legs, String legsRatioString) {
         this.strategyName = strategyName;
         String[] legsTemp = legs.split(",");
         for (int i = 0; i < legsTemp.length; i++) {
             legsTemp[i] = legsTemp[i].trim();
         }
         this.legs = legsTemp;
+        String[] legsRatioTemp = legsRatioString.split(",");
+        Integer[] legsRatioIntegers = new Integer[legsRatioTemp.length];
+        for (int i = 0; i < legsRatioTemp.length; i++) {
+            legsRatioIntegers[i] = Integer.parseInt(legsRatioTemp[i].trim());
+        }
+        this.legsRatio = legsRatioIntegers;
     }
     StrategyMeta addStrategyPattern(String pattern) {
         if (pattern != null) {

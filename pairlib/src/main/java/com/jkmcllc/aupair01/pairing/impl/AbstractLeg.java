@@ -24,13 +24,13 @@ abstract class AbstractLeg implements Leg {
         } else if (startSign == 1) {
             remainQty = remainQty - used;
         } else {
-            // throw exception here, cannot use when zero remains
+            // TODO: throw exception here, cannot use when zero remains
         }
         int endSign = Integer.signum(remainQty);
         if (endSign != 0 && endSign != startSign) {
-            // throw exception here, cannot cross zero
+            // TODO: throw exception here, cannot cross zero
         }
-        return newLegWith(used);
+        return newLegWith(used * startSign);
     }
     protected void resetQty() {
         remainQty = qty;

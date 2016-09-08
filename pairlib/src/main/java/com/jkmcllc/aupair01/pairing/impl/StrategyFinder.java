@@ -30,7 +30,12 @@ class StrategyFinder extends AbstractFinder {
 
     @Override
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, strategyMeta.strategyName, strategyMeta.strategyPatterns, strategyMeta.marginPatterns.get(0) ); 
+        testLegs(legs, strategyMeta.strategyName, strategyMeta.strategyPatterns, strategyMeta.marginPatterns.get(0)); 
+    }
+
+    @Override
+    protected Integer[] getLegsRatio() {
+        return strategyMeta.legsRatio;
     }
 
 }

@@ -14,4 +14,5 @@ public interface Strategy {
     public String getStrategyName();
     public List<? extends Leg> getLegs();
     public BigDecimal getMargin();
+    public Integer getQuantity();
 }

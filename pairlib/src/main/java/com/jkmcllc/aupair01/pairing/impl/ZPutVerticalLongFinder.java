@@ -28,5 +28,10 @@ class ZPutVerticalLongFinder extends ZAbstractVerticalFinder {
     protected void testLegs(Leg[] legs) {
         testLegs(legs, Strategy.PUT_VERTICAL_LONG, Collections.singletonList(strategyPattern), DefaultMargins.longVerticalMargin); 
     }
+    @Override
+    protected Integer[] getLegsRatio() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }

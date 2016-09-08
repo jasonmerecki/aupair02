@@ -81,6 +81,7 @@ public interface Position {
             symbol = null;
             qty = null;
             optionConfig = null;
+            description = null;
             return position;
         }
     }

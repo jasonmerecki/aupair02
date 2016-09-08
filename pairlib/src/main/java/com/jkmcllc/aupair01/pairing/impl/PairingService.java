@@ -30,6 +30,7 @@ public class PairingService {
                 if (pairingServiceInstance == null) {
                     pairingServiceInstance = new PairingService();
                 }
+                // TODO: the config may throw an exception, should catch and throw meaningful one
                 pairingServiceInstance.strategyConfigs = StrategyConfigs.getInstance();
             }
         }

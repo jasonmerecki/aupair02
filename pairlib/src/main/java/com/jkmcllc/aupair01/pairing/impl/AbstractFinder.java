@@ -32,8 +32,14 @@ abstract class AbstractFinder {
     protected void recurseList(List<List<? extends Leg>> recursiveLists, int recursiveListIndex, Leg[] legs) {
         List<? extends Leg> nextList = recursiveLists.get(recursiveListIndex);
         int nextRecursiveListIndex = recursiveListIndex + 1;
+        legLoop:
         for (int i = 0; i < nextList.size(); i++) {
             Leg nextLeg = nextList.get(i);
+            for (int j = 0; j < recursiveListIndex; j++) {
+                if (legs[j] == nextLeg) {
+                    continue legLoop;
+                }
+            }
             legs[recursiveListIndex] = nextLeg;
             if (nextRecursiveListIndex == recursiveLists.size()) {
                 testLegs(legs);
@@ -45,25 +51,22 @@ abstract class AbstractFinder {
     
     protected Integer findAndReduceMaxQty(Leg[] legs) {
         Integer maxQty = null;
+        Integer[] legsRatio = getLegsRatio();
         for (int i = 0;  i < legs.length; i++) {
             AbstractLeg leg = (AbstractLeg) legs[i];
-            Integer avail = Math.abs(leg.remainQty);
+            Integer testQty = leg.remainQty / legsRatio[i];
+            Integer avail = Math.abs(testQty);
             if (maxQty == null || maxQty > avail) {
                 maxQty = avail;
             }
         }
         maxQty = (maxQty != null) ? maxQty : Constants.ZERO;
-        if (maxQty > 0) {
-            for (int i = 0;  i < legs.length; i++) {
-                AbstractLeg leg = (AbstractLeg) legs[i];
-                leg.reduceBy(maxQty);
-            }
-        }
         return maxQty;
     }
     
     protected abstract List<List<? extends Leg>> getRecursiveLists(PairingInfo pairingInfo);
     protected abstract void testLegs(Leg[] legs);
+    protected abstract Integer[] getLegsRatio();
     
     protected void testLegs(Leg[] legs, String strategyName, List<JexlExpression> strategyPatterns, JexlExpression marginExpression) {
         List<Leg> legList = Arrays.asList(legs);
@@ -81,10 +84,12 @@ abstract class AbstractFinder {
         if (valid) {
             Integer strategyQty = findAndReduceMaxQty(legs);
             if (strategyQty > 0) {
+                Integer[] legsRatio = getLegsRatio();
                 List<Leg> strategyLegs = new ArrayList<>(legList.size());
                 for (int i = 0; i < legList.size(); i++) {
                     AbstractLeg sourceLeg1 = (AbstractLeg) legs[i];
-                    Leg newLeg1 = sourceLeg1.reduceBy(strategyQty);
+                    Integer testQty = strategyQty * legsRatio[i];
+                    Leg newLeg1 = sourceLeg1.reduceBy(testQty);
                     strategyLegs.add(newLeg1);
                 }
                 Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, marginExpression);

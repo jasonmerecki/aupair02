@@ -21,6 +21,7 @@ public class StrategyConfigs {
     private static final String STRATEGY_GROUP = "strategyGroup";
     private static final String STRATEGIES = "strategies";
     private static final String STRATETY_LEGS = ".legs";
+    private static final String STRATETY_LEGS_RATIO = ".legsRatio";
     private static final String STRATETY_PATTERN = ".pattern";
     private static final String STRATETY_MARGIN = ".margin";
     
@@ -104,8 +105,9 @@ public class StrategyConfigs {
                     continue;
                 } else {
                     String legs = strategyGroup.fetch(strategyName + STRATETY_LEGS);
+                    String legsRatio = strategyGroup.fetch(strategyName + STRATETY_LEGS_RATIO);
                     // TODO: legs must match known names
-                    strategyMeta = new StrategyMeta(strategyName, legs);
+                    strategyMeta = new StrategyMeta(strategyName, legs, legsRatio);
                     masterMap.put(strategyName, strategyMeta);
                     strategies.add(strategyMeta);
                 }

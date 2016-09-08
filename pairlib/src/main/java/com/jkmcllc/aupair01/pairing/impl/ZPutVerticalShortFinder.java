@@ -29,5 +29,10 @@ class ZPutVerticalShortFinder extends ZAbstractVerticalFinder {
     protected void testLegs(Leg[] legs) {
         testLegs(legs, Strategy.PUT_VERTICAL_SHORT, Collections.singletonList(strategyPattern), DefaultMargins.shortVerticalMargin); 
     }
+    @Override
+    protected Integer[] getLegsRatio() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }
