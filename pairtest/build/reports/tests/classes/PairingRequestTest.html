@@ -29,7 +29,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">2</div>
+<div class="counter">0</div>
 <p>failures</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.030s</div>
+<div class="counter">0.151s</div>
 <p>duration</p>
 </div>
 </td>
@@ -50,8 +50,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox failures" id="successRate">
-<div class="percent">0%</div>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
 <p>successful</p>
 </div>
 </td>
@@ -61,131 +61,13 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Failed tests</a>
+<a href="#tab0">Tests</a>
 </li>
 <li>
-<a href="#tab1">Tests</a>
-</li>
-<li>
-<a href="#tab2">Standard output</a>
-</li>
-<li>
-<a href="#tab3">Standard error</a>
+<a href="#tab1">Standard output</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
-<h2>Failed tests</h2>
-<div class="test">
-<a name="build1AndPair1"></a>
-<h3 class="failures">build1AndPair1</h3>
-<span class="code">
-<pre>java.lang.RuntimeException: Misconfigured core configuration file; exiting! java.nio.file.FileSystemNotFoundException
-	at com.jkmcllc.aupair01.pairing.impl.StrategyConfigs.loadConfigs(StrategyConfigs.java:100)
-	at com.jkmcllc.aupair01.pairing.impl.StrategyConfigs.getInstance(StrategyConfigs.java:52)
-	at com.jkmcllc.aupair01.pairing.impl.PairingService.getInstance(PairingService.java:33)
-	at PairingRequestTest.setUp(PairingRequestTest.java:26)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
-	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:377)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
-	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="build1AndPair2"></a>
-<h3 class="failures">build1AndPair2</h3>
-<span class="code">
-<pre>java.lang.NullPointerException
-	at com.jkmcllc.aupair01.pairing.impl.PairingService.service(PairingService.java:51)
-	at PairingRequestTest.build1AndPair2(PairingRequestTest.java:43)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
-	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:377)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
-	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-</pre>
-</span>
-</div>
-</div>
-<div id="tab1" class="tab">
 <h2>Tests</h2>
 <table>
 <thead>
@@ -196,80 +78,44 @@
 </tr>
 </thead>
 <tr>
-<td class="failures">build1AndPair1</td>
-<td>0.025s</td>
-<td class="failures">failed</td>
+<td class="success">build1AndPair1</td>
+<td>0.145s</td>
+<td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">build1AndPair2</td>
-<td>0.005s</td>
-<td class="failures">failed</td>
+<td class="success">build1AndPair2</td>
+<td>0.006s</td>
+<td class="success">passed</td>
 </tr>
 </table>
 </div>
-<div id="tab2" class="tab">
+<div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>Input for PairingRequest: {accounts:[account {accountId: account1234, strategyGroupName: core, positions: [Posotion: {symbol:MSFT  160115C00047500, description: &quot;&quot;, qty:6, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:MSFT  160115C00050000, description: &quot;&quot;, qty:-8, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-02-19 16:00&quot;}}, Posotion: {symbol:MSFT  160115C00055000, description: &quot;&quot;, qty:5, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}], customProperties: {}}], optionRoots:{MSFT=OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, deliverableType:S}]}}}
+<pre>Input for PairingRequest: {accounts:[account {accountId: account1234, strategyGroupName: core, positions: [Posotion: {symbol:MSFT  160115C00047500, description: &quot;&quot;, qty:6, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:MSFT  160115C00050000, description: &quot;&quot;, qty:-8, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:MSFT  160115C00055000, description: &quot;&quot;, qty:5, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:MSFT  160115P00080000, description: &quot;&quot;, qty:-4, optionConfig:optionConfig: {optionRoot: MSFT, optionType: P, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:MSFT  160115P00082000, description: &quot;&quot;, qty:5, optionConfig:optionConfig: {optionRoot: MSFT, optionType: P, strike: 82.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:CSCO  160115C00060000, description: &quot;CSCO Jan-16 60 Call&quot;, qty:-2, optionConfig:optionConfig: {optionRoot: CSCO, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:CSCO  160115C00067500, description: &quot;CSCO Jan-16 67.50 Call&quot;, qty:6, optionConfig:optionConfig: {optionRoot: CSCO, optionType: C, strike: 67.50, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:CSCO  160115C00075000, description: &quot;CSCO Jan-16 75.00 Call&quot;, qty:-1, optionConfig:optionConfig: {optionRoot: CSCO, optionType: C, strike: 75.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:CSCO  160115C00030000, description: &quot;CSCO Jan-16 30.00 Put&quot;, qty:3, optionConfig:optionConfig: {optionRoot: CSCO, optionType: P, strike: 30.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:CSCO  160115C00035000, description: &quot;CSCO Jan-16 35.00 Put&quot;, qty:-5, optionConfig:optionConfig: {optionRoot: CSCO, optionType: P, strike: 35.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115C00045000, description: &quot;&quot;, qty:6, optionConfig:optionConfig: {optionRoot: BP, optionType: C, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115C00050000, description: &quot;&quot;, qty:-16, optionConfig:optionConfig: {optionRoot: BP, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115C00055000, description: &quot;&quot;, qty:17, optionConfig:optionConfig: {optionRoot: BP, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115C00060000, description: &quot;&quot;, qty:-4, optionConfig:optionConfig: {optionRoot: BP, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115P00045000, description: &quot;&quot;, qty:6, optionConfig:optionConfig: {optionRoot: BP, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115P00050000, description: &quot;&quot;, qty:-16, optionConfig:optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115P00055000, description: &quot;&quot;, qty:17, optionConfig:optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:BP    160115P00060000, description: &quot;&quot;, qty:-4, optionConfig:optionConfig: {optionRoot: BP, optionType: P, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}], customProperties: {}}, account {accountId: Nike account 1, strategyGroupName: core, positions: [Posotion: {symbol:NKE1  160115C00055000, description: &quot;&quot;, qty:7, optionConfig:optionConfig: {optionRoot: NKE1, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:NKE1  160115C00060000, description: &quot;&quot;, qty:-3, optionConfig:optionConfig: {optionRoot: NKE1, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}], customProperties: {}}], optionRoots:{MSFT=OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, deliverableType:S}]}, CSCO=OptionRoot: {optionRootSymbol:CSCO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:CSCO, qty:100, deliverableType:S}]}, NKE1=OptionRoot: {optionRootSymbol:NKE1, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:NKE, qty:100, deliverableType:S}, Deliverable: {symbol:LULU, qty:45, deliverableType:S}]}, BP=OptionRoot: {optionRootSymbol:BP, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:BP, qty:100, deliverableType:S}]}}}
 
-</pre>
-</span>
-</div>
-<div id="tab3" class="tab">
-<h2>Standard error</h2>
-<span class="code">
-<pre>[Test worker] ERROR com.jkmcllc.aupair01.pairing.impl.PairingService - Misconfigured core configuration file; exiting! java.nio.file.FileSystemNotFoundException
-java.nio.file.FileSystemNotFoundException
-	at com.sun.nio.zipfs.ZipFileSystemProvider.getFileSystem(ZipFileSystemProvider.java:171)
-	at com.sun.nio.zipfs.ZipFileSystemProvider.getPath(ZipFileSystemProvider.java:157)
-	at java.nio.file.Paths.get(Paths.java:143)
-	at com.jkmcllc.aupair01.pairing.impl.StrategyConfigs.loadConfigs(StrategyConfigs.java:74)
-	at com.jkmcllc.aupair01.pairing.impl.StrategyConfigs.getInstance(StrategyConfigs.java:52)
-	at com.jkmcllc.aupair01.pairing.impl.PairingService.getInstance(PairingService.java:33)
-	at PairingRequestTest.setUp(PairingRequestTest.java:26)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
-	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
-	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
-	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:377)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
-	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
+Strateiges for account 'account1234'
+Option root 'MSFT'
+Strategy: {strategyName: CallVerticalLong, quantity: 6, margin: 0, legs: [optionLeg: {symbol: &quot;MSFT  160115C00047500&quot;, description: &quot;&quot;, qty: 6, optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;MSFT  160115C00050000&quot;, description: &quot;&quot;, qty: -6, optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: PutVerticalLong, quantity: 4, margin: 0, legs: [optionLeg: {symbol: &quot;MSFT  160115P00080000&quot;, description: &quot;&quot;, qty: -4, optionConfig: {optionRoot: MSFT, optionType: P, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;MSFT  160115P00082000&quot;, description: &quot;&quot;, qty: 4, optionConfig: {optionRoot: MSFT, optionType: P, strike: 82.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: CallVerticalShort, quantity: 2, margin: 1000.0000, legs: [optionLeg: {symbol: &quot;MSFT  160115C00050000&quot;, description: &quot;&quot;, qty: -2, optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;MSFT  160115C00055000&quot;, description: &quot;&quot;, qty: 2, optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Option root 'CSCO'
+Strategy: {strategyName: CallButterflyShort, quantity: 1, margin: 750.0000, legs: [optionLeg: {symbol: &quot;CSCO  160115C00060000&quot;, description: &quot;CSCO Jan-16 60 Call&quot;, qty: -1, optionConfig: {optionRoot: CSCO, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;CSCO  160115C00067500&quot;, description: &quot;CSCO Jan-16 67.50 Call&quot;, qty: 2, optionConfig: {optionRoot: CSCO, optionType: C, strike: 67.50, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;CSCO  160115C00075000&quot;, description: &quot;CSCO Jan-16 75.00 Call&quot;, qty: -1, optionConfig: {optionRoot: CSCO, optionType: C, strike: 75.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: CallVerticalShort, quantity: 1, margin: 750.0000, legs: [optionLeg: {symbol: &quot;CSCO  160115C00060000&quot;, description: &quot;CSCO Jan-16 60 Call&quot;, qty: -1, optionConfig: {optionRoot: CSCO, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;CSCO  160115C00067500&quot;, description: &quot;CSCO Jan-16 67.50 Call&quot;, qty: 1, optionConfig: {optionRoot: CSCO, optionType: C, strike: 67.50, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: PutVerticalShort, quantity: 3, margin: 1500.0000, legs: [optionLeg: {symbol: &quot;CSCO  160115C00030000&quot;, description: &quot;CSCO Jan-16 30.00 Put&quot;, qty: 3, optionConfig: {optionRoot: CSCO, optionType: P, strike: 30.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;CSCO  160115C00035000&quot;, description: &quot;CSCO Jan-16 35.00 Put&quot;, qty: -3, optionConfig: {optionRoot: CSCO, optionType: P, strike: 35.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Option root 'BP'
+Strategy: {strategyName: CallButterflyLong, quantity: 6, margin: 0, legs: [optionLeg: {symbol: &quot;BP    160115C00045000&quot;, description: &quot;&quot;, qty: 6, optionConfig: {optionRoot: BP, optionType: C, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00050000&quot;, description: &quot;&quot;, qty: -12, optionConfig: {optionRoot: BP, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00055000&quot;, description: &quot;&quot;, qty: 6, optionConfig: {optionRoot: BP, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: CallButterflyShort, quantity: 4, margin: 2000.0000, legs: [optionLeg: {symbol: &quot;BP    160115C00050000&quot;, description: &quot;&quot;, qty: -4, optionConfig: {optionRoot: BP, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00055000&quot;, description: &quot;&quot;, qty: 8, optionConfig: {optionRoot: BP, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00060000&quot;, description: &quot;&quot;, qty: -4, optionConfig: {optionRoot: BP, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: PutButterflyLong, quantity: 6, margin: 0, legs: [optionLeg: {symbol: &quot;BP    160115P00045000&quot;, description: &quot;&quot;, qty: 6, optionConfig: {optionRoot: BP, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00050000&quot;, description: &quot;&quot;, qty: -12, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00055000&quot;, description: &quot;&quot;, qty: 6, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: PutButterflyShort, quantity: 4, margin: 2000.0000, legs: [optionLeg: {symbol: &quot;BP    160115P00050000&quot;, description: &quot;&quot;, qty: -4, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00055000&quot;, description: &quot;&quot;, qty: 8, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00060000&quot;, description: &quot;&quot;, qty: -4, optionConfig: {optionRoot: BP, optionType: P, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strateiges for account 'Nike account 1'
+Option root 'NKE1'
+Strategy: {strategyName: CallVerticalLong, quantity: 3, margin: 0, legs: [optionLeg: {symbol: &quot;NKE1  160115C00055000&quot;, description: &quot;&quot;, qty: 3, optionConfig: {optionRoot: NKE1, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;NKE1  160115C00060000&quot;, description: &quot;&quot;, qty: -3, optionConfig: {optionRoot: NKE1, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Input for PairingRequest: {accounts:[account {accountId: account1234, strategyGroupName: core, positions: [Posotion: {symbol:MSFT  160115C00047500, description: &quot;&quot;, qty:6, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}, Posotion: {symbol:MSFT  160115C00050000, description: &quot;&quot;, qty:-8, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-02-19 16:00&quot;}}, Posotion: {symbol:MSFT  160115C00055000, description: &quot;&quot;, qty:5, optionConfig:optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}], customProperties: {}}], optionRoots:{MSFT=OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, deliverableType:S}]}}}
+
+Strateiges for account 'account1234'
+Option root 'MSFT'
+Strategy: {strategyName: CallVerticalShort, quantity: 5, margin: 2500.0000, legs: [optionLeg: {symbol: &quot;MSFT  160115C00050000&quot;, description: &quot;&quot;, qty: -5, optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-02-19 16:00&quot;}}, optionLeg: {symbol: &quot;MSFT  160115C00055000&quot;, description: &quot;&quot;, qty: 5, optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}]}
 </pre>
 </span>
 </div>
@@ -281,7 +127,7 @@ java.nio.file.FileSystemNotFoundException
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 2.14</a> at Aug 31, 2016 9:40:55 PM</p>
+<a href="http://www.gradle.org">Gradle 2.14</a> at Sep 8, 2016 9:59:37 PM</p>
 </div>
 </div>
 </body>

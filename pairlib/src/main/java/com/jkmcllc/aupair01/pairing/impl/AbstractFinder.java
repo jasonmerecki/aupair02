@@ -2,6 +2,8 @@ package com.jkmcllc.aupair01.pairing.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.jexl3.JexlContext;
@@ -15,6 +17,20 @@ import com.jkmcllc.aupair01.store.Constants;
 abstract class AbstractFinder {
     
     private static final Logger logger = LoggerFactory.getLogger(AbstractFinder.class);
+    private static final Comparator<Leg> ASC_STRIKE = (Leg o1, Leg o2)-> {
+        AbstractLeg o1leg = (AbstractLeg) o1, o2leg = (AbstractLeg) o2;
+        if (AbstractLeg.STOCK.equals(o1) && AbstractLeg.STOCK.equals(o2)) {
+            // huh? 
+            return o1leg.getSymbol().compareTo(o2leg.getSymbol());
+        } else if (AbstractLeg.STOCK.equals(o1)) {
+            return 1;
+        } else if (AbstractLeg.STOCK.equals(o2)) {
+            return -1;
+        }
+        AbstractOptionLeg o1option = (AbstractOptionLeg) o1leg, o2option = (AbstractOptionLeg) o2leg;
+        return o1option.getOptionConfig().getStrikePrice().compareTo(o2option.getOptionConfig().getStrikePrice());
+    };
+    
     protected final PairingInfo pairingInfo;
     protected final List<Strategy> foundStrategies = new ArrayList<>();
     
@@ -68,12 +84,12 @@ abstract class AbstractFinder {
     protected abstract void testLegs(Leg[] legs);
     protected abstract Integer[] getLegsRatio();
     
-    protected void testLegs(Leg[] legs, String strategyName, List<JexlExpression> strategyPatterns, JexlExpression marginExpression) {
+    protected void testLegs(Leg[] legs, String strategyName, List<JexlExpression> strategyPatterns, List<JexlExpression> marginExpressions) {
         List<Leg> legList = Arrays.asList(legs);
         if (logger.isTraceEnabled()) {
             logger.trace("testLegs, legs=" + Arrays.asList(legs));
         }
-        JexlContext context = TacoCat.buildStandardContext(legList, this.pairingInfo.accountInfo);
+        JexlContext context = TacoCat.buildPairingContext(legList, this.pairingInfo.accountInfo);
         Boolean valid = false;
         for (JexlExpression strategyPattern : strategyPatterns) {
             valid = (Boolean) strategyPattern.evaluate(context);
@@ -92,7 +108,8 @@ abstract class AbstractFinder {
                     Leg newLeg1 = sourceLeg1.reduceBy(testQty);
                     strategyLegs.add(newLeg1);
                 }
-                Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, marginExpression);
+                Collections.sort(strategyLegs, ASC_STRIKE);
+                Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, marginExpressions);
                 foundStrategies.add(strategy);
             }
         }

@@ -27,7 +27,7 @@ class ZPutVerticalShortFinder extends ZAbstractVerticalFinder {
         return recursiveLists;
     }
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, Strategy.PUT_VERTICAL_SHORT, Collections.singletonList(strategyPattern), DefaultMargins.shortVerticalMargin); 
+        testLegs(legs, Strategy.PUT_VERTICAL_SHORT, Collections.singletonList(strategyPattern), Collections.singletonList( DefaultMargins.shortVerticalMargin) ); 
     }
     @Override
     protected Integer[] getLegsRatio() {

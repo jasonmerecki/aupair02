@@ -8,6 +8,8 @@ import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.MapContext;
 
+import com.jkmcllc.aupair01.pairing.strategy.Strategy;
+
 class TacoCat {
     private final JexlEngine jexlEngine = (new JexlBuilder()).cache(512).strict(true).silent(false).create();
     private static TacoCat cat;
@@ -25,11 +27,20 @@ class TacoCat {
     static JexlEngine getJexlEngine() {
         return getTacoCat().jexlEngine;
     }
-    static JexlContext buildStandardContext(List<Leg> legs, AccountInfo accountInfo) {
+    static JexlContext buildPairingContext(List<Leg> legs, AccountInfo accountInfo) {
         JexlContext context = new MapContext();
         context.set("legs", legs);
         context.set("accountInfo", accountInfo);
         context.set("zero",BigDecimal.ZERO);
+        return context;
+    }
+    static JexlContext buildMarginContext(List<Leg> legs, AccountInfo accountInfo, Strategy strategy) {
+        JexlContext context = new MapContext();
+        context.set("legs", legs);
+        context.set("accountInfo", accountInfo);
+        context.set("zero",BigDecimal.ZERO);
+        context.set("strategy",strategy);
+        context.set("strategyQuantity",new BigDecimal(strategy.getQuantity()));
         return context;
     }
 }

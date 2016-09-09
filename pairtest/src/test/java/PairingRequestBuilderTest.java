@@ -70,6 +70,29 @@ public class PairingRequestBuilderTest {
         // builder.setPositionSymbol("CSCO Jan-16 45.00 Put").setPositionOptionRoot("CSCO").setPositionQty(2)
         //     .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
 
+        // Build BP root
+        builder.setDeliverableSymbol("BP").setDeliverableQty("100").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("BP").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        builder.setPositionSymbol("BP    160115C00045000").setPositionOptionRoot("BP").setPositionQty(6)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("BP    160115C00050000").setPositionOptionRoot("BP").setPositionQty(-16)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("BP    160115C00055000").setPositionOptionRoot("BP").setPositionQty(17)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("BP    160115C00060000").setPositionOptionRoot("BP").setPositionQty(-4)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+    
+        builder.setPositionSymbol("BP    160115P00045000").setPositionOptionRoot("BP").setPositionQty(6)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("BP    160115P00050000").setPositionOptionRoot("BP").setPositionQty(-16)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("BP    160115P00055000").setPositionOptionRoot("BP").setPositionQty(17)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+        builder.setPositionSymbol("BP    160115P00060000").setPositionOptionRoot("BP").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").addPosition();
+
         builder.addAccount("account1234");
         
         // Build NKE root (non-standard deliverables, maybe an acquisition)

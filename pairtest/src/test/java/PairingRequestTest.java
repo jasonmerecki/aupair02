@@ -1,6 +1,7 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,17 @@ public class PairingRequestTest {
         System.out.println("");
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 2);
+        // test outcomes
+        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account1234result = responseByAccount.get("account1234");
+        boolean found = findStrategy(account1234result, "MSFT", "CallVerticalShort", 2, new BigDecimal("1000"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "MSFT", "PutVerticalLong", 4, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "BP", "CallButterflyShort", 4, new BigDecimal("2000"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "BP", "CallButterflyLong", 6, new BigDecimal("0"));
+        assertTrue(found);
     }
     
     @Test
@@ -59,6 +71,20 @@ public class PairingRequestTest {
                 }
             }
         }
+    }
+    
+    private boolean findStrategy(Map<String, List<Strategy>> strategyMap, String optionRoot, String strategyName, 
+            Integer quantity, BigDecimal margin) {
+        boolean found = false;
+        List<Strategy> strategyResultList = strategyMap.get(optionRoot);
+        for (Strategy strategy : strategyResultList) {
+            if (strategyName.equals(strategy.getStrategyName())) {
+                BigDecimal strategyMargin = strategy.getMargin();
+                Integer strategyQuantity = strategy.getQuantity();
+                found = (strategyMargin.compareTo(margin) == 0 && strategyQuantity.compareTo(quantity) == 0);
+            }
+        }
+        return found;
     }
     
 }

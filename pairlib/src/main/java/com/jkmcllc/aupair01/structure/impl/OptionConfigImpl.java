@@ -61,7 +61,7 @@ public class OptionConfigImpl implements OptionConfig {
     public String getOptionRootSymbol() {
         return optionRootSymbol;
     }
-
+    @Override
     public BigDecimal getStrikePrice() {
         return strikePrice;
     }

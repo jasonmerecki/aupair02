@@ -21,6 +21,10 @@ abstract class AbstractOptionLeg extends AbstractLeg {
         return optionRoot;
     }
     
+    String getType() {
+        return AbstractLeg.STOCKOPTION;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

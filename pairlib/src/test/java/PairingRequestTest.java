@@ -41,6 +41,10 @@ public class PairingRequestTest {
         assertTrue(found);
         found = findStrategy(account1234result, "MSFT", "PutVerticalLong", 4, new BigDecimal("0"));
         assertTrue(found);
+        found = findStrategy(account1234result, "BP", "CallButterflyShort", 4, new BigDecimal("2000"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "BP", "CallButterflyLong", 6, new BigDecimal("0"));
+        assertTrue(found);
     }
     
     @Test

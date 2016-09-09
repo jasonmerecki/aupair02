@@ -26,7 +26,7 @@ class ZCallVerticalLongFinder extends ZAbstractVerticalFinder {
         return recursiveLists;
     }
     protected void testLegs(Leg[] legs) {
-        testLegs(legs, Strategy.CALL_VERTICAL_LONG, Collections.singletonList(strategyPattern), DefaultMargins.longVerticalMargin); 
+        testLegs(legs, Strategy.CALL_VERTICAL_LONG, Collections.singletonList(strategyPattern), Collections.singletonList( DefaultMargins.longVerticalMargin) ); 
     }
     @Override
     protected Integer[] getLegsRatio() {

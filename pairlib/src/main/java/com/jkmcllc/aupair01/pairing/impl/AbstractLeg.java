@@ -3,11 +3,15 @@ package com.jkmcllc.aupair01.pairing.impl;
 import java.math.BigDecimal;
 
 abstract class AbstractLeg implements Leg {
+    static final String STOCK = "STOCK";
+    static final String STOCKOPTION = "STOCKOPTION";
+    
     protected final String symbol;
     protected final String description;
     protected final Integer qty;
     protected Integer remainQty;
     protected final BigDecimal bigDecimalQty;
+    
     protected AbstractLeg(String symbol, String description, Integer qty) {
         this.symbol = symbol;
         this.description = description;
@@ -32,14 +36,23 @@ abstract class AbstractLeg implements Leg {
         }
         return newLegWith(used * startSign);
     }
+    
     protected void resetQty() {
         remainQty = qty;
     }
+    
     protected Integer getRemainQty() {
         return remainQty;
     }
+    
     protected abstract Leg newLegWith(Integer used);
+    abstract String getType();
+    
     public BigDecimal getQty() {
         return bigDecimalQty;
     }
+    String getSymbol() {
+        return symbol;
+    }
+    
 }
