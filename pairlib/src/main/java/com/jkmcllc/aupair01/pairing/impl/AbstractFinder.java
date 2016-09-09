@@ -40,6 +40,11 @@ abstract class AbstractFinder {
     
     List<? extends Strategy> find() {
         List<List<? extends Leg>> recursiveLists = getRecursiveLists(pairingInfo);
+        for (List<? extends Leg> recursiveList : recursiveLists) {
+            if (recursiveList.size() == 0) {
+                return getFoundStrategies();
+            }
+        }
         Leg[] legs = new Leg[recursiveLists.size()];
         recurseList(recursiveLists, 0, legs);
         return getFoundStrategies();
