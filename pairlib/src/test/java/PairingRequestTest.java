@@ -45,6 +45,16 @@ public class PairingRequestTest {
         assertTrue(found);
         found = findStrategy(account1234result, "BP", "CallButterflyLong", 6, new BigDecimal("0"));
         assertTrue(found);
+        found = findStrategy(account1234result, "BP", "PutButterflyLong", 6, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "BP", "PutButterflyShort", 4, new BigDecimal("2000"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "GPRO", "IronButterflyShort", 4, new BigDecimal("2000"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "GPRO", "IronButterflyLong", 1, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "GPRO", "CallVerticalShort", 1, new BigDecimal("500"));
+        assertTrue(found);
     }
     
     @Test
@@ -82,6 +92,7 @@ public class PairingRequestTest {
                 BigDecimal strategyMargin = strategy.getMargin();
                 Integer strategyQuantity = strategy.getQuantity();
                 found = (strategyMargin.compareTo(margin) == 0 && strategyQuantity.compareTo(quantity) == 0);
+                if (found) break;
             }
         }
         return found;
