@@ -21,14 +21,14 @@ import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 public final class StructureImplFactory {
-    public static Position buildPosition(String symbol, String description, Integer qty, OptionConfig optionConfig) {
-        return new PositionImpl(symbol, description, qty, optionConfig);
+    public static Position buildPosition(String symbol, String description, Integer qty, BigDecimal price, OptionConfig optionConfig) {
+        return new PositionImpl(symbol, description, qty, price, optionConfig);
     }
     public static Deliverables buildDeliverables(List<Deliverable> deliverableList) {
         return new DeliverablesImpl(deliverableList);
     }
-    public static Deliverable buildDeliverable(String symbol, BigDecimal qty, DeliverableType type) {
-        return new DeliverableImpl(symbol, qty, type);
+    public static Deliverable buildDeliverable(String symbol, BigDecimal qty, BigDecimal price, DeliverableType type) {
+        return new DeliverableImpl(symbol, qty, price, type);
     }
     public static OptionConfig buildOptionConfig(String optionRoot, OptionType optionType, 
             String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTimeLocal, Date expiryDate) {

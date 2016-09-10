@@ -11,15 +11,17 @@ abstract class AbstractLeg implements Leg {
     protected final Integer qty;
     protected Integer remainQty;
     protected final BigDecimal bigDecimalQty;
+    protected final BigDecimal price;
     
-    protected AbstractLeg(String symbol, String description, Integer qty) {
+    protected AbstractLeg(String symbol, String description, Integer qty, BigDecimal price) {
         this.symbol = symbol;
         this.description = description;
         this.remainQty = this.qty = qty;
+        this.price = price;
         this.bigDecimalQty = new BigDecimal(qty);
     }
     protected String basicLegInfo() {
-        return "symbol: \"" + symbol + "\", description: \"" + description + "\", qty: " + qty;
+        return "symbol: \"" + symbol + "\", description: \"" + description + "\", qty: " + qty + ", price: " + price;
     }
     protected Leg reduceBy(Integer used) {
         int startSign = Integer.signum(remainQty);

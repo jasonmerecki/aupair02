@@ -1,5 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
+
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 
@@ -7,8 +9,9 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     protected final OptionConfig optionConfig;
     protected final OptionRoot optionRoot;
     
-    protected AbstractOptionLeg(String symbol, String description, Integer qty, OptionConfig optionConfig, OptionRoot optionRoot) {
-        super(symbol, description, qty);
+    protected AbstractOptionLeg(String symbol, String description, Integer qty, BigDecimal price, 
+            OptionConfig optionConfig, OptionRoot optionRoot) {
+        super(symbol, description, qty, price);
         this.optionConfig = optionConfig;
         this.optionRoot = optionRoot;
     }

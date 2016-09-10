@@ -13,6 +13,7 @@ public interface Deliverables {
     public class DeliverablesBuilder {
         private String symbol;
         private BigDecimal qty;
+        private BigDecimal price;
         private DeliverableType deliverableType;
         private List<Deliverable> deliverableList = new ArrayList<>();
         private DeliverablesBuilder() {}
@@ -28,12 +29,20 @@ public interface Deliverables {
             }
             return this;
         }
+        public DeliverablesBuilder setDeliverablePrice(String price) {
+            try {
+                this.price = new BigDecimal(price);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid deliverable price: " + price);
+            }
+            return this;
+        }
         public DeliverablesBuilder setDeliverableType(DeliverableType deliverableType) {
             this.deliverableType = deliverableType;
             return this;
         }
         public DeliverablesBuilder add() {
-            if (symbol == null || qty == null || deliverableType == null) {
+            if (symbol == null || qty == null || price == null || deliverableType == null) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Deliverable, missing data: ");
                 if (symbol == null) {
@@ -42,15 +51,18 @@ public interface Deliverables {
                 if (qty == null) {
                     missing.add("qty");
                 }
+                if (price == null) {
+                    missing.add("price");
+                }
                 if (deliverableType == null) {
                     missing.add("deliverableType");
                 }
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            Deliverable deliverable = StructureImplFactory.buildDeliverable(symbol, qty, deliverableType);
+            Deliverable deliverable = StructureImplFactory.buildDeliverable(symbol, qty, price, deliverableType);
             deliverableList.add(deliverable);
-            symbol = null; qty = null; deliverableType = null;
+            symbol = null; qty = null; deliverableType = null; price = null;
             return this;
         }
         public Deliverables build() {

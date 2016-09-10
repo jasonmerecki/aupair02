@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,6 +67,7 @@ class PairingInfo {
             Integer qty = position.getQty();
             String symbol = position.getSymbol();
             String description = position.getDescription();
+            BigDecimal price = position.getPrice();
             int sign = Integer.signum(position.getQty());
             if (sign == 0) {
                 // TODO: throw exception here, can't have zero position qaty for pairing
@@ -81,21 +83,21 @@ class PairingInfo {
                 }
                 if (OptionType.C.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        LongCall leg = new LongCall(symbol, description, qty, optionConfig, optionRoot);
+                        LongCall leg = new LongCall(symbol, description, qty, price, optionConfig, optionRoot);
                         pairingInfo.longCalls.add(leg);
                         optionLeg = leg;
                     } else {
-                        ShortCall leg = new ShortCall(symbol, description, qty, optionConfig, optionRoot);
+                        ShortCall leg = new ShortCall(symbol, description, qty, price, optionConfig, optionRoot);
                         pairingInfo.shortCalls.add(leg);
                         optionLeg = leg;
                     }
                 } else if (OptionType.P.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        LongPut leg = new LongPut(symbol, description, qty, optionConfig, optionRoot);
+                        LongPut leg = new LongPut(symbol, description, qty, price, optionConfig, optionRoot);
                         pairingInfo.longPuts.add(leg);
                         optionLeg = leg;
                     } else {
-                        ShortPut leg = new ShortPut(symbol, description, qty, optionConfig, optionRoot);
+                        ShortPut leg = new ShortPut(symbol, description, qty, price, optionConfig, optionRoot);
                         pairingInfo.shortPuts.add(leg);
                         optionLeg = leg;
                     }
@@ -116,9 +118,9 @@ class PairingInfo {
                     pairingInfoMap.put(position.getSymbol(), pairingInfo);
                 }
                 if (sign == 1) {
-                    pairingInfo.longStocks.add(new LongStock(position.getSymbol(), description, position.getQty()));
+                    pairingInfo.longStocks.add(new LongStock(position.getSymbol(), description, position.getQty(), price));
                 } else {
-                    pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty()));
+                    pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty(), price));
                 }
             }
         }

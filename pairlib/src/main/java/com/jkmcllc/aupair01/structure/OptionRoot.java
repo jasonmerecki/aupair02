@@ -52,6 +52,10 @@ public interface OptionRoot {
             deliverablesBuilder.setDeliverableQty(qty);
             return this;
         }
+        public OptionRootBuilder setDeliverablePrice(String price) {
+            deliverablesBuilder.setDeliverablePrice(price);
+            return this;
+        }
         public OptionRootBuilder setDeliverableType(DeliverableType deliverableType) {
             deliverablesBuilder.setDeliverableType(deliverableType);
             return this;

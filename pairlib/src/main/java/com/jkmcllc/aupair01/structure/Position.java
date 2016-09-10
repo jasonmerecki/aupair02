@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.structure;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public interface Position {
     String getSymbol();
     String getDescription();
     Integer getQty();
+    BigDecimal getPrice();
     OptionConfig getOptionConfig();
     
     class PositionBuilder {
@@ -19,6 +21,7 @@ public interface Position {
         private String symbol;
         private String description;
         private Integer qty;
+        private BigDecimal price;
         private OptionConfig optionConfig;
         private OptionConfigBuilder optionConfigBuilder;
         public PositionBuilder setSymbol(String symbol) {
@@ -34,6 +37,14 @@ public interface Position {
                 throw new BuilderException("Invalid qty: " + qty);
             }
             this.qty = qty;
+            return this;
+        }
+        public PositionBuilder setPositionPrice(String price) {
+            try {
+                this.price = new BigDecimal(price);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid position price: " + price);
+            }
             return this;
         }
         public PositionBuilder setOptionRoot(String optionRoot) {
@@ -57,7 +68,7 @@ public interface Position {
             return this;
         }
         public Position build() {
-            if (symbol == null || qty == null /* || optionConfig == null */) {
+            if (symbol == null || qty == null || price == null /* || optionConfig == null */) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Position, missing data: ");
                 if (symbol == null) {
@@ -65,6 +76,9 @@ public interface Position {
                 }
                 if (qty == null) {
                     missing.add("qty");
+                }
+                if (price == null) {
+                    missing.add("price");
                 }
                 /*
                 if (optionConfig == null) {
@@ -77,11 +91,12 @@ public interface Position {
             if (optionConfigBuilder != null) {
                 optionConfig = optionConfigBuilder.build();
             }
-            Position position = StructureImplFactory.buildPosition(symbol, description, qty, optionConfig);
+            Position position = StructureImplFactory.buildPosition(symbol, description, qty, price, optionConfig);
             symbol = null;
             qty = null;
             optionConfig = null;
             description = null;
+            price = null;
             return position;
         }
     }

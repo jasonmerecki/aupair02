@@ -5,5 +5,6 @@ import java.math.BigDecimal;
 public interface Deliverable {
     String getSymbol();
     BigDecimal getQty();
+    BigDecimal getPrice();
     DeliverableType getDeliverableType();
 }

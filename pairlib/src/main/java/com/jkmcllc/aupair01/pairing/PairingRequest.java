@@ -47,6 +47,10 @@ public interface PairingRequest extends Request {
             positionBuilder.setQty(qty);
             return this;
         }
+        public PairingRequestBuilder setPositionPrice(String price) {
+            positionBuilder.setPositionPrice(price);
+            return this;
+        }
         public PairingRequestBuilder setPositionOptionRoot(String optionRoot) {
             positionBuilder.setOptionRoot(optionRoot);
             return this;
@@ -111,6 +115,10 @@ public interface PairingRequest extends Request {
         }
         public PairingRequestBuilder setDeliverableQty(String qty) {
             optionRootBuilder.setDeliverableQty(qty);
+            return this;
+        }
+        public PairingRequestBuilder setDeliverablePrice(String price) {
+            optionRootBuilder.setDeliverablePrice(price);
             return this;
         }
         public PairingRequestBuilder setDeliverableType(DeliverableType deliverableType) {
