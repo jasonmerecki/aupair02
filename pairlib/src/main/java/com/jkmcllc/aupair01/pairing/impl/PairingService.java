@@ -54,7 +54,6 @@ public class PairingService {
                 String optionRoot = entry.getKey();
                 for (List<StrategyMeta> strategyMetas : strategyMetasList) {
                     for (StrategyMeta strategyMeta : strategyMetas) {
-                        pairingInfo.sort1();
                         List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyMeta).find() ;
                         found.addAll(foundForMeta);
                     }

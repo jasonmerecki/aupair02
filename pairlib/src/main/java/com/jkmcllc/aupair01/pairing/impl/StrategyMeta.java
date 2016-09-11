@@ -9,12 +9,17 @@ class StrategyMeta implements Cloneable {
     final String strategyName;
     final String[] legs;
     final Integer[] legsRatio;
+    final String sort;
+    final List<StrategyMeta> childStrategies;
+    final JexlExpression childStrategiesLegs;
+    final List<String> childStrategiesString;
     final List<JexlExpression> strategyPatterns = new ArrayList<>();
     final List<String> strategyPatternStrings = new ArrayList<>();
     final List<JexlExpression> marginPatterns = new ArrayList<>();
     final List<String> marginPatternStrings = new ArrayList<>();
     
-    StrategyMeta(String strategyName, String legs, String legsRatioString) {
+    StrategyMeta(String strategyName, String legs, String legsRatioString, String childStrategiesString, String childStrategiesLegsString,
+            String sort) {
         this.strategyName = strategyName;
         String[] legsTemp = legs.split(",");
         for (int i = 0; i < legsTemp.length; i++) {
@@ -27,6 +32,20 @@ class StrategyMeta implements Cloneable {
             legsRatioIntegers[i] = Integer.parseInt(legsRatioTemp[i].trim());
         }
         this.legsRatio = legsRatioIntegers;
+        this.sort = sort;
+        if (childStrategiesString != null) {
+            this.childStrategiesString = new ArrayList<>();
+            String[] childStrategyTemp = childStrategiesString.split(",");
+            for (String c : childStrategyTemp) {
+                this.childStrategiesString.add(c.trim());
+            }
+            this.childStrategies = new ArrayList<>();
+            this.childStrategiesLegs = TacoCat.getJexlEngine().createExpression(childStrategiesLegsString);
+        } else {
+            this.childStrategiesString = null;
+            this.childStrategies = null;
+            this.childStrategiesLegs = null;
+        }
     }
     StrategyMeta addStrategyPattern(String pattern) {
         if (pattern != null) {
@@ -66,6 +85,8 @@ class StrategyMeta implements Cloneable {
         builder.append(strategyPatternStrings);
         builder.append(", marginPatternStrings: ");
         builder.append(marginPatternStrings);
+        builder.append(", childStrategies: ");
+        builder.append(childStrategies);
         builder.append("}");
         return builder.toString();
     }

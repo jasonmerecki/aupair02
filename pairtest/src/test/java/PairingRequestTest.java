@@ -28,7 +28,7 @@ public class PairingRequestTest {
     }
     
     @Test
-    public void build1AndPair1() {
+    public void buildAndPair1() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1();
         System.out.println("Input for " + pairingRequest + "");
         System.out.println("");
@@ -45,15 +45,37 @@ public class PairingRequestTest {
         assertTrue(found);
         found = findStrategy(account1234result, "BP", "CallButterflyLong", 6, new BigDecimal("0"));
         assertTrue(found);
+        found = findStrategy(account1234result, "BP", "PutButterflyLong", 6, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account1234result, "BP", "PutButterflyShort", 4, new BigDecimal("2000"));
+        assertTrue(found);
     }
     
     @Test
-    public void build1AndPair2() {
+    public void buildAndPair2() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest2();
         System.out.println("Input for " + pairingRequest + "");
         System.out.println("");
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
+    }
+    
+    @Test
+    public void buildAndPair3() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest3();
+        System.out.println("Input for " + pairingRequest + "");
+        System.out.println("");
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        // test outcomes
+        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("account3");
+        boolean found = findStrategy(account3result, "GPRO", "IronButterflyShort", 4, new BigDecimal("2000"));
+        assertTrue(found);
+        found = findStrategy(account3result, "GPRO", "IronButterflyLong", 1, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account3result, "GPRO", "CallVerticalShort", 1, new BigDecimal("500"));
+        assertTrue(found);
     }
     
     private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {
@@ -82,6 +104,7 @@ public class PairingRequestTest {
                 BigDecimal strategyMargin = strategy.getMargin();
                 Integer strategyQuantity = strategy.getQuantity();
                 found = (strategyMargin.compareTo(margin) == 0 && strategyQuantity.compareTo(quantity) == 0);
+                if (found) break;
             }
         }
         return found;

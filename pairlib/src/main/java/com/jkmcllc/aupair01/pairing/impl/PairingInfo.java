@@ -127,18 +127,36 @@ class PairingInfo {
         return pairingInfoMap;
     }
     
-    void sort1() {
+    void sortNarrowStrike() {
         Collections.sort(longCalls, ASC_STRIKE_ASC_DATE);
         Collections.sort(shortCalls, ASC_STRIKE_ASC_DATE);
         Collections.sort(longPuts, DESC_STRIKE_ASC_DATE);
         Collections.sort(shortPuts, DESC_STRIKE_ASC_DATE); 
     }
     
-    void sort2() {
+    void sortWideStrike() {
+        Collections.sort(longCalls, ASC_STRIKE_ASC_DATE);
+        Collections.sort(shortCalls, DESC_STRIKE_ASC_DATE);
+        Collections.sort(longPuts, DESC_STRIKE_ASC_DATE);
+        Collections.sort(shortPuts, ASC_STRIKE_ASC_DATE); 
+    }
+    
+    void sort3() {
         Collections.sort(longCalls, ASC_DATE_ASC_STRIKE);
         Collections.sort(shortCalls, ASC_DATE_ASC_STRIKE);
         Collections.sort(longPuts, ASC_DATE_DESC_STRIKE);
         Collections.sort(shortPuts, ASC_DATE_DESC_STRIKE); 
+    }
+    
+    void sortBy(String sortKey) {
+        switch (sortKey) {
+        case StrategyConfigs.WIDE_STRIKE:
+            sortWideStrike();
+            break;
+        case StrategyConfigs.NARROW_STRIKE:
+            sortNarrowStrike();
+            break;
+        }
     }
     
     List<? extends Leg> getLegsByType(String type) {

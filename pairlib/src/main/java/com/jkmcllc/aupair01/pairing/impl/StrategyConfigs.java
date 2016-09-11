@@ -5,9 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -19,23 +17,31 @@ public class StrategyConfigs {
 
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
     private static final String STRATEGY_GROUP = "strategyGroup";
+    private static final String CHILD_STRATEGIES = ".childStrategies";
+    private static final String CHILD_STRATEGIES_LEGS = ".childStrategiesLegs";
     private static final String STRATEGIES = "strategies";
     private static final String STRATETY_LEGS = ".legs";
+    private static final String SORT = ".sort";
     private static final String STRATETY_LEGS_RATIO = ".legsRatio";
     private static final String STRATETY_PATTERN = ".pattern";
     private static final String STRATETY_MARGIN = ".margin";
     
     private static StrategyConfigs strategyConfigsInstance;
     private final ConcurrentMap<String, List<List<StrategyMeta>>> strategyConfigsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, StrategyMeta> masterMap = new ConcurrentHashMap<>();
     
     public static final String CORE = "core";
     
+    public static final String SHORT_STOCKS = "shortStocks";
+    public static final String LONG_STOCKS = "longStocks";
     public static final String LONG_CALLS = "longCalls";
     public static final String SHORT_CALLS = "shortCalls";
     public static final String LONG_PUTS = "longPuts";
     public static final String SHORT_PUTS = "shortPuts";
-    public static final String SHORT_STOCKS = "shortStocks";
-    public static final String LONG_STOCKS = "longStocks";
+    
+    public static final String WIDE_STRIKE = "sortWideStrike";
+    public static final String NARROW_STRIKE = "sortNarrowStrike";
+
     
     private StrategyConfigs() {};
     
@@ -91,8 +97,8 @@ public class StrategyConfigs {
     }
     
     private List<List<StrategyMeta>> buildStrategyMeta(Ini.Section strategyGroup) {
-        Map<String, StrategyMeta> masterMap = new LinkedHashMap<>();
         List<String> strategyNameStrings = strategyGroup.getAll(STRATEGIES);
+        
         List<List<StrategyMeta>> strategiesList = new ArrayList<>(strategyNameStrings.size());
         for (String strategyNameString : strategyNameStrings) {
             List<String> strategyNames = Arrays.asList(strategyNameString.split(","));
@@ -107,7 +113,10 @@ public class StrategyConfigs {
                     String legs = strategyGroup.fetch(strategyName + STRATETY_LEGS);
                     String legsRatio = strategyGroup.fetch(strategyName + STRATETY_LEGS_RATIO);
                     // TODO: legs must match known names
-                    strategyMeta = new StrategyMeta(strategyName, legs, legsRatio);
+                    String childStrategiesString = strategyGroup.get(strategyName + CHILD_STRATEGIES);
+                    String childStrategiesLegsString = strategyGroup.get(strategyName + CHILD_STRATEGIES_LEGS);
+                    String sort = strategyGroup.get(strategyName + SORT);
+                    strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString, sort);
                     masterMap.put(strategyName, strategyMeta);
                     strategies.add(strategyMeta);
                 }
@@ -124,6 +133,17 @@ public class StrategyConfigs {
                     strategyMeta.addMarginPattern(marginVal);
                 }
                 // TODO: validation, make sure everything exists for the patterns, catch exceptions at each pattern to output unable to parse
+            }
+            // find all of the child strategies which may exist
+            for (StrategyMeta strategyMeta : strategies) {
+                if (strategyMeta.childStrategiesString != null) {
+                    for (String childStrategyName : strategyMeta.childStrategiesString) {
+                        StrategyMeta childStrategy = masterMap.get(childStrategyName);
+                        if (childStrategy != null) {
+                            strategyMeta.childStrategies.add(childStrategy);
+                        }
+                    }
+                }
             }
             strategiesList.add(strategies);
         }
