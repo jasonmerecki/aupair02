@@ -17,6 +17,8 @@ class StrategyMeta implements Cloneable {
     final List<String> strategyPatternStrings = new ArrayList<>();
     final List<JexlExpression> marginPatterns = new ArrayList<>();
     final List<String> marginPatternStrings = new ArrayList<>();
+    final List<JexlExpression> marginDebugPatterns = new ArrayList<>();
+    final List<String> marginDebugPatternStrings = new ArrayList<>();
     
     private final JexlExpression TRUE = TacoCat.getJexlEngine().createExpression("true");
     private final JexlExpression ZERO = TacoCat.getJexlEngine().createExpression("zero");
@@ -75,6 +77,14 @@ class StrategyMeta implements Cloneable {
             JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
             marginPatterns.add(p);
             marginPatternStrings.add(pattern);
+        }
+        return this;
+    }
+    StrategyMeta addMarginDebugPattern(String pattern) {
+        if (pattern != null) {
+            JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+            marginDebugPatterns.add(p);
+            marginDebugPatternStrings.add(pattern);
         }
         return this;
     }

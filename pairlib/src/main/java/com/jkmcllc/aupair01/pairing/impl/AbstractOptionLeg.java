@@ -34,7 +34,7 @@ abstract class AbstractOptionLeg extends AbstractLeg {
             BigDecimal strikeValue = this.getStrikeValue();
             if (this.getOptionConfig().getOptionType() == OptionType.C) {
                 value = deliverablesValue.subtract(strikeValue, MathContext.DECIMAL32);
-            } else if (this.getOptionConfig().getOptionType() == OptionType.C) {
+            } else if (this.getOptionConfig().getOptionType() == OptionType.P) {
                 value = strikeValue.subtract(deliverablesValue, MathContext.DECIMAL32);
             }
             this.grossItmAmount = value;

@@ -145,7 +145,8 @@ class StrategyFinder {
                         strategyLegs.add(newLeg1);
                     }
                     Collections.sort(strategyLegs, ASC_STRIKE);
-                    Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, marginExpressions);
+                    Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, 
+                            marginExpressions, strategyMeta.marginDebugPatterns);
                     foundStrategies.add(strategy);
                 }
             } else {

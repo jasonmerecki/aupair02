@@ -26,6 +26,7 @@ public class StrategyConfigs {
     private static final String STRATETY_LEGS_RATIO = ".legsRatio";
     private static final String STRATETY_PATTERN = ".pattern";
     private static final String STRATETY_MARGIN = ".margin";
+    private static final String STRATETY_MARGIN_DEBUG = ".marginDebug";
     
     private static StrategyConfigs strategyConfigsInstance;
     private final ConcurrentMap<String, List<List<StrategyMeta>>> strategyConfigsMap = new ConcurrentHashMap<>();
@@ -141,9 +142,19 @@ public class StrategyConfigs {
                 }
                 String tempMarginKey = strategyName + STRATETY_MARGIN;
                 nonEvalValues = strategyGroup.getAll(tempMarginKey);
-                for (int i = 0; i < nonEvalValues.size(); i++) {
-                    String marginVal = strategyGroup.fetch(tempMarginKey, i);
-                    strategyMeta.addMarginPattern(marginVal);
+                if (nonEvalValues != null) {
+                    for (int i = 0; i < nonEvalValues.size(); i++) {
+                        String marginVal = strategyGroup.fetch(tempMarginKey, i);
+                        strategyMeta.addMarginPattern(marginVal);
+                    }
+                }
+                String tempMarginDebugKey = strategyName + STRATETY_MARGIN_DEBUG;
+                nonEvalValues = strategyGroup.getAll(tempMarginDebugKey);
+                if (nonEvalValues != null) {
+                    for (int i = 0; i < nonEvalValues.size(); i++) {
+                        String marginVal = strategyGroup.fetch(tempMarginDebugKey, i);
+                        strategyMeta.addMarginDebugPattern(marginVal);
+                    }
                 }
                 // TODO: validation, make sure everything exists for the patterns, catch exceptions at each pattern to output unable to parse
             }
