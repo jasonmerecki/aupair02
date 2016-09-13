@@ -48,6 +48,7 @@ class StrategyFinder {
     List<? extends Strategy> find() {
         if (strategyMeta.sort != null) {
             pairingInfo.sortBy(strategyMeta.sort);
+            return Collections.emptyList();
         }
         List<List<? extends Leg>> recursiveLists = getRecursiveLists(pairingInfo);
         for (List<? extends Leg> recursiveList : recursiveLists) {

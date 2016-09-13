@@ -18,8 +18,23 @@ class StrategyMeta implements Cloneable {
     final List<JexlExpression> marginPatterns = new ArrayList<>();
     final List<String> marginPatternStrings = new ArrayList<>();
     
-    StrategyMeta(String strategyName, String legs, String legsRatioString, String childStrategiesString, String childStrategiesLegsString,
-            String sort) {
+    private final JexlExpression TRUE = TacoCat.getJexlEngine().createExpression("true");
+    private final JexlExpression ZERO = TacoCat.getJexlEngine().createExpression("zero");
+    
+    StrategyMeta (String sortString) {
+        // TODO: throw exception if this is not a valid sort
+        this.strategyName = sortString.trim();
+        this.legs = null;
+        this.legsRatio = null;
+        this.sort = sortString;
+        this.childStrategies = null;
+        this.childStrategiesLegs = null;
+        this.childStrategiesString = null;
+        this.strategyPatterns.add(TRUE);
+        this.marginPatterns.add(ZERO);
+    }
+    
+    StrategyMeta(String strategyName, String legs, String legsRatioString, String childStrategiesString, String childStrategiesLegsString) {
         this.strategyName = strategyName;
         String[] legsTemp = legs.split(",");
         for (int i = 0; i < legsTemp.length; i++) {
@@ -32,7 +47,7 @@ class StrategyMeta implements Cloneable {
             legsRatioIntegers[i] = Integer.parseInt(legsRatioTemp[i].trim());
         }
         this.legsRatio = legsRatioIntegers;
-        this.sort = sort;
+        this.sort = null;
         if (childStrategiesString != null) {
             this.childStrategiesString = new ArrayList<>();
             String[] childStrategyTemp = childStrategiesString.split(",");

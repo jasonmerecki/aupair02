@@ -9,9 +9,11 @@ abstract class AbstractLeg implements Leg {
     protected final String symbol;
     protected final String description;
     protected final Integer qty;
-    protected Integer remainQty;
     protected final BigDecimal bigDecimalQty;
     protected final BigDecimal price;
+    
+    protected Integer remainQty;
+    protected BigDecimal legValue;
     
     protected AbstractLeg(String symbol, String description, Integer qty, BigDecimal price) {
         this.symbol = symbol;
@@ -19,6 +21,7 @@ abstract class AbstractLeg implements Leg {
         this.remainQty = this.qty = qty;
         this.price = price;
         this.bigDecimalQty = new BigDecimal(qty);
+        this.legValue = null;
     }
     protected String basicLegInfo() {
         return "symbol: \"" + symbol + "\", description: \"" + description + "\", qty: " + qty + ", price: " + price;
@@ -49,6 +52,7 @@ abstract class AbstractLeg implements Leg {
     
     protected abstract Leg newLegWith(Integer used);
     abstract String getType();
+    public abstract BigDecimal getLegValue();
     
     public BigDecimal getQty() {
         return bigDecimalQty;

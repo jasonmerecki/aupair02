@@ -28,19 +28,22 @@ class TacoCat {
         return getTacoCat().jexlEngine;
     }
     static JexlContext buildPairingContext(List<Leg> legs, AccountInfo accountInfo) {
-        JexlContext context = new MapContext();
-        context.set("legs", legs);
-        context.set("accountInfo", accountInfo);
-        context.set("zero",BigDecimal.ZERO);
+        JexlContext context = buildCommonContext(legs, accountInfo);
         return context;
     }
     static JexlContext buildMarginContext(List<Leg> legs, AccountInfo accountInfo, Strategy strategy) {
+        JexlContext context = buildCommonContext(legs, accountInfo);
+        context.set("strategy",strategy);
+        context.set("strategyQuantity",new BigDecimal(strategy.getQuantity()));
+        return context;
+    }
+    private static JexlContext buildCommonContext(List<Leg> legs, AccountInfo accountInfo) {
         JexlContext context = new MapContext();
         context.set("legs", legs);
         context.set("accountInfo", accountInfo);
         context.set("zero",BigDecimal.ZERO);
-        context.set("strategy",strategy);
-        context.set("strategyQuantity",new BigDecimal(strategy.getQuantity()));
+        context.set("margin",BigDecimal.ZERO);
         return context;
+        
     }
 }

@@ -9,6 +9,7 @@ import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public interface Deliverables {
     List<Deliverable> getDeliverableList();
+    BigDecimal getDeliverablesValue();
     
     public class DeliverablesBuilder {
         private String symbol;

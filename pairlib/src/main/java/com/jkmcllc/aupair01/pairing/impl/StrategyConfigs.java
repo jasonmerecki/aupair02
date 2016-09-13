@@ -5,7 +5,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -21,7 +23,6 @@ public class StrategyConfigs {
     private static final String CHILD_STRATEGIES_LEGS = ".childStrategiesLegs";
     private static final String STRATEGIES = "strategies";
     private static final String STRATETY_LEGS = ".legs";
-    private static final String SORT = ".sort";
     private static final String STRATETY_LEGS_RATIO = ".legsRatio";
     private static final String STRATETY_PATTERN = ".pattern";
     private static final String STRATETY_MARGIN = ".margin";
@@ -41,7 +42,14 @@ public class StrategyConfigs {
     
     public static final String WIDE_STRIKE = "sortWideStrike";
     public static final String NARROW_STRIKE = "sortNarrowStrike";
-
+    
+    private static final Map<String, StrategyMeta> ALL_SORTS_MAP = new HashMap<>();
+    static {
+        StrategyMeta sortMeta = new StrategyMeta(WIDE_STRIKE);
+        ALL_SORTS_MAP.put(WIDE_STRIKE, sortMeta);
+        sortMeta = new StrategyMeta(NARROW_STRIKE);
+        ALL_SORTS_MAP.put(NARROW_STRIKE, sortMeta);
+    }
     
     private StrategyConfigs() {};
     
@@ -105,7 +113,13 @@ public class StrategyConfigs {
             List<StrategyMeta> strategies = new ArrayList<>(strategyNames.size());
             for (String strategyName : strategyNames) {
                 strategyName = strategyName.trim();
-                StrategyMeta strategyMeta = masterMap.get(strategyName);
+                StrategyMeta strategyMeta = ALL_SORTS_MAP.get(strategyName);
+                if (strategyMeta != null) {
+                    strategies.add(strategyMeta);
+                    continue;
+                }
+                // try looking up an actual strategy
+                strategyMeta = masterMap.get(strategyName);
                 if (strategyMeta != null) {
                     strategies.add(strategyMeta);
                     continue;
@@ -115,8 +129,7 @@ public class StrategyConfigs {
                     // TODO: legs must match known names
                     String childStrategiesString = strategyGroup.get(strategyName + CHILD_STRATEGIES);
                     String childStrategiesLegsString = strategyGroup.get(strategyName + CHILD_STRATEGIES_LEGS);
-                    String sort = strategyGroup.get(strategyName + SORT);
-                    strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString, sort);
+                    strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString);
                     masterMap.put(strategyName, strategyMeta);
                     strategies.add(strategyMeta);
                 }
