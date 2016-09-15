@@ -78,6 +78,15 @@ public class PairingRequestTest {
         assertTrue(found);
     }
     
+    @Test
+    public void buildAndPair4() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest4();
+        System.out.println("Input for " + pairingRequest + "");
+        System.out.println("");
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+    }
+    
     private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {
         assertNotNull(pairingResponse);
         Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();

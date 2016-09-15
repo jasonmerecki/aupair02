@@ -167,4 +167,36 @@ public class PairingRequestBuilderTest {
         return pairingRequest;
     }
     
+    public static PairingRequest buildRequest4() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+
+        builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // margin = max(((4600.00 * 0.2 + -600.0000) * 10) + 1030.0000, (40.00 * 100.00 * 0.01) + 1030.0000)
+        builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.03").addPosition();
+        // margin = max(((4600.00 * 0.2 + 0) * 10) + 4230.0000, (50.00 * 100.00 * 0.01) + 4230.0000)
+        builder.setPositionSymbol("GPRO  160115P00050000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("4.23").addPosition();
+        // margin = max(((4600.00 * 0.2 + 0) * 10) + 14560.0000, (60.00 * 100.00 * 0.01) + 14560.0000)
+        builder.setPositionSymbol("GPRO  160115P00060000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("14.56").addPosition();
+        // margin = max(((4600.00 * 0.2 + 0) * 10) + 6570.0000, (4600.00 * 10 * 0.1) + 6570.0000)
+        builder.setPositionSymbol("GPRO  160115C00040000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.57").addPosition();
+        // margin = max(((4600.00 * 0.2 + -400.0000) * 10) + 2410.0000, (4600.00 * 10 * 0.1) + 2410.0000)
+        builder.setPositionSymbol("GPRO  160115C00050000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("2.41").addPosition();
+        // margin = max(((4600.00 * 0.2 + -1400.000) * 10) + 750.0000, (4600.00 * 10 * 0.1) + 750.0000)
+        builder.setPositionSymbol("GPRO  160115P00060000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.75").addPosition();
+
+        builder.addAccount("account3");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+    }
+    
 }
