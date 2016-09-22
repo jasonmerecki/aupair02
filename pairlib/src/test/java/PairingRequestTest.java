@@ -85,6 +85,21 @@ public class PairingRequestTest {
         System.out.println("");
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
+        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("account3");
+        boolean found = findStrategy(account3result, "GPRO", "PutUnpairedShort", 10, new BigDecimal("13430.00"));
+        assertTrue(found);
+        found = findStrategy(account3result, "GPRO", "CallUnpairedShort", 10, new BigDecimal("7610.00"));
+        assertTrue(found);
+    }
+    
+    @Test
+    public void buildAndPair5() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest5();
+        System.out.println("Input for " + pairingRequest + "");
+        System.out.println("");
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
     }
     
     private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {

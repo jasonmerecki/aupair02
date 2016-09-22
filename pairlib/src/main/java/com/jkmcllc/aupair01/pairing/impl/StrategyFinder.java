@@ -20,12 +20,16 @@ class StrategyFinder {
     
     private static final Comparator<Leg> ASC_STRIKE = (Leg o1, Leg o2)-> {
         AbstractLeg o1leg = (AbstractLeg) o1, o2leg = (AbstractLeg) o2;
-        if (AbstractLeg.STOCK.equals(o1) && AbstractLeg.STOCK.equals(o2)) {
+        if (AbstractLeg.STOCK.equals(o1.getType()) && AbstractLeg.STOCK.equals(o2.getType())) {
             // huh? 
             return o1leg.getSymbol().compareTo(o2leg.getSymbol());
-        } else if (AbstractLeg.STOCK.equals(o1)) {
+        } else if (AbstractLeg.DELIVERABLE.equals(o1.getType()) && AbstractLeg.DELIVERABLE.equals(o2.getType())) {
+            return o1leg.getSymbol().compareTo(o2leg.getSymbol());
+        } else if (AbstractLeg.STOCK.equals(o1.getType())
+                || AbstractLeg.DELIVERABLE.equals(o1.getType())) {
             return 1;
-        } else if (AbstractLeg.STOCK.equals(o2)) {
+        } else if (AbstractLeg.STOCK.equals(o2.getType())
+                || AbstractLeg.DELIVERABLE.equals(o2.getType())) {
             return -1;
         }
         AbstractOptionLeg o1option = (AbstractOptionLeg) o1leg, o2option = (AbstractOptionLeg) o2leg;
@@ -85,7 +89,7 @@ class StrategyFinder {
         }
     }
     
-    protected Integer findAndReduceMaxQty(Leg[] legs) {
+    private Integer findMaxQty(Leg[] legs) {
         Integer maxQty = null;
         Integer[] legsRatio = getLegsRatio();
         for (int i = 0;  i < legs.length; i++) {
@@ -134,7 +138,7 @@ class StrategyFinder {
 
         if (valid) {
             if (strategyMeta.childStrategies == null) {
-                Integer strategyQty = findAndReduceMaxQty(legs);
+                Integer strategyQty = findMaxQty(legs);
                 if (strategyQty > 0) {
                     Integer[] legsRatio = getLegsRatio();
                     List<Leg> strategyLegs = new ArrayList<>(legList.size());

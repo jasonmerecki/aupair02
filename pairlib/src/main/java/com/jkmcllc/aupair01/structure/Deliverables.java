@@ -9,6 +9,7 @@ import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public interface Deliverables {
     List<Deliverable> getDeliverableList();
+    List<Deliverable> getStockDeliverableList();
     BigDecimal getDeliverablesValue();
     
     public class DeliverablesBuilder {
@@ -43,7 +44,9 @@ public interface Deliverables {
             return this;
         }
         public DeliverablesBuilder add() {
-            if (symbol == null || qty == null || price == null || deliverableType == null) {
+            if (deliverableType == null || 
+                    (DeliverableType.S.equals(deliverableType) && (symbol == null || qty == null || price == null) )
+                    ){
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Deliverable, missing data: ");
                 if (symbol == null) {
@@ -57,6 +60,14 @@ public interface Deliverables {
                 }
                 if (deliverableType == null) {
                     missing.add("deliverableType");
+                }
+                err.append(missing);
+                throw new BuilderException(err.toString());
+            } else if (DeliverableType.C.equals(deliverableType) && price == null) {
+                List<String> missing = new ArrayList<>();
+                StringBuilder err = new StringBuilder("Cannot build Deliverable, missing data: ");
+                if (price == null) {
+                    missing.add("price");
                 }
                 err.append(missing);
                 throw new BuilderException(err.toString());

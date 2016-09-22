@@ -1,13 +1,20 @@
 package com.jkmcllc.aupair01.store;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.jkmcllc.aupair01.structure.Deliverable;
+import com.jkmcllc.aupair01.structure.Deliverables;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 
 public class OptionRootStore {
-    private volatile ConcurrentMap<String, OptionRoot> optionRootMap = new ConcurrentHashMap<>();
+    // internal lookup maps
+    private ConcurrentMap<String, Set<OptionRoot>> optionRootByDeliverableMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, OptionRoot> optionRootMap = new ConcurrentHashMap<>();
     private static OptionRootStore optionRootStore;
     private static boolean usePermStore = false;
     private OptionRootStore() {};
@@ -28,24 +35,41 @@ public class OptionRootStore {
         OptionRootStore optionRootStore = new OptionRootStore();
         return optionRootStore;
     }
-    public OptionRoot findRoot(String optionRootSymbol) {
+    public OptionRoot findRootByRootSymbol(String optionRootSymbol) {
         if (usePermStore) {
             return getPermInstance().optionRootMap.get(optionRootSymbol);
         }
         return optionRootMap.get(optionRootSymbol);
     }
+    public Set<OptionRoot> findRootsByDeliverableSymbol(String deliverableSymbol) {
+        Set<OptionRoot> rootSet = optionRootByDeliverableMap.get(deliverableSymbol);
+        return rootSet != null ? rootSet : Collections.emptySet();
+    }
     public void addRoot(OptionRoot optionRoot) {
+        OptionRootStore store = null;
         if (usePermStore) {
-            getPermInstance().optionRootMap.put(optionRoot.getOptionRootSymbol(), optionRoot);
+            store = getPermInstance();
         } else {
-            optionRootMap.put(optionRoot.getOptionRootSymbol(), optionRoot);
+            store = this; 
         }
+        Deliverables deliverables = optionRoot.getDeliverables();
+        for (Deliverable deliverable : deliverables.getDeliverableList()) {
+            String deliverableSymbol = deliverable.getSymbol();
+            Set<OptionRoot> rootForDeliverable = optionRootByDeliverableMap.get(deliverable.getSymbol());
+            if (rootForDeliverable == null) {
+                rootForDeliverable = new HashSet<>();
+                Set<OptionRoot> newRootForDeliverable = optionRootByDeliverableMap.putIfAbsent(deliverableSymbol, rootForDeliverable);
+                if (newRootForDeliverable != null) {
+                    rootForDeliverable = newRootForDeliverable;
+                }
+            }
+            rootForDeliverable.add(optionRoot);
+        }
+        store.optionRootMap.put(optionRoot.getOptionRootSymbol(), optionRoot);
     }
     public void addRoots(Map<String, OptionRoot> optionRoots) {
-        if (usePermStore) {
-            getPermInstance().optionRootMap.putAll(optionRoots);
-        } else {
-            optionRootMap.putAll(optionRoots);
+        for (Map.Entry<String, OptionRoot> entry : optionRoots.entrySet()) {
+            addRoot(entry.getValue());
         }
     }
 }

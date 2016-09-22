@@ -34,8 +34,8 @@ public class StrategyConfigs {
     
     public static final String CORE = "core";
     
-    public static final String SHORT_STOCKS = "shortStocks";
-    public static final String LONG_STOCKS = "longStocks";
+    public static final String SHORT_DELIVERABLES = "shortDeliverables";
+    public static final String LONG_DELIVERABLES = "longDeliverables";
     public static final String LONG_CALLS = "longCalls";
     public static final String SHORT_CALLS = "shortCalls";
     public static final String LONG_PUTS = "longPuts";

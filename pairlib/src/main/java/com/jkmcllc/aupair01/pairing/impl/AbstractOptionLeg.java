@@ -51,7 +51,7 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     }
     
     @Override
-    String getType() {
+    public String getType() {
         return AbstractLeg.STOCKOPTION;
     }
     

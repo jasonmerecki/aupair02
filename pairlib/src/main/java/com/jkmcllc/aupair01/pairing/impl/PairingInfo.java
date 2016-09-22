@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
@@ -50,8 +51,10 @@ class PairingInfo {
     final List<ShortCall> shortCalls = new ArrayList<>();
     final List<LongPut> longPuts = new ArrayList<>();
     final List<ShortPut> shortPuts = new ArrayList<>();
-    final List<LongStock> longStocks = new ArrayList<>();
-    final List<ShortStock> shortStocks = new ArrayList<>();
+    private final List<LongStock> longStocks = new ArrayList<>();
+    private final List<ShortStock> shortStocks = new ArrayList<>();
+    private List<AbstractDeliverableLeg> longDeliverables = null;
+    private List<AbstractDeliverableLeg> shortDeliverables = null;
     final List<AbstractOptionLeg> allOptions = new ArrayList<>();
     final AccountInfo accountInfo;
     
@@ -75,7 +78,7 @@ class PairingInfo {
             if (optionConfig != null) {
                 String optionRootSymbol = optionConfig.getOptionRoot();
                 PairingInfo pairingInfo = pairingInfoMap.get(optionConfig.getOptionRoot());
-                OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
+                OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
                 AbstractOptionLeg optionLeg = null;
                 if (pairingInfo == null) {
                     pairingInfo = new PairingInfo(optionRoot, account);
@@ -109,22 +112,39 @@ class PairingInfo {
                 }
             } else {
                 // assume it's a stock
-                // for POC, assume stock is underlyer symbol too
-                String optionRootSymbol = position.getSymbol();
-                PairingInfo pairingInfo = pairingInfoMap.get(position.getSymbol());
-                if (pairingInfo == null) {
-                    OptionRoot optionRoot = optionRootStore.findRoot(optionRootSymbol);
-                    pairingInfo = new PairingInfo(optionRoot, account);
-                    pairingInfoMap.put(position.getSymbol(), pairingInfo);
+                String positionSymbol = position.getSymbol();
+                Set<OptionRoot> optionRoots = optionRootStore.findRootsByDeliverableSymbol(positionSymbol);
+                for (OptionRoot optionRoot : optionRoots) {
+                    String optionRootSymbol = optionRoot.getOptionRootSymbol();
+                    PairingInfo pairingInfo = pairingInfoMap.get(optionRootSymbol);
+                    if (pairingInfo == null) {
+                        pairingInfo = new PairingInfo(optionRoot, account);
+                        pairingInfoMap.put(optionRootSymbol, pairingInfo);
+                    }
+                    if (sign == 1) {
+                        pairingInfo.longStocks.add(new LongStock(position.getSymbol(), description, position.getQty(), price));
+                    } else {
+                        pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty(), price));
+                    }
                 }
-                if (sign == 1) {
-                    pairingInfo.longStocks.add(new LongStock(position.getSymbol(), description, position.getQty(), price));
-                } else {
-                    pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty(), price));
-                }
+
             }
         }
         return pairingInfoMap;
+    }
+    
+    List<? extends Leg> getLongDeliverables() {
+        if (longDeliverables == null) {
+            longDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(longStocks, optionRoot));
+        }
+        return longDeliverables;
+    }
+    
+    List<? extends Leg> getShortDeliverables() {
+        if (shortDeliverables == null) {
+            shortDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(shortStocks, optionRoot));
+        }
+        return shortDeliverables;
     }
     
     void sortNarrowStrike() {
@@ -169,10 +189,10 @@ class PairingInfo {
             return longPuts;
         case StrategyConfigs.SHORT_PUTS:
             return shortPuts;
-        case StrategyConfigs.LONG_STOCKS:
-            return longStocks;
-        case StrategyConfigs.SHORT_STOCKS:
-            return shortStocks;
+        case StrategyConfigs.LONG_DELIVERABLES:
+            return getLongDeliverables();
+        case StrategyConfigs.SHORT_DELIVERABLES:
+            return getShortDeliverables();
         }
         // TODO: throw a meaningful exception here
         return null;

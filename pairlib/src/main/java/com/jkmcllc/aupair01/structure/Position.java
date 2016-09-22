@@ -97,6 +97,7 @@ public interface Position {
             optionConfig = null;
             description = null;
             price = null;
+            optionConfigBuilder = null;
             return position;
         }
     }
