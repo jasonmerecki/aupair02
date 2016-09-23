@@ -189,6 +189,10 @@ class PairingInfo {
             return longPuts;
         case StrategyConfigs.SHORT_PUTS:
             return shortPuts;
+        case StrategyConfigs.LONG_STOCKS:
+            return longStocks;
+        case StrategyConfigs.SHORT_STOCKS:
+            return shortStocks;
         case StrategyConfigs.LONG_DELIVERABLES:
             return getLongDeliverables();
         case StrategyConfigs.SHORT_DELIVERABLES:

@@ -37,7 +37,7 @@ class AbstractStrategy implements Strategy {
                 }
             }
             sb.append("\"}");
-            if (sb.length() > 0) {
+            if (sb.length() > 4) {
                 marginDebug = sb.toString();
             }
         }

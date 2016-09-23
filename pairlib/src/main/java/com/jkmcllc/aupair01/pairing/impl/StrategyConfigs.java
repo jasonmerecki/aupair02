@@ -40,6 +40,8 @@ public class StrategyConfigs {
     public static final String SHORT_CALLS = "shortCalls";
     public static final String LONG_PUTS = "longPuts";
     public static final String SHORT_PUTS = "shortPuts";
+    public static final String LONG_STOCKS = "longStocks";
+    public static final String SHORT_STOCKS = "shortStocks";
     
     public static final String WIDE_STRIKE = "sortWideStrike";
     public static final String NARROW_STRIKE = "sortNarrowStrike";

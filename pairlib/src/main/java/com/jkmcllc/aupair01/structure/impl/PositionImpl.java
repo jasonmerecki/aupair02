@@ -24,17 +24,18 @@ class PositionImpl implements Position {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Posotion: {symbol:");
+        builder.append("Position: {symbol:");
         builder.append(symbol);
-        builder.append(", description: \"");
-        builder.append(description);
-        builder.append("\", qty:");
+        if (description != null && Constants.EMPTY_STRING.equals(description) == false) {
+            builder.append(", description: \"");
+            builder.append(description).append("\"");
+        }
+        builder.append(", qty: ");
         builder.append(qty);
-        builder.append(", price:");
+        builder.append(", price: ");
         builder.append(price);
         if (optionConfig != null) {
-            builder.append(", optionConfig:");
-            builder.append(optionConfig);
+            builder.append(", ").append(optionConfig);
         }
         builder.append("}");
         return builder.toString();

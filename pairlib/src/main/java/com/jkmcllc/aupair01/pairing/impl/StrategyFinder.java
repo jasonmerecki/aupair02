@@ -26,11 +26,19 @@ class StrategyFinder {
         } else if (AbstractLeg.DELIVERABLE.equals(o1.getType()) && AbstractLeg.DELIVERABLE.equals(o2.getType())) {
             return o1leg.getSymbol().compareTo(o2leg.getSymbol());
         } else if (AbstractLeg.STOCK.equals(o1.getType())
-                || AbstractLeg.DELIVERABLE.equals(o1.getType())) {
+                && AbstractLeg.DELIVERABLE.equals(o2.getType())) {
             return 1;
         } else if (AbstractLeg.STOCK.equals(o2.getType())
-                || AbstractLeg.DELIVERABLE.equals(o2.getType())) {
+                && AbstractLeg.DELIVERABLE.equals(o1.getType())) {
             return -1;
+        } else if (AbstractLeg.STOCK.equals(o2.getType())) {
+            return -1;
+        } else if (AbstractLeg.STOCK.equals(o1.getType())) {
+            return 1;
+        } else if (AbstractLeg.DELIVERABLE.equals(o2.getType())) {
+            return -1;
+        } else if (AbstractLeg.DELIVERABLE.equals(o1.getType())) {
+            return 1;
         }
         AbstractOptionLeg o1option = (AbstractOptionLeg) o1leg, o2option = (AbstractOptionLeg) o2leg;
         return o1option.getOptionConfig().getStrikePrice().compareTo(o2option.getOptionConfig().getStrikePrice());

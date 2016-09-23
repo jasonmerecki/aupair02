@@ -30,8 +30,7 @@ public class PairingRequestTest {
     @Test
     public void buildAndPair1() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1();
-        System.out.println("Input for " + pairingRequest + "");
-        System.out.println("");
+        commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 2);
         // test outcomes
@@ -54,8 +53,7 @@ public class PairingRequestTest {
     @Test
     public void buildAndPair2() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest2();
-        System.out.println("Input for " + pairingRequest + "");
-        System.out.println("");
+        commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
     }
@@ -63,8 +61,7 @@ public class PairingRequestTest {
     @Test
     public void buildAndPair3() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest3();
-        System.out.println("Input for " + pairingRequest + "");
-        System.out.println("");
+        commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
         // test outcomes
@@ -81,8 +78,7 @@ public class PairingRequestTest {
     @Test
     public void buildAndPair4() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest4();
-        System.out.println("Input for " + pairingRequest + "");
-        System.out.println("");
+        commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
         Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
@@ -96,27 +92,56 @@ public class PairingRequestTest {
     @Test
     public void buildAndPair5() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest5();
-        System.out.println("Input for " + pairingRequest + "");
-        System.out.println("");
+        commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 1);
+        commonTestAndPrintOutput(pairingResponse, 2);
+        
+        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account5result = responseByAccount.get("account5");
+        
+        // find the 5 covered call, that should have matched with the quantity -5 strike 40 calls b/c they are lower strike
+        boolean found = findStrategy(account5result, "GPRO", "CoveredCall", 5, new BigDecimal("0"));
+        assertTrue(found);
+        
+        // and find the 6 quantity covered put, that should have matched with the quantity -6 strike 45 puts b/c they are higher strike
+        Map<String, List<Strategy>> account6result = responseByAccount.get("account6");
+        found = findStrategy(account6result, "GPRO", "CoveredPut", 6, new BigDecimal("0"));
+        assertTrue(found);
     }
     
     private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {
+        StringBuilder sb = new StringBuilder();
         assertNotNull(pairingResponse);
         Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
         assertNotNull(responseByAccount);
         assertEquals(accountsInRequest, responseByAccount.size());
         for (Map.Entry<String, Map<String, List<Strategy>>> entry : responseByAccount.entrySet()) {
             String accountId = entry.getKey();
-            System.out.println("Strateiges for account '" + accountId + "'");
+            sb.append("Strategies for account '").append(accountId).append("'\n");
             for (Map.Entry<String, List<Strategy>> entry2 : entry.getValue().entrySet()) {
-                System.out.println("Option root '" + entry2.getKey() + "'");
+                sb.append("Option root '").append(entry2.getKey()).append("'\n");
                 for (Strategy strategy : entry2.getValue()) {
-                    System.out.println(strategy);
+                    sb.append(strategy).append("\n");
                 }
             }
         }
+        System.out.println(sb.toString());
+    }
+    
+    private void commonPrintInput(PairingRequest pairingRequest) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Input for PairingRequest\n");
+        pairingRequest.getOptionRoots().values().forEach( root -> {
+            sb.append(root.toString());
+        });
+        sb.append("\n");
+        pairingRequest.getAccounts().forEach( act -> {
+            sb.append("Account: ").append(act.getAccountId()).append("\nPositions:\n");
+            act.getPositions().forEach( pos -> {
+                sb.append(pos).append("\n");
+            });
+        });
+        System.out.println(sb.toString());
     }
     
     private boolean findStrategy(Map<String, List<Strategy>> strategyMap, String optionRoot, String strategyName, 

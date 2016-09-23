@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import com.jkmcllc.aupair01.exception.PairingException;
+import com.jkmcllc.aupair01.store.Constants;
 
 abstract class AbstractLeg implements Leg {
     static final String STOCK = "STOCK";
@@ -12,7 +13,7 @@ abstract class AbstractLeg implements Leg {
     
     protected final String symbol;
     protected final String description;
-    protected final Integer origQty;
+    protected final Integer resetQty;
     protected final BigDecimal price;
     
     protected Integer remainQty;
@@ -23,13 +24,26 @@ abstract class AbstractLeg implements Leg {
     protected AbstractLeg(String symbol, String description, Integer qty, BigDecimal price) {
         this.symbol = symbol;
         this.description = description;
-        this.remainQty = this.origQty = this.qty = qty;
+        this.remainQty = this.resetQty = this.qty = qty;
         this.price = price;
         this.bigDecimalQty = new BigDecimal(qty);
         this.legValue = null;
     }
     protected String basicLegInfo() {
-        return "symbol: \"" + symbol + "\", description: \"" + description + "\", qty: " + remainQty + ", price: " + price;
+        StringBuilder basicInfo = new StringBuilder();
+        if (symbol != null) {
+            basicInfo.append("symbol: \"").append(symbol).append("\", ");
+        }
+        if (description != null && Constants.EMPTY_STRING.equals(description) == false) {
+            basicInfo.append("description: \"").append(description).append("\", ");;
+        }
+        if (qty != null) {
+            basicInfo.append("qty: ").append(qty).append(", ");
+        }
+        if (price != null) {
+            basicInfo.append("price: ").append(price);
+        }
+        return basicInfo.toString();
     }
     protected Leg reduceBy(Integer used) {
         int startSign = Integer.signum(remainQty);
@@ -38,7 +52,7 @@ abstract class AbstractLeg implements Leg {
         } else if (startSign == 1) {
             remainQty = remainQty - used;
         } else {
-            // TODO: throw exception here, cannot use when zero remains
+            throw new PairingException("Error: using leg with zero remaining quantity, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
         }
         int endSign = Integer.signum(remainQty);
         if (endSign != 0 && endSign != startSign) {
@@ -50,8 +64,8 @@ abstract class AbstractLeg implements Leg {
     }
     
     protected void resetQty() {
-        this.remainQty = this.origQty;
-        this.qty = this.origQty;
+        this.remainQty = this.resetQty;
+        this.qty = this.resetQty;
         this.bigDecimalQty = new BigDecimal(this.qty);
     }
     

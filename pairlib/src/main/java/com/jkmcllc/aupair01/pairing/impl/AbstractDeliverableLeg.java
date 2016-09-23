@@ -1,7 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,12 +9,12 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import com.jkmcllc.aupair01.structure.Deliverable;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 
 class AbstractDeliverableLeg extends AbstractLeg {
 
     private final Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty;
+    private final OptionRoot optionRoot;
     
     static AbstractDeliverableLeg from(Collection<? extends AbstractStockLeg> deliverableLegs, OptionRoot optionRoot) {
         Map<AbstractStockLeg, BigDecimal> deliverableLegsAndQty = new HashMap<>();
@@ -29,33 +28,49 @@ class AbstractDeliverableLeg extends AbstractLeg {
         if (deliverableLegsAndQty.size() != optionRoot.getDeliverables().getStockDeliverableList().size()) {
             // this means there are not enough stock legs to fulfill the deliverables
             deliverableLeg = new AbstractDeliverableLeg("(none)", "(none)", 
-                    0, BigDecimal.ZERO, Collections.emptyMap());
+                    0, BigDecimal.ZERO, optionRoot, Collections.emptyMap());
         } else if (deliverableLegsAndQty.size() == 1
                 && deliverableLegs.size() == 1) {
             // most common case is that this is a single deliverable, optimize for that case
             AbstractStockLeg stockLeg = deliverableLegs.iterator().next();
             BigDecimal delivQty = deliverableLegsAndQty.get(stockLeg);
-            BigDecimal availQty = (new BigDecimal(stockLeg.origQty)).setScale(0)
-                    .divide(delivQty.setScale(0), RoundingMode.FLOOR);
+            BigDecimal availQty = (new BigDecimal(stockLeg.resetQty)).setScale(0)
+                    .divide(delivQty.setScale(0), RoundingMode.DOWN);
             deliverableLeg = new AbstractDeliverableLeg(stockLeg.symbol, stockLeg.description, 
-                    availQty.intValue(), stockLeg.price, deliverableLegsAndQty);
+                    availQty.intValue(), optionRoot.getDeliverables().getDeliverablesValue(), optionRoot, deliverableLegsAndQty);
         } else {
             // multiple stock deliverables
             StringJoiner symbolJoin = new StringJoiner("-");
             StringJoiner descriptionJoin = new StringJoiner("-");
-            deliverableLegs.forEach(d -> { 
+            deliverableLegs.stream().collect(Collectors.toMap( (d -> { 
                 symbolJoin.add(d.getSymbol()); 
                 descriptionJoin.add(d.getDescription()); 
-                });
+                return d;
+                }), v -> v.getQty()));
+            BigDecimal availLegs = deliverableLegs.stream().map( stockLeg -> {
+                symbolJoin.add(stockLeg.getSymbol()); 
+                descriptionJoin.add(stockLeg.getDescription()); 
+                
+                BigDecimal delivQty = deliverableLegsAndQty.get(stockLeg);
+                BigDecimal availQty = (new BigDecimal(stockLeg.resetQty)).setScale(0)
+                        .divide(delivQty.setScale(0), RoundingMode.FLOOR);
+                
+                return availQty;
+            }).collect(Collectors.minBy( (qty1, qty2) -> {
+                return qty1.compareTo(qty2);
+            })).get();
+            
+            
             deliverableLeg = new AbstractDeliverableLeg(symbolJoin.toString(), descriptionJoin.toString(), 
-                    0, BigDecimal.ZERO, deliverableLegsAndQty);
+                    availLegs.intValue(), optionRoot.getDeliverables().getDeliverablesValue(), optionRoot, deliverableLegsAndQty);
         }
         return deliverableLeg;
     }
     
     private AbstractDeliverableLeg(String symbol, String description, Integer origQty, BigDecimal price,
-            Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty) {
+            OptionRoot optionRoot, Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty) {
         super(symbol, description, origQty, price);
+        this.optionRoot = optionRoot;
         this.stockLegsAndDeliverableQty = stockLegsAndDeliverableQty;
     }
     
@@ -66,12 +81,14 @@ class AbstractDeliverableLeg extends AbstractLeg {
                 stockLegsAndDeliverableQty.entrySet().stream().collect(Collectors.toMap( e -> {
                     AbstractStockLeg leg = e.getKey();
                     BigDecimal reduceAmt = usedDecimal.multiply(e.getValue());
-                    leg = (AbstractStockLeg) leg.reduceBy(reduceAmt.intValue());
+                    // if reducing short deliverables by a negative number, then the actual short leg should be reduced 
+                    // by the positive quantity used (like the strategy level quantity)
+                    leg = (AbstractStockLeg) leg.reduceBy(reduceAmt.abs().intValue());
                     return leg;
         }, v -> v.getValue() ));
         
         AbstractDeliverableLeg deliverableLeg = new AbstractDeliverableLeg(this.symbol, this.description, 
-                used, this.price, reducedMap);
+                used, this.price, this.optionRoot, reducedMap);
         return deliverableLeg;
     }
 
@@ -82,23 +99,23 @@ class AbstractDeliverableLeg extends AbstractLeg {
 
     @Override
     public BigDecimal getLegValue() {
-        // TODO calcualte this
-        return BigDecimal.ZERO;
+        BigDecimal deliverablesValue = optionRoot.getDeliverables().getDeliverablesValue();
+        BigDecimal legValue = deliverablesValue.multiply(this.bigDecimalQty);
+        return legValue;
     }
 
     @Override
     public Collection<? extends Leg> getMultiLegs() {
-        if (stockLegsAndDeliverableQty.size() == 1) {
-            return null;
-        }
         return stockLegsAndDeliverableQty.keySet();
     }
     
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("deliverableLeg: ");
-        builder.append(stockLegsAndDeliverableQty.keySet().toString());
+        builder.append("DeliverableLeg: {");
+        builder.append("qty: ").append(this.qty);
+        builder.append(", price: ").append(this.price);
+        builder.append(", multiLegs:").append(stockLegsAndDeliverableQty.keySet().toString());
         return builder.toString();
     }
 

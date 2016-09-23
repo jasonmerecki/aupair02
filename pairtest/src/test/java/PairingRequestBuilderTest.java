@@ -199,4 +199,48 @@ public class PairingRequestBuilderTest {
         return pairingRequest;
     }
     
+    public static PairingRequest buildRequest5() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+
+        builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // let's see... how about if we have stock to cover some but not all short calls, with the remainder paired with some long calls
+        builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.03").addPosition();
+        builder.setPositionSymbol("GPRO  160115P00050000").setPositionOptionRoot("GPRO").setPositionQty(10)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("4.23").addPosition();
+        
+        builder.setPositionSymbol("GPRO  160115C00040000").setPositionOptionRoot("GPRO").setPositionQty(-5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.57").addPosition();
+        builder.setPositionSymbol("GPRO  160115C00050000").setPositionOptionRoot("GPRO").setPositionQty(-7)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("2.41").addPosition();
+        builder.setPositionSymbol("GPRO").setPositionQty(960).setPositionPrice("46.00").addPosition();
+        builder.setPositionSymbol("GPRO  160115C00060000").setPositionOptionRoot("GPRO").setPositionQty(8)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("2.41").addPosition();
+
+        builder.addAccount("account5");
+        
+        builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.03").addPosition();
+        builder.setPositionSymbol("GPRO").setPositionQty(-960).setPositionPrice("46.00").addPosition();
+        builder.setPositionSymbol("GPRO  160115P00045000").setPositionOptionRoot("GPRO").setPositionQty(-6)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.03").addPosition();
+        builder.setPositionSymbol("GPRO  160115P00038000").setPositionOptionRoot("GPRO").setPositionQty(3)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("38.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.03").addPosition();
+        
+        builder.setPositionSymbol("GPRO  160115C00040000").setPositionOptionRoot("GPRO").setPositionQty(6)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.57").addPosition();
+        builder.setPositionSymbol("GPRO  160115C00050000").setPositionOptionRoot("GPRO").setPositionQty(-10)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("2.41").addPosition();
+        builder.setPositionSymbol("GPRO  160115C00060000").setPositionOptionRoot("GPRO").setPositionQty(8)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("2.41").addPosition();
+
+        builder.addAccount("account6");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+    }
+    
 }
