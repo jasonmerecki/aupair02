@@ -94,6 +94,14 @@ public class PairingRequestBuilderTest {
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.75").addPosition();
 
         builder.addAccount("account1234");
+
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+    }
+    
+    public static PairingRequest buildRequest1_1() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
         
         // Build NKE root (non-standard deliverables, maybe an acquisition)
         builder.setDeliverableSymbol("NKE").setDeliverableQty("100").setDeliverablePrice("65.20").setDeliverableType(DeliverableType.S).addDeliverable();
@@ -104,8 +112,10 @@ public class PairingRequestBuilderTest {
         // add some non-standard options
         builder.setPositionSymbol("NKE1  160115C00055000").setPositionOptionRoot("NKE1").setPositionQty(7)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("74.09").addPosition();
-        builder.setPositionSymbol("NKE1  160115C00060000").setPositionOptionRoot("NKE1").setPositionQty(-3)
+        builder.setPositionSymbol("NKE1  160115C00060000").setPositionOptionRoot("NKE1").setPositionQty(-8)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("60.22").addPosition();
+        builder.setPositionSymbol("NKE").setPositionQty(430).setPositionPrice("65.20").addPosition();
+        builder.setPositionSymbol("LULU").setPositionQty(205).setPositionPrice("40.93").addPosition();
         
         builder.addAccount("Nike account 1");
         

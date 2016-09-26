@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.junit.Before;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.impl.PairingService;
@@ -32,10 +33,10 @@ public class PairingRequestTest {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1();
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 2);
+        commonTestAndPrintOutput(pairingResponse, 1);
         // test outcomes
-        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
-        Map<String, List<Strategy>> account1234result = responseByAccount.get("account1234");
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account1234result = responseByAccount.get("account1234").getStrategies();
         boolean found = findStrategy(account1234result, "MSFT", "CallVerticalShort", 2, new BigDecimal("1000"));
         assertTrue(found);
         found = findStrategy(account1234result, "MSFT", "PutVerticalLong", 4, new BigDecimal("0"));
@@ -51,11 +52,27 @@ public class PairingRequestTest {
     }
     
     @Test
+    public void buildAndPair1_1() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest1_1();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+    }
+    
+    @Test
     public void buildAndPair2() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest2();
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
+        // test outcomes; always want 7 long call verticals even though there is enough stock to make more covered calls
+        /*
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("Nike account 1").getStrategies();
+        boolean found = findStrategy(account3result, "NKE1", "CallVerticalLong", 7, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account3result, "NKE1", "CoveredCall", 1, new BigDecimal("0"));
+        */
     }
     
     @Test
@@ -65,8 +82,8 @@ public class PairingRequestTest {
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
         // test outcomes
-        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
-        Map<String, List<Strategy>> account3result = responseByAccount.get("account3");
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("account3").getStrategies();
         boolean found = findStrategy(account3result, "GPRO", "IronButterflyShort", 4, new BigDecimal("2000"));
         assertTrue(found);
         found = findStrategy(account3result, "GPRO", "IronButterflyLong", 1, new BigDecimal("0"));
@@ -81,8 +98,8 @@ public class PairingRequestTest {
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
-        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
-        Map<String, List<Strategy>> account3result = responseByAccount.get("account3");
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("account3").getStrategies();
         boolean found = findStrategy(account3result, "GPRO", "PutUnpairedShort", 10, new BigDecimal("13430.00"));
         assertTrue(found);
         found = findStrategy(account3result, "GPRO", "CallUnpairedShort", 10, new BigDecimal("7610.00"));
@@ -96,15 +113,15 @@ public class PairingRequestTest {
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 2);
         
-        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
-        Map<String, List<Strategy>> account5result = responseByAccount.get("account5");
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account5result = responseByAccount.get("account5").getStrategies();
         
         // find the 5 covered call, that should have matched with the quantity -5 strike 40 calls b/c they are lower strike
         boolean found = findStrategy(account5result, "GPRO", "CoveredCall", 5, new BigDecimal("0"));
         assertTrue(found);
         
         // and find the 6 quantity covered put, that should have matched with the quantity -6 strike 45 puts b/c they are higher strike
-        Map<String, List<Strategy>> account6result = responseByAccount.get("account6");
+        Map<String, List<Strategy>> account6result = responseByAccount.get("account6").getStrategies();
         found = findStrategy(account6result, "GPRO", "CoveredPut", 6, new BigDecimal("0"));
         assertTrue(found);
     }
@@ -112,13 +129,17 @@ public class PairingRequestTest {
     private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {
         StringBuilder sb = new StringBuilder();
         assertNotNull(pairingResponse);
-        Map<String, Map<String, List<Strategy>>> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
         assertNotNull(responseByAccount);
         assertEquals(accountsInRequest, responseByAccount.size());
-        for (Map.Entry<String, Map<String, List<Strategy>>> entry : responseByAccount.entrySet()) {
+        for (Map.Entry<String, AccountPairingResponse> entry : responseByAccount.entrySet()) {
             String accountId = entry.getKey();
-            sb.append("Strategies for account '").append(accountId).append("'\n");
-            for (Map.Entry<String, List<Strategy>> entry2 : entry.getValue().entrySet()) {
+            AccountPairingResponse accountResponse = entry.getValue();
+            Map<String, List<Strategy>> strategies = accountResponse.getStrategies();
+            BigDecimal totalMaintMargin = accountResponse.getTotalMaintenanceMargin();
+            BigDecimal totalInitialMargin = accountResponse.getTotalInitialMargin();
+            sb.append("AccountID '").append(accountId).append("' total initial margin=").append(totalInitialMargin).append(" total maintenance margin=").append(totalMaintMargin).append(", strategies:").append("\n");
+            for (Map.Entry<String, List<Strategy>> entry2 : strategies.entrySet()) {
                 sb.append("Option root '").append(entry2.getKey()).append("'\n");
                 for (Strategy strategy : entry2.getValue()) {
                     sb.append(strategy).append("\n");
@@ -150,7 +171,7 @@ public class PairingRequestTest {
         List<Strategy> strategyResultList = strategyMap.get(optionRoot);
         for (Strategy strategy : strategyResultList) {
             if (strategyName.equals(strategy.getStrategyName())) {
-                BigDecimal strategyMargin = strategy.getMargin();
+                BigDecimal strategyMargin = strategy.getMaintenanceMargin();
                 Integer strategyQuantity = strategy.getQuantity();
                 found = (strategyMargin.compareTo(margin) == 0 && strategyQuantity.compareTo(quantity) == 0);
                 if (found) break;

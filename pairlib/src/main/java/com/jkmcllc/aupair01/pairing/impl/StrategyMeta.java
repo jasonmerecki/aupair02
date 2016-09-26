@@ -15,8 +15,10 @@ class StrategyMeta implements Cloneable {
     final List<String> childStrategiesString;
     final List<JexlExpression> strategyPatterns = new ArrayList<>();
     final List<String> strategyPatternStrings = new ArrayList<>();
-    final List<JexlExpression> marginPatterns = new ArrayList<>();
-    final List<String> marginPatternStrings = new ArrayList<>();
+    final List<JexlExpression> maintenanceMarginPatterns = new ArrayList<>();
+    final List<String> maintenanceMarginPatternStrings = new ArrayList<>();
+    final List<JexlExpression> initialMarginPatterns = new ArrayList<>();
+    final List<String> initialMarginPatternStrings = new ArrayList<>();
     final List<JexlExpression> marginDebugPatterns = new ArrayList<>();
     final List<String> marginDebugPatternStrings = new ArrayList<>();
     
@@ -33,7 +35,7 @@ class StrategyMeta implements Cloneable {
         this.childStrategiesLegs = null;
         this.childStrategiesString = null;
         this.strategyPatterns.add(TRUE);
-        this.marginPatterns.add(ZERO);
+        this.maintenanceMarginPatterns.add(ZERO);
     }
     
     StrategyMeta(String strategyName, String legs, String legsRatioString, String childStrategiesString, String childStrategiesLegsString) {
@@ -75,8 +77,8 @@ class StrategyMeta implements Cloneable {
     StrategyMeta addMarginPattern(String pattern) {
         if (pattern != null) {
             JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
-            marginPatterns.add(p);
-            marginPatternStrings.add(pattern);
+            maintenanceMarginPatterns.add(p);
+            maintenanceMarginPatternStrings.add(pattern);
         }
         return this;
     }
@@ -108,10 +110,14 @@ class StrategyMeta implements Cloneable {
         builder.append(strategyName);
         builder.append(", strategyPatternStrings: ");
         builder.append(strategyPatternStrings);
-        builder.append(", marginPatternStrings: ");
-        builder.append(marginPatternStrings);
-        builder.append(", childStrategies: ");
-        builder.append(childStrategies);
+        builder.append(", maintenanceMarginPatternStrings: ");
+        builder.append(maintenanceMarginPatternStrings);
+        builder.append(", initialMarginPatternStrings: ");
+        builder.append(initialMarginPatternStrings);
+        if (childStrategies != null) {
+            builder.append(", childStrategies: ");
+            builder.append(childStrategies);
+        }
         builder.append("}");
         return builder.toString();
     }

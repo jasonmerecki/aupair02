@@ -11,6 +11,7 @@ public interface Deliverables {
     List<Deliverable> getDeliverableList();
     List<Deliverable> getStockDeliverableList();
     BigDecimal getDeliverablesValue();
+    BigDecimal getCashDeliverableValue();
     
     public class DeliverablesBuilder {
         private String symbol;

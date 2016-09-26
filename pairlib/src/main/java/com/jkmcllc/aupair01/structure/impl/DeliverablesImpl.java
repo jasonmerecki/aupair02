@@ -11,12 +11,17 @@ import com.jkmcllc.aupair01.structure.Deliverables;
 class DeliverablesImpl implements Deliverables {
     private final List<Deliverable> deliverableList;
     private final List<Deliverable> stockDeliverables;
+    private final BigDecimal cashDeliverableValue;
     private BigDecimal deliverablesValue = null;
     DeliverablesImpl(List<Deliverable> deliverableList) {
         this.deliverableList = deliverableList;
         this.stockDeliverables = deliverableList.stream()
                 .filter(d -> DeliverableType.S.equals(d.getDeliverableType()))
                 .collect(Collectors.toList());
+        this.cashDeliverableValue = deliverableList.stream()
+                .filter(d -> DeliverableType.C.equals(d.getDeliverableType()))
+                .map(del -> del.getPrice())
+                .reduce(BigDecimal.ZERO, (d, d1) -> d.add(d1));
     }
     @Override
     public BigDecimal getDeliverablesValue() {
@@ -42,6 +47,10 @@ class DeliverablesImpl implements Deliverables {
     @Override
     public List<Deliverable> getDeliverableList() {
         return deliverableList;
+    }
+    @Override
+    public BigDecimal getCashDeliverableValue() {
+        return cashDeliverableValue;
     }
     @Override
     public String toString() {

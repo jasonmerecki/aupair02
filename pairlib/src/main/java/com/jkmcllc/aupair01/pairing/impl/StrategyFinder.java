@@ -130,12 +130,12 @@ class StrategyFinder {
     protected void testLegs(Leg[] legs) {
         String strategyName = strategyMeta.strategyName;
         List<JexlExpression> strategyPatterns = strategyMeta.strategyPatterns;
-        List<JexlExpression> marginExpressions = strategyMeta.marginPatterns;
+
         List<Leg> legList = Arrays.asList(legs);
         if (logger.isTraceEnabled()) {
             logger.trace("testLegs, legs=" + Arrays.asList(legs));
         }
-        JexlContext context = TacoCat.buildPairingContext(legList, this.pairingInfo.accountInfo);
+        JexlContext context = TacoCat.buildPairingContext(legList, this.pairingInfo.accountInfo, this.pairingInfo);
         Boolean valid = false;
         for (JexlExpression strategyPattern : strategyPatterns) {
             valid = (Boolean) strategyPattern.evaluate(context);
@@ -157,8 +157,10 @@ class StrategyFinder {
                         strategyLegs.add(newLeg1);
                     }
                     Collections.sort(strategyLegs, ASC_STRIKE);
+                    List<JexlExpression> maintenanceMarginExpressions = strategyMeta.maintenanceMarginPatterns;
+                    List<JexlExpression> initialMarginExpressions = strategyMeta.initialMarginPatterns;
                     Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, 
-                            marginExpressions, strategyMeta.marginDebugPatterns);
+                            pairingInfo, maintenanceMarginExpressions, initialMarginExpressions, strategyMeta.marginDebugPatterns);
                     foundStrategies.add(strategy);
                 }
             } else {

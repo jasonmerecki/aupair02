@@ -13,18 +13,26 @@ class AbstractStrategy implements Strategy {
 
     final String strategyName;
     final List<? extends Leg> legs;
-    BigDecimal margin = BigDecimal.ZERO;
+    BigDecimal maintenanceMargin = BigDecimal.ZERO;
+    BigDecimal initialMargin = BigDecimal.ZERO;
     String marginDebug = null;
     final Integer quantity;
     
-    AbstractStrategy(String strategyName, List<Leg> legs, Integer quantity, AccountInfo accountInfo, 
-            List<JexlExpression> marginExpressions, List<JexlExpression> marginDebugExpressions) {
+    AbstractStrategy(String strategyName, List<Leg> legs, Integer quantity, AccountInfo accountInfo, PairingInfo pairingInfo,
+            List<JexlExpression> maintenanceMarginExpressions, List<JexlExpression> initialMarginExpressions, 
+            List<JexlExpression> marginDebugExpressions) {
         this.strategyName = strategyName;
         this.legs = legs;
         this.quantity = quantity;
-        JexlContext context = TacoCat.buildMarginContext(legs, accountInfo, this);
-        for (JexlExpression marginExpression : marginExpressions) {
-            this.margin = (BigDecimal) marginExpression.evaluate(context);
+        JexlContext context = TacoCat.buildMarginContext(legs, accountInfo, pairingInfo, this);
+        for (JexlExpression marginExpression : maintenanceMarginExpressions) {
+            this.maintenanceMargin = (BigDecimal) marginExpression.evaluate(context);
+        }
+        if (initialMarginExpressions == null || initialMarginExpressions.isEmpty()) {
+            initialMarginExpressions = maintenanceMarginExpressions;
+        }
+        for (JexlExpression marginExpression : initialMarginExpressions) {
+            this.initialMargin = (BigDecimal) marginExpression.evaluate(context);
         }
         if (marginDebugExpressions != null) {
             StringBuilder sb = new StringBuilder("{\"");
@@ -54,9 +62,15 @@ class AbstractStrategy implements Strategy {
     }
 
     @Override
-    public BigDecimal getMargin() {
-        return margin;
+    public BigDecimal getMaintenanceMargin() {
+        return maintenanceMargin;
     }
+    
+    @Override
+    public BigDecimal getInitialMargin() {
+        return initialMargin;
+    }
+    
     
     @Override
     public Integer getQuantity() {
@@ -71,7 +85,7 @@ class AbstractStrategy implements Strategy {
         builder.append(", quantity: ");
         builder.append(quantity);
         builder.append(", margin: ");
-        builder.append(margin);
+        builder.append(maintenanceMargin);
         if (marginDebug != null) {
             builder.append(", marginDebug: ");
             builder.append(marginDebug);

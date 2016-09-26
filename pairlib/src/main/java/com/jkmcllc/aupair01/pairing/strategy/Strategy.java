@@ -8,6 +8,7 @@ import com.jkmcllc.aupair01.pairing.impl.Leg;
 public interface Strategy {
     public String getStrategyName();
     public List<? extends Leg> getLegs();
-    public BigDecimal getMargin();
+    public BigDecimal getMaintenanceMargin();
+    public BigDecimal getInitialMargin();
     public Integer getQuantity();
 }

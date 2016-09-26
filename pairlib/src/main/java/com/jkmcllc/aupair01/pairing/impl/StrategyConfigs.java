@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -15,22 +16,25 @@ import org.ini4j.Ini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jkmcllc.aupair01.exception.ConfigurationException;
+
 public class StrategyConfigs {
 
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
     private static final String STRATEGY_GROUP = "strategyGroup";
-    private static final String CHILD_STRATEGIES = ".childStrategies";
-    private static final String CHILD_STRATEGIES_LEGS = ".childStrategiesLegs";
     private static final String STRATEGIES = "strategies";
-    private static final String STRATETY_LEGS = ".legs";
-    private static final String STRATETY_LEGS_RATIO = ".legsRatio";
-    private static final String STRATETY_PATTERN = ".pattern";
-    private static final String STRATETY_MARGIN = ".margin";
-    private static final String STRATETY_MARGIN_DEBUG = ".marginDebug";
+    private static final String STRATEGY_CONFIG_PREFIX = "strategy/";
+    private static final String CHILD_STRATEGIES = "childStrategies";
+    private static final String CHILD_STRATEGIES_LEGS = "childStrategiesLegs";
+    private static final String STRATETY_LEGS = "legs";
+    private static final String STRATETY_LEGS_RATIO = "legsRatio";
+    private static final String STRATETY_PATTERN = "pattern";
+    private static final String STRATETY_MAINTENANCE_MARGIN = "maintenanceMargin";
+    private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
     
     private static StrategyConfigs strategyConfigsInstance;
     private final ConcurrentMap<String, List<List<StrategyMeta>>> strategyConfigsMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, StrategyMeta> masterMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, StrategyMeta> masterStrategyMap = new ConcurrentHashMap<>();
     
     public static final String CORE = "core";
     
@@ -82,6 +86,7 @@ public class StrategyConfigs {
     private void loadConfigs(Reader reader, boolean core) {
         try {
             Ini paircoreini = new Ini(reader);
+            findAllStrategies(paircoreini);
             // initialize core
             Ini.Section strategies = paircoreini.get(STRATEGY_GROUP);
             if (core) {
@@ -99,15 +104,16 @@ public class StrategyConfigs {
         } catch (IOException e) {
             String reallyBadError = "Missing core configuration file; exiting! " + e;
             logger.error(reallyBadError, e);
-            throw new RuntimeException(reallyBadError);
+            throw new ConfigurationException(reallyBadError);
         } catch (Exception e) {
             String reallyBadError = "Misconfigured core configuration file; exiting! " + e;
             logger.error(reallyBadError, e);
-            throw new RuntimeException(reallyBadError);
+            throw new ConfigurationException(reallyBadError);
         }
     }
     
     private List<List<StrategyMeta>> buildStrategyMeta(Ini.Section strategyGroup) {
+        
         List<String> strategyNameStrings = strategyGroup.getAll(STRATEGIES);
         
         List<List<StrategyMeta>> strategiesList = new ArrayList<>(strategyNameStrings.size());
@@ -122,59 +128,75 @@ public class StrategyConfigs {
                     continue;
                 }
                 // try looking up an actual strategy
-                strategyMeta = masterMap.get(strategyName);
+                strategyMeta = masterStrategyMap.get(strategyName);
                 if (strategyMeta != null) {
                     strategies.add(strategyMeta);
-                    continue;
                 } else {
-                    String legs = strategyGroup.fetch(strategyName + STRATETY_LEGS);
-                    String legsRatio = strategyGroup.fetch(strategyName + STRATETY_LEGS_RATIO);
-                    // TODO: legs must match known names
-                    String childStrategiesString = strategyGroup.get(strategyName + CHILD_STRATEGIES);
-                    String childStrategiesLegsString = strategyGroup.get(strategyName + CHILD_STRATEGIES_LEGS);
-                    strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString);
-                    masterMap.put(strategyName, strategyMeta);
-                    strategies.add(strategyMeta);
-                }
-                String tempPatternKey = strategyName + STRATETY_PATTERN;
-                List<String> nonEvalValues = strategyGroup.getAll(tempPatternKey);
-                for (int i = 0; i < nonEvalValues.size(); i++) {
-                    String patternVal = strategyGroup.fetch(tempPatternKey, i);
-                    strategyMeta.addStrategyPattern(patternVal);
-                }
-                String tempMarginKey = strategyName + STRATETY_MARGIN;
-                nonEvalValues = strategyGroup.getAll(tempMarginKey);
-                if (nonEvalValues != null) {
-                    for (int i = 0; i < nonEvalValues.size(); i++) {
-                        String marginVal = strategyGroup.fetch(tempMarginKey, i);
-                        strategyMeta.addMarginPattern(marginVal);
-                    }
-                }
-                String tempMarginDebugKey = strategyName + STRATETY_MARGIN_DEBUG;
-                nonEvalValues = strategyGroup.getAll(tempMarginDebugKey);
-                if (nonEvalValues != null) {
-                    for (int i = 0; i < nonEvalValues.size(); i++) {
-                        String marginVal = strategyGroup.fetch(tempMarginDebugKey, i);
-                        strategyMeta.addMarginDebugPattern(marginVal);
-                    }
-                }
-                // TODO: validation, make sure everything exists for the patterns, catch exceptions at each pattern to output unable to parse
-            }
-            // find all of the child strategies which may exist
-            for (StrategyMeta strategyMeta : strategies) {
-                if (strategyMeta.childStrategiesString != null) {
-                    for (String childStrategyName : strategyMeta.childStrategiesString) {
-                        StrategyMeta childStrategy = masterMap.get(childStrategyName);
-                        if (childStrategy != null) {
-                            strategyMeta.childStrategies.add(childStrategy);
-                        }
-                    }
+                    throw new ConfigurationException("Configuration for strategy which is not defined, strategyName=" + strategyName);
                 }
             }
             strategiesList.add(strategies);
         }
         
         return strategiesList;
+    }
+    
+    private void findAllStrategies(Ini inputConfig) {
+        Set<String> childrenNames = inputConfig.keySet();
+        childrenNames.stream().filter(name -> name.startsWith(STRATEGY_CONFIG_PREFIX) )
+            .forEach(strategyConfigName -> {
+                Ini.Section strategySection = inputConfig.get(strategyConfigName);
+                String strategyName = strategyConfigName.replaceFirst(STRATEGY_CONFIG_PREFIX, "");
+                StrategyMeta strategyMeta = loadStrategies(strategySection, strategyName);
+                masterStrategyMap.put(strategyName, strategyMeta);
+            }); 
+        // find all of the child strategies which may exist
+        for (StrategyMeta strategyMeta : masterStrategyMap.values()) {
+            if (strategyMeta.childStrategiesString != null) {
+                for (String childStrategyName : strategyMeta.childStrategiesString) {
+                    StrategyMeta childStrategy = masterStrategyMap.get(childStrategyName);
+                    if (childStrategy != null) {
+                        strategyMeta.childStrategies.add(childStrategy);
+                    }
+                }
+            }
+        }
+    }
+    
+    private StrategyMeta loadStrategies(Ini.Section strategySection, String strategyName) {
+        String legs = strategySection.fetch(STRATETY_LEGS);
+        String legsRatio = strategySection.fetch(STRATETY_LEGS_RATIO);
+        // TODO: legs must match known names
+        String childStrategiesString = strategySection.get(CHILD_STRATEGIES);
+        String childStrategiesLegsString = strategySection.get(CHILD_STRATEGIES_LEGS);
+        StrategyMeta strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString);
+        
+
+        String tempPatternKey = STRATETY_PATTERN;
+        List<String> nonEvalValues = strategySection.getAll(tempPatternKey);
+        for (int i = 0; i < nonEvalValues.size(); i++) {
+            String patternVal = strategySection.fetch(tempPatternKey, i);
+            strategyMeta.addStrategyPattern(patternVal);
+        }
+        String tempMarginKey = STRATETY_MAINTENANCE_MARGIN;
+        nonEvalValues = strategySection.getAll(tempMarginKey);
+        if (nonEvalValues != null) {
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String marginVal = strategySection.fetch(tempMarginKey, i);
+                strategyMeta.addMarginPattern(marginVal);
+            }
+        }
+        String tempMarginDebugKey = STRATETY_MARGIN_DEBUG;
+        nonEvalValues = strategySection.getAll(tempMarginDebugKey);
+        if (nonEvalValues != null) {
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String marginVal = strategySection.fetch(tempMarginDebugKey, i);
+                strategyMeta.addMarginDebugPattern(marginVal);
+            }
+        }
+        // TODO: validation, make sure everything exists for the patterns, catch exceptions at each pattern to output unable to parse
+        return strategyMeta;
+        
     }
     
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 
@@ -38,7 +39,7 @@ public class PairingService {
     }
     
     public PairingResponse service(PairingRequest pairingRequest) {
-        Map<String, Map<String,List<Strategy>>> resultMap = new HashMap<>();
+        Map<String, AccountPairingResponse> resultMap = new HashMap<>();
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
         optionRootStore.addRoots(pairingRequest.getOptionRoots());
         for (Account account : pairingRequest.getAccounts()) {
@@ -61,7 +62,8 @@ public class PairingService {
                 }
                 optionRootResults.put(optionRoot, found);
             }
-            resultMap.put(account.getAccountId(), optionRootResults);
+            AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults);
+            resultMap.put(account.getAccountId(), accountPairingResponse);
         }
         PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);
         return response;

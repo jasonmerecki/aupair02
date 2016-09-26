@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
@@ -45,7 +46,10 @@ public final class StructureImplFactory {
     public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots) {
         return new PairingRequestImpl(accounts, optionRoots);
     }
-    public static PairingResponse buildPairingResponse(Map<String, Map<String, List<Strategy>>> resultMap) {
+    public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap) {
+        return new AccountPairingResponseImpl(resultMap);
+    }
+    public static PairingResponse buildPairingResponse(Map<String, AccountPairingResponse> resultMap) {
         return new PairingResponseImpl(resultMap);
     }
 }
