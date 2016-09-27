@@ -43,7 +43,21 @@ class TacoCat {
         context.set("accountInfo", accountInfo);
         context.set("zero",BigDecimal.ZERO);
         context.set("maintenanceMargin",BigDecimal.ZERO);
+        PublicPairingInfo i = new PublicPairingInfo(pairingInfo);
+        context.set("pairingInfo", i);
         return context;
+    }
+    public static class PublicPairingInfo {
+        private final PairingInfo pairingInfo;
+        PublicPairingInfo (PairingInfo pairingInfo) {
+            this.pairingInfo = pairingInfo;
+        }
+        public List<? extends Leg> getLongDeliverables() {
+            return pairingInfo.getLongDeliverables();
+        }
         
+        public List<? extends Leg> getShortDeliverables() {
+            return pairingInfo.getShortDeliverables();
+        }
     }
 }

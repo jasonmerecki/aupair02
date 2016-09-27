@@ -3,7 +3,6 @@ package com.jkmcllc.aupair01.pairing.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -27,8 +26,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
         
         if (deliverableLegsAndQty.size() != optionRoot.getDeliverables().getStockDeliverableList().size()) {
             // this means there are not enough stock legs to fulfill the deliverables
-            deliverableLeg = new AbstractDeliverableLeg("(none)", "(none)", 
-                    0, BigDecimal.ZERO, optionRoot, Collections.emptyMap());
+            return null;
         } else if (deliverableLegsAndQty.size() == 1
                 && deliverableLegs.size() == 1) {
             // most common case is that this is a single deliverable, optimize for that case
@@ -116,6 +114,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
         builder.append("qty: ").append(this.qty);
         builder.append(", price: ").append(this.price);
         builder.append(", multiLegs:").append(stockLegsAndDeliverableQty.keySet().toString());
+        builder.append("}");
         return builder.toString();
     }
 

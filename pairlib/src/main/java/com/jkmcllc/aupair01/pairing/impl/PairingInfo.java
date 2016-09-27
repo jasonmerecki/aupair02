@@ -127,23 +127,36 @@ class PairingInfo {
                         pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty(), price));
                     }
                 }
-
             }
         }
+        pairingInfoMap.values().forEach(p -> p.init());
         return pairingInfoMap;
     }
     
-    List<? extends Leg> getLongDeliverables() {
+    private void init() {
         if (longDeliverables == null) {
-            longDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(longStocks, optionRoot));
+            AbstractDeliverableLeg longDeliverableLeg = AbstractDeliverableLeg.from(longStocks, optionRoot);
+            if (longDeliverableLeg != null) {
+                longDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(longStocks, optionRoot));
+            } else {
+                longDeliverables = Collections.emptyList();
+            }
         }
+        if (shortDeliverables == null) {
+            AbstractDeliverableLeg shortDeliverableLeg = AbstractDeliverableLeg.from(shortStocks, optionRoot);
+            if (shortDeliverableLeg != null) {
+                shortDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(shortStocks, optionRoot));
+            } else {
+                shortDeliverables = Collections.emptyList();
+            }
+        }
+    }
+    
+    List<? extends Leg> getLongDeliverables() {
         return longDeliverables;
     }
     
     List<? extends Leg> getShortDeliverables() {
-        if (shortDeliverables == null) {
-            shortDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(shortStocks, optionRoot));
-        }
         return shortDeliverables;
     }
     
