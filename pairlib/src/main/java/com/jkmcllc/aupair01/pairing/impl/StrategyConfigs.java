@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,8 +23,9 @@ public class StrategyConfigs {
 
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
     private static final String STRATEGY_GROUP = "strategyGroup";
-    private static final String STRATEGIES = "strategies";
+    private static final String STRATEGY_LISTS = "strategyLists";
     private static final String STRATEGY_CONFIG_PREFIX = "strategy/";
+    private static final String PARENT_STRATEGY = "parentStrategy";
     private static final String CHILD_STRATEGIES = "childStrategies";
     private static final String CHILD_STRATEGIES_LEGS = "childStrategiesLegs";
     private static final String STRATETY_LEGS = "legs";
@@ -47,8 +49,13 @@ public class StrategyConfigs {
     public static final String LONG_STOCKS = "longStocks";
     public static final String SHORT_STOCKS = "shortStocks";
     
+    static final Set<String> ALL_LEG_LIST_NAMES = new HashSet<>( Arrays.asList(SHORT_DELIVERABLES, LONG_DELIVERABLES,
+            LONG_CALLS, SHORT_CALLS, LONG_PUTS, SHORT_PUTS, LONG_STOCKS, SHORT_STOCKS) );
+    
     public static final String WIDE_STRIKE = "sortWideStrike";
     public static final String NARROW_STRIKE = "sortNarrowStrike";
+    
+    static final Set<String> ALL_SORT_NAMES = new HashSet<>( Arrays.asList(WIDE_STRIKE, NARROW_STRIKE) );
     
     private static final Map<String, StrategyMeta> ALL_SORTS_MAP = new HashMap<>();
     static {
@@ -114,29 +121,41 @@ public class StrategyConfigs {
     
     private List<List<StrategyMeta>> buildStrategyMeta(Ini.Section strategyGroup) {
         
-        List<String> strategyNameStrings = strategyGroup.getAll(STRATEGIES);
-        
-        List<List<StrategyMeta>> strategiesList = new ArrayList<>(strategyNameStrings.size());
-        for (String strategyNameString : strategyNameStrings) {
-            List<String> strategyNames = Arrays.asList(strategyNameString.split(","));
-            List<StrategyMeta> strategies = new ArrayList<>(strategyNames.size());
-            for (String strategyName : strategyNames) {
-                strategyName = strategyName.trim();
-                StrategyMeta strategyMeta = ALL_SORTS_MAP.get(strategyName);
-                if (strategyMeta != null) {
-                    strategies.add(strategyMeta);
-                    continue;
-                }
-                // try looking up an actual strategy
-                strategyMeta = masterStrategyMap.get(strategyName);
-                if (strategyMeta != null) {
-                    strategies.add(strategyMeta);
-                } else {
-                    throw new ConfigurationException("Configuration for strategy which is not defined, strategyName=" + strategyName);
+        String strategyListsString = strategyGroup.get(STRATEGY_LISTS);
+        if (strategyListsString == null) {
+            throw new ConfigurationException("Configuration for strategy group with no strategy lists, strategyGroup=" + strategyGroup.getName() );
+        }
+        String[] strategyLists = strategyListsString.split(",");
+        if (strategyLists == null || strategyLists.length == 0) {
+            throw new ConfigurationException("Configuration for strategy group with no strategy lists, strategyGroup=" + strategyGroup.getName() );
+        }
+        List<List<StrategyMeta>> strategiesList = new ArrayList<>();
+        for (int i = 0; i < strategyLists.length; i++) {
+            String strategyListName = strategyLists[i].trim();
+            List<String> strategyNameStrings = strategyGroup.getAll(strategyListName);
+            List<StrategyMeta> strategies = new ArrayList<>();
+            for (String strategyNameString : strategyNameStrings) {
+                List<String> strategyNames = Arrays.asList(strategyNameString.split(","));
+                
+                for (String strategyName : strategyNames) {
+                    strategyName = strategyName.trim();
+                    StrategyMeta strategyMeta = ALL_SORTS_MAP.get(strategyName);
+                    if (strategyMeta != null) {
+                        strategies.add(strategyMeta);
+                        continue;
+                    }
+                    // try looking up an actual strategy
+                    strategyMeta = masterStrategyMap.get(strategyName);
+                    if (strategyMeta != null) {
+                        strategies.add(strategyMeta);
+                    } else {
+                        throw new ConfigurationException("Configuration for strategy which is not defined, strategyName=" + strategyName);
+                    }
                 }
             }
             strategiesList.add(strategies);
         }
+
         
         return strategiesList;
     }
@@ -145,10 +164,7 @@ public class StrategyConfigs {
         Set<String> childrenNames = inputConfig.keySet();
         childrenNames.stream().filter(name -> name.startsWith(STRATEGY_CONFIG_PREFIX) )
             .forEach(strategyConfigName -> {
-                Ini.Section strategySection = inputConfig.get(strategyConfigName);
-                String strategyName = strategyConfigName.replaceFirst(STRATEGY_CONFIG_PREFIX, "");
-                StrategyMeta strategyMeta = loadStrategies(strategySection, strategyName);
-                masterStrategyMap.put(strategyName, strategyMeta);
+                loadStrategies(inputConfig, strategyConfigName);
             }); 
         // find all of the child strategies which may exist
         for (StrategyMeta strategyMeta : masterStrategyMap.values()) {
@@ -163,38 +179,69 @@ public class StrategyConfigs {
         }
     }
     
-    private StrategyMeta loadStrategies(Ini.Section strategySection, String strategyName) {
-        String legs = strategySection.fetch(STRATETY_LEGS);
-        String legsRatio = strategySection.fetch(STRATETY_LEGS_RATIO);
-        // TODO: legs must match known names
-        String childStrategiesString = strategySection.get(CHILD_STRATEGIES);
-        String childStrategiesLegsString = strategySection.get(CHILD_STRATEGIES_LEGS);
-        StrategyMeta strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString);
-        
+    private StrategyMeta loadStrategies(Ini inputConfig, String strategyConfigName) {
+        StrategyMeta strategyMeta = null;
+        Ini.Section strategySection = inputConfig.get(strategyConfigName);
+        String parentStrategyName = strategySection.fetch(PARENT_STRATEGY);
+        String strategyName = strategyConfigName.replaceFirst(STRATEGY_CONFIG_PREFIX, "");
+        if (parentStrategyName != null ) {
+            StrategyMeta parentMeta = masterStrategyMap.get(parentStrategyName);
+            if (parentMeta == null) {
+                String parentStrategyConfigName = STRATEGY_CONFIG_PREFIX + parentStrategyName;
+                parentMeta = loadStrategies(inputConfig, parentStrategyConfigName);
+            }
+            if (parentMeta == null) {
+                throw new ConfigurationException("Configuration for parent strategy which is not defined, strategyName=" + strategyName + " and parent=" + parentStrategyName);
+            }
+        } else {
+            String legs = strategySection.fetch(STRATETY_LEGS);
+            String legsRatio = strategySection.fetch(STRATETY_LEGS_RATIO);
+            String childStrategiesString = strategySection.get(CHILD_STRATEGIES);
+            String childStrategiesLegsString = strategySection.get(CHILD_STRATEGIES_LEGS);
+            strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString);
+        }
+
 
         String tempPatternKey = STRATETY_PATTERN;
         List<String> nonEvalValues = strategySection.getAll(tempPatternKey);
-        for (int i = 0; i < nonEvalValues.size(); i++) {
-            String patternVal = strategySection.fetch(tempPatternKey, i);
-            strategyMeta.addStrategyPattern(patternVal);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.strategyPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String patternVal = strategySection.fetch(tempPatternKey, i);
+                strategyMeta.addStrategyPattern(patternVal);
+            }
+        } else if (parentStrategyName == null) {
+            throw new ConfigurationException("Configuration for strategy has no patterns, strategyName=" + strategyName );
         }
+
         String tempMarginKey = STRATETY_MAINTENANCE_MARGIN;
         nonEvalValues = strategySection.getAll(tempMarginKey);
-        if (nonEvalValues != null) {
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.maintenanceMarginPatterns.clear();
+            } 
             for (int i = 0; i < nonEvalValues.size(); i++) {
                 String marginVal = strategySection.fetch(tempMarginKey, i);
                 strategyMeta.addMarginPattern(marginVal);
             }
+        } else if (parentStrategyName == null) {
+            throw new ConfigurationException("Configuration for strategy has no maintenance margin, strategyName=" + strategyName );
         }
         String tempMarginDebugKey = STRATETY_MARGIN_DEBUG;
         nonEvalValues = strategySection.getAll(tempMarginDebugKey);
-        if (nonEvalValues != null) {
+        if (nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.marginDebugPatterns.clear();
+            } 
             for (int i = 0; i < nonEvalValues.size(); i++) {
                 String marginVal = strategySection.fetch(tempMarginDebugKey, i);
                 strategyMeta.addMarginDebugPattern(marginVal);
             }
         }
-        // TODO: validation, make sure everything exists for the patterns, catch exceptions at each pattern to output unable to parse
+
+        masterStrategyMap.put(strategyMeta.strategyName, strategyMeta);
         return strategyMeta;
         
     }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.jexl3.JexlExpression;
 
+import com.jkmcllc.aupair01.exception.ConfigurationException;
+
 class StrategyMeta implements Cloneable {
     final String strategyName;
     final String[] legs;
@@ -42,13 +44,21 @@ class StrategyMeta implements Cloneable {
         this.strategyName = strategyName;
         String[] legsTemp = legs.split(",");
         for (int i = 0; i < legsTemp.length; i++) {
-            legsTemp[i] = legsTemp[i].trim();
+            String legsString = legsTemp[i].trim();
+            if (StrategyConfigs.ALL_LEG_LIST_NAMES.contains(legsString) == false) {
+                throw new ConfigurationException("Configuration for legs is invalid, strategyName=" + strategyName + " and legs=" + legsString);
+            }
+            legsTemp[i] = legsString;
         }
         this.legs = legsTemp;
         String[] legsRatioTemp = legsRatioString.split(",");
         Integer[] legsRatioIntegers = new Integer[legsRatioTemp.length];
         for (int i = 0; i < legsRatioTemp.length; i++) {
-            legsRatioIntegers[i] = Integer.parseInt(legsRatioTemp[i].trim());
+            try {
+                legsRatioIntegers[i] = Integer.parseInt(legsRatioTemp[i].trim());
+            } catch (Exception e) {
+                throw new ConfigurationException("Configuration for legs ratio is invalid, strategyName=" + strategyName + " and ratio=" + legsRatioTemp[i].trim());
+            }
         }
         this.legsRatio = legsRatioIntegers;
         this.sort = null;
