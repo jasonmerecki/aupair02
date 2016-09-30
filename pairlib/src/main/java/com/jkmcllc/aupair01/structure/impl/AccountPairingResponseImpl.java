@@ -24,7 +24,7 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     @Override
     public BigDecimal getTotalMaintenanceMargin() {
         BigDecimal totalMaintMargin = resultMap.values().stream().map((e) -> {
-            BigDecimal totalRootMargin = e.stream().map(s1 -> s1.getMaintenanceMargin()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+            BigDecimal totalRootMargin = AccountPairingResponse.getMaintenanceMargin(e);
             return totalRootMargin;
         }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         return totalMaintMargin;
@@ -33,7 +33,7 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     @Override
     public BigDecimal getTotalInitialMargin() {
         BigDecimal totalMaintMargin = resultMap.values().stream().map((e) -> {
-            BigDecimal totalRootMargin = e.stream().map(s1 -> s1.getInitialMargin()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+            BigDecimal totalRootMargin = AccountPairingResponse.getInitialMargin(e);
             return totalRootMargin;
         }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         return totalMaintMargin;

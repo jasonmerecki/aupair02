@@ -2,6 +2,7 @@ package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -150,6 +151,24 @@ class PairingInfo {
                 shortDeliverables = Collections.emptyList();
             }
         }
+    }
+    
+    void reset() {
+        resetLegs(longCalls);
+        resetLegs(shortCalls);
+        resetLegs(longPuts);
+        resetLegs(shortPuts);
+        resetLegs(longStocks);
+        resetLegs(shortStocks);
+        longDeliverables = null;
+        shortDeliverables = null;
+        init();
+    }
+    
+    private void resetLegs(Collection<? extends AbstractLeg> legs) {
+        legs.parallelStream().forEach(leg -> {
+            leg.resetQty();
+        });
     }
     
     List<? extends Leg> getLongDeliverables() {

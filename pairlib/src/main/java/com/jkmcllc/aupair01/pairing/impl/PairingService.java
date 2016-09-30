@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,12 +54,21 @@ public class PairingService {
                 List<List<StrategyMeta>> strategyMetasList = strategyConfigs.getStrategyGroup(strategyGroupName);
                 PairingInfo pairingInfo = entry.getValue();
                 String optionRoot = entry.getKey();
+                BigDecimal leastMargin = null;
                 for (List<StrategyMeta> strategyMetas : strategyMetasList) {
+                    List<Strategy> testFound = new ArrayList<>();
                     for (StrategyMeta strategyMeta : strategyMetas) {
                         List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyMeta).find() ;
-                        found.addAll(foundForMeta);
+                        testFound.addAll(foundForMeta);
                     }
-                    // TODO: compare with previously found and keep this one if lower or equal margin
+                    // TODO: configure for maintenance or initial margin
+                    BigDecimal testMargin = AccountPairingResponse.getMaintenanceMargin(found);
+                    if (leastMargin == null
+                            || leastMargin.compareTo(testMargin) > 0) {
+                        leastMargin = testMargin;
+                        found = testFound;
+                    } 
+                    pairingInfo.reset();
                 }
                 optionRootResults.put(optionRoot, found);
             }
