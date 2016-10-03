@@ -10,10 +10,12 @@ import com.jkmcllc.aupair01.structure.OptionRoot;
 class PairingRequestImpl implements PairingRequest {
     private final List<Account> accounts;
     private final Map<String, OptionRoot> optionRoots;
+    private final boolean requestAllStrategyLists ;
     
-    PairingRequestImpl (List<Account> accounts, Map<String, OptionRoot> optionRoots) {
+    PairingRequestImpl (List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
         this.accounts = accounts;
         this.optionRoots = optionRoots;
+        this.requestAllStrategyLists = requestAllStrategyLists;
     }
     
     @Override
@@ -23,6 +25,10 @@ class PairingRequestImpl implements PairingRequest {
     @Override
     public Map<String, OptionRoot> getOptionRoots() {
         return optionRoots;
+    }
+    @Override
+    public boolean isRequestAllStrategyLists() {
+        return this.requestAllStrategyLists;
     }
 
     @Override

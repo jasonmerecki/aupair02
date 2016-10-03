@@ -24,6 +24,7 @@ public interface PairingRequest extends Request {
     default String requestType() {return NAME;}
     List<Account> getAccounts();
     Map<String, OptionRoot> getOptionRoots();
+    boolean isRequestAllStrategyLists();
 
     public class PairingRequestBuilder {
         private final List<Account> accounts = new ArrayList<>();
@@ -32,6 +33,8 @@ public interface PairingRequest extends Request {
         private final PositionBuilder positionBuilder = Position.newBuilder();
         private final OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
         private final AccountBuilder accountBuilder = Account.newBuilder();
+        
+        private boolean requestAllStrategyLists = false;
         
         private PairingRequestBuilder() {}
         
@@ -139,6 +142,10 @@ public interface PairingRequest extends Request {
             optionRoots.put(optionRoot.getOptionRootSymbol(), optionRoot);
             return this;
         }
+        public PairingRequestBuilder setRequestAllStrategyLists(boolean requestAllStrategyLists) {
+            this.requestAllStrategyLists = requestAllStrategyLists;
+            return this;
+        }
         
         public PairingRequest build() {
             for (Account account : accounts) {
@@ -152,7 +159,7 @@ public interface PairingRequest extends Request {
                     }
                 }
             }
-            PairingRequest pairingRequest = StructureImplFactory.buildPairingRequest(accounts, optionRoots);
+            PairingRequest pairingRequest = StructureImplFactory.buildPairingRequest(accounts, optionRoots, requestAllStrategyLists);
             return pairingRequest;
         }
     }

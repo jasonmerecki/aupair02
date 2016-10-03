@@ -35,7 +35,7 @@ public class StrategyConfigs {
     private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
     
     private static StrategyConfigs strategyConfigsInstance;
-    private final ConcurrentMap<String, List<List<StrategyMeta>>> strategyConfigsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, List<StrategyGroupLists>> strategyConfigsMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StrategyMeta> masterStrategyMap = new ConcurrentHashMap<>();
     
     public static final String CORE = "core";
@@ -81,8 +81,8 @@ public class StrategyConfigs {
         return strategyConfigsInstance;
     }
     
-    public List<List<StrategyMeta>> getStrategyGroup(String groupName) {
-        List<List<StrategyMeta>> group = strategyConfigsMap.get(groupName);
+    public List<StrategyGroupLists> getStrategyGroup(String groupName) {
+        List<StrategyGroupLists> group = strategyConfigsMap.get(groupName);
         if (group == null) {
             logger.warn("Unknown strategy group \"" + groupName + "\" requested, using core group instead.");
             group = strategyConfigsMap.get(CORE);
@@ -98,12 +98,12 @@ public class StrategyConfigs {
             Ini.Section strategies = paircoreini.get(STRATEGY_GROUP);
             if (core) {
                 Ini.Section coreStrategies = strategies.getChild(CORE);
-                List<List<StrategyMeta>> strategiesList = buildStrategyMeta(coreStrategies);
+                List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
                 strategyConfigsMap.put(CORE, strategiesList);
             } else {
                 for (String groupName : strategies.childrenNames()) {
                     Ini.Section coreStrategies = strategies.getChild(groupName);
-                    List<List<StrategyMeta>> strategiesList = buildStrategyMeta(coreStrategies);
+                    List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
                     strategyConfigsMap.put(CORE, strategiesList);
                 }
             }
@@ -119,7 +119,7 @@ public class StrategyConfigs {
         }
     }
     
-    private List<List<StrategyMeta>> buildStrategyMeta(Ini.Section strategyGroup) {
+    private List<StrategyGroupLists> buildStrategyMeta(Ini.Section strategyGroup) {
         
         String strategyListsString = strategyGroup.get(STRATEGY_LISTS);
         if (strategyListsString == null) {
@@ -129,7 +129,7 @@ public class StrategyConfigs {
         if (strategyLists == null || strategyLists.length == 0) {
             throw new ConfigurationException("Configuration for strategy group with no strategy lists, strategyGroup=" + strategyGroup.getName() );
         }
-        List<List<StrategyMeta>> strategiesList = new ArrayList<>();
+        List<StrategyGroupLists> strategiesList = new ArrayList<>();
         for (int i = 0; i < strategyLists.length; i++) {
             String strategyListName = strategyLists[i].trim();
             List<String> strategyNameStrings = strategyGroup.getAll(strategyListName);
@@ -153,7 +153,8 @@ public class StrategyConfigs {
                     }
                 }
             }
-            strategiesList.add(strategies);
+            StrategyGroupLists strategyGroupLists = new StrategyGroupLists(strategyListName, strategies);
+            strategiesList.add(strategyGroupLists);
         }
 
         
@@ -193,6 +194,7 @@ public class StrategyConfigs {
             if (parentMeta == null) {
                 throw new ConfigurationException("Configuration for parent strategy which is not defined, strategyName=" + strategyName + " and parent=" + parentStrategyName);
             }
+            strategyMeta = parentMeta.copy(strategyName);
         } else {
             String legs = strategySection.fetch(STRATETY_LEGS);
             String legsRatio = strategySection.fetch(STRATETY_LEGS_RATIO);

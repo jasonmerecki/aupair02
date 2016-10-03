@@ -43,11 +43,11 @@ public final class StructureImplFactory {
         return new AccountImpl(accountId, legs, strategyGroupName, customProperties);
     }
     
-    public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots) {
-        return new PairingRequestImpl(accounts, optionRoots);
+    public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
+        return new PairingRequestImpl(accounts, optionRoots, requestAllStrategyLists);
     }
-    public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap) {
-        return new AccountPairingResponseImpl(resultMap);
+    public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot, Map<String, Map<String, List<Strategy>>> allStrategyListResultMap) {
+        return new AccountPairingResponseImpl(resultMap, strategyGroupByRoot, allStrategyListResultMap);
     }
     public static PairingResponse buildPairingResponse(Map<String, AccountPairingResponse> resultMap) {
         return new PairingResponseImpl(resultMap);

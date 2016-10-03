@@ -43,36 +43,56 @@ public class PairingService {
         Map<String, AccountPairingResponse> resultMap = new HashMap<>();
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
         optionRootStore.addRoots(pairingRequest.getOptionRoots());
+        Map<String, Map<String, List<Strategy>>> allStrategyListResultMap = null;
+        if (pairingRequest.isRequestAllStrategyLists()) {
+            allStrategyListResultMap = new HashMap<>();
+        }
         for (Account account : pairingRequest.getAccounts()) {
             Map<String,List<Strategy>> optionRootResults = new HashMap<>();
             Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
+            Map<String, String> strategyGroupByRoot = new HashMap<>();
             for (Map.Entry<String, PairingInfo> entry : pairingInfos.entrySet()) {
+                Map<String, List<Strategy>> strategyListResults = null;
+                if (pairingRequest.isRequestAllStrategyLists()) {
+                    strategyListResults = new HashMap<>();
+                }
                 // for each option root that has pairing info, loop through strategies
                 List<Strategy> found = new ArrayList<>();
-                String strategyGroupName = account.getStrategyGroupName();
+                String strategyGroupListName = null;
+                String testStrategyGroupName = account.getStrategyGroupName();
                 // TODO: validation, group config must be non null
-                List<List<StrategyMeta>> strategyMetasList = strategyConfigs.getStrategyGroup(strategyGroupName);
+                List<StrategyGroupLists> strategyGroupListsList = strategyConfigs.getStrategyGroup(testStrategyGroupName);
                 PairingInfo pairingInfo = entry.getValue();
                 String optionRoot = entry.getKey();
                 BigDecimal leastMargin = null;
-                for (List<StrategyMeta> strategyMetas : strategyMetasList) {
+                for (StrategyGroupLists strategyGroupLists : strategyGroupListsList) {
+                    String testStrategyGroupListName = strategyGroupLists.getStrategyListName();
+                    List<StrategyMeta> strategyMetas = strategyGroupLists.getStrategyMetas();
                     List<Strategy> testFound = new ArrayList<>();
                     for (StrategyMeta strategyMeta : strategyMetas) {
                         List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyMeta).find() ;
                         testFound.addAll(foundForMeta);
                     }
                     // TODO: configure for maintenance or initial margin
-                    BigDecimal testMargin = AccountPairingResponse.getMaintenanceMargin(found);
+                    BigDecimal testMargin = AccountPairingResponse.getMaintenanceMargin(testFound);
                     if (leastMargin == null
                             || leastMargin.compareTo(testMargin) > 0) {
                         leastMargin = testMargin;
                         found = testFound;
+                        strategyGroupListName = testStrategyGroupListName;
                     } 
+                    if (strategyListResults != null) {
+                        strategyListResults.put(testStrategyGroupListName, testFound);
+                    }
                     pairingInfo.reset();
                 }
+                if (allStrategyListResultMap != null && strategyListResults != null) {
+                    allStrategyListResultMap.put(optionRoot, strategyListResults);
+                }
+                strategyGroupByRoot.put(optionRoot, strategyGroupListName);
                 optionRootResults.put(optionRoot, found);
             }
-            AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults);
+            AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap);
             resultMap.put(account.getAccountId(), accountPairingResponse);
         }
         PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);

@@ -27,6 +27,27 @@ class StrategyMeta implements Cloneable {
     private final JexlExpression TRUE = TacoCat.getJexlEngine().createExpression("true");
     private final JexlExpression ZERO = TacoCat.getJexlEngine().createExpression("zero");
     
+    private StrategyMeta(String strategyName, String[] legs, Integer[] legsRatio, String sort, List<StrategyMeta> childStrategies,
+            JexlExpression childStrategiesLegs, List<String> childStrategiesString, List<JexlExpression> strategyPatterns, List<String> strategyPatternStrings,
+            List<JexlExpression> maintenanceMarginPatterns, List<String> maintenanceMarginPatternStrings,
+            List<JexlExpression> initialMarginPatterns, List<String> initialMarginPatternStrings, List<JexlExpression> marginDebugPatterns, List<String> marginDebugPatternStrings) {
+        this.strategyName = strategyName;
+        this.legs = legs;
+        this.legsRatio = legsRatio;
+        this.sort = sort;
+        this.childStrategies = childStrategies;
+        this.childStrategiesLegs = childStrategiesLegs;
+        this.childStrategiesString = childStrategiesString;
+        this.strategyPatterns.addAll(strategyPatterns);
+        this.strategyPatternStrings.addAll(strategyPatternStrings);
+        this.maintenanceMarginPatterns.addAll(maintenanceMarginPatterns);
+        this.maintenanceMarginPatternStrings.addAll(maintenanceMarginPatternStrings);
+        this.initialMarginPatterns.addAll(initialMarginPatterns);
+        this.initialMarginPatternStrings.addAll(initialMarginPatternStrings);
+        this.marginDebugPatterns.addAll(marginDebugPatterns);
+        this.marginDebugPatternStrings.addAll(marginDebugPatternStrings);
+    }
+    
     StrategyMeta (String sortString) {
         // TODO: throw exception if this is not a valid sort
         this.strategyName = sortString.trim();
@@ -102,16 +123,13 @@ class StrategyMeta implements Cloneable {
     }
     
     
-    @Override
-    protected StrategyMeta clone() {
-        StrategyMeta clone = null;
-        try {
-            clone = (StrategyMeta) super.clone();
-        } catch (CloneNotSupportedException e) {
-            // will never happen
-            e.printStackTrace();
-        }
-        return clone;
+    StrategyMeta copy(String strategyName) {
+        // must be a deep copy 
+        StrategyMeta copy = new StrategyMeta(strategyName, legs, legsRatio, sort, childStrategies, 
+                childStrategiesLegs, childStrategiesString, strategyPatterns, strategyPatternStrings, 
+                maintenanceMarginPatterns, maintenanceMarginPatternStrings, 
+                initialMarginPatterns, initialMarginPatternStrings, marginDebugPatterns, marginDebugPatternStrings);
+        return copy;
     }
     @Override
     public String toString() {
