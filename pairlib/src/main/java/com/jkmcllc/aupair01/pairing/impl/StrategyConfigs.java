@@ -30,7 +30,11 @@ public class StrategyConfigs {
     private static final String CHILD_STRATEGIES_LEGS = "childStrategiesLegs";
     private static final String STRATETY_LEGS = "legs";
     private static final String STRATETY_LEGS_RATIO = "legsRatio";
-    private static final String STRATETY_PATTERN = "pattern";
+    private static final String STRATEGY_STRIKES_PATTERN = "strikesPattern";
+    private static final String STRATEGY_WIDTH_PATTERN = "widthPattern";
+    private static final String STRATEGY_EXPIRATION_PATTERN = "expirationPattern";
+    private static final String STRATEGY_EXERCISE_PATTERN = "exercisePattern";
+    private static final String STRATEGY_OTHER_PATTERN = "otherPattern";
     private static final String STRATETY_MAINTENANCE_MARGIN = "maintenanceMargin";
     private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
     
@@ -204,19 +208,65 @@ public class StrategyConfigs {
         }
 
 
-        String tempPatternKey = STRATETY_PATTERN;
+        String tempPatternKey = STRATEGY_STRIKES_PATTERN;
         List<String> nonEvalValues = strategySection.getAll(tempPatternKey);
         if ( nonEvalValues != null && nonEvalValues.size() > 0) {
             if (parentStrategyName != null) {
-                strategyMeta.strategyPatterns.clear();
+                strategyMeta.strikesPatterns.clear();
             } 
             for (int i = 0; i < nonEvalValues.size(); i++) {
                 String patternVal = strategySection.fetch(tempPatternKey, i);
-                strategyMeta.addStrategyPattern(patternVal);
+                strategyMeta.addStrikesPattern(patternVal);
             }
-        } else if (parentStrategyName == null) {
-            throw new ConfigurationException("Configuration for strategy has no patterns, strategyName=" + strategyName );
-        }
+        } 
+        
+        tempPatternKey = STRATEGY_WIDTH_PATTERN;
+        nonEvalValues = strategySection.getAll(tempPatternKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.widthPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String patternVal = strategySection.fetch(tempPatternKey, i);
+                strategyMeta.addWidthPattern(patternVal);
+            }
+        } 
+        
+        tempPatternKey = STRATEGY_EXPIRATION_PATTERN;
+        nonEvalValues = strategySection.getAll(tempPatternKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.expirationPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String patternVal = strategySection.fetch(tempPatternKey, i);
+                strategyMeta.addExpirationPattern(patternVal);
+            }
+        } 
+        
+        tempPatternKey = STRATEGY_EXERCISE_PATTERN;
+        nonEvalValues = strategySection.getAll(tempPatternKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.exercisePatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String patternVal = strategySection.fetch(tempPatternKey, i);
+                strategyMeta.addExercisePattern(patternVal);
+            }
+        } 
+        
+        tempPatternKey = STRATEGY_OTHER_PATTERN;
+        nonEvalValues = strategySection.getAll(tempPatternKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.otherPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String patternVal = strategySection.fetch(tempPatternKey, i);
+                strategyMeta.addOtherPattern(patternVal);
+            }
+        } 
 
         String tempMarginKey = STRATETY_MAINTENANCE_MARGIN;
         nonEvalValues = strategySection.getAll(tempMarginKey);

@@ -128,51 +128,81 @@ class StrategyFinder {
     }
     
     protected void testLegs(Leg[] legs) {
-        String strategyName = strategyMeta.strategyName;
-        List<JexlExpression> strategyPatterns = strategyMeta.strategyPatterns;
-
         List<Leg> legList = Arrays.asList(legs);
         if (logger.isTraceEnabled()) {
             logger.trace("testLegs, legs=" + Arrays.asList(legs));
         }
         JexlContext context = TacoCat.buildPairingContext(legList, this.pairingInfo.accountInfo, this.pairingInfo);
-        Boolean valid = false;
-        for (JexlExpression strategyPattern : strategyPatterns) {
-            valid = (Boolean) strategyPattern.evaluate(context);
+        Boolean valid = true;
+        
+        List<JexlExpression> strikesPatterns = strategyMeta.strikesPatterns;
+        for (JexlExpression pattern : strikesPatterns) {
+            valid = (Boolean) pattern.evaluate(context);
             if (!valid) {
-                break;
+                return;
+            }
+        }
+        
+        List<JexlExpression> widthPatterns = strategyMeta.widthPatterns;
+        for (JexlExpression pattern : widthPatterns) {
+            valid = (Boolean) pattern.evaluate(context);
+            if (!valid) {
+                return;
+            }
+        }
+        
+        List<JexlExpression> expirationPatterns = strategyMeta.expirationPatterns;
+        for (JexlExpression pattern : expirationPatterns) {
+            valid = (Boolean) pattern.evaluate(context);
+            if (!valid) {
+                return;
+            }
+        }
+        
+        List<JexlExpression> exercisePatterns = strategyMeta.exercisePatterns;
+        for (JexlExpression pattern : exercisePatterns) {
+            valid = (Boolean) pattern.evaluate(context);
+            if (!valid) {
+                return;
+            }
+        }
+        
+        List<JexlExpression> otherPatterns = strategyMeta.otherPatterns;
+        for (JexlExpression pattern : otherPatterns) {
+            valid = (Boolean) pattern.evaluate(context);
+            if (!valid) {
+                return;
             }
         }
 
-        if (valid) {
-            if (strategyMeta.childStrategies == null) {
-                Integer strategyQty = findMaxQty(legs);
-                if (strategyQty > 0) {
-                    Integer[] legsRatio = getLegsRatio();
-                    List<Leg> strategyLegs = new ArrayList<>(legList.size());
-                    for (int i = 0; i < legList.size(); i++) {
-                        AbstractLeg sourceLeg1 = (AbstractLeg) legs[i];
-                        Integer testQty = strategyQty * legsRatio[i];
-                        Leg newLeg1 = sourceLeg1.reduceBy(testQty);
-                        strategyLegs.add(newLeg1);
-                    }
-                    Collections.sort(strategyLegs, ASC_STRIKE);
-                    List<JexlExpression> maintenanceMarginExpressions = strategyMeta.maintenanceMarginPatterns;
-                    List<JexlExpression> initialMarginExpressions = strategyMeta.initialMarginPatterns;
-                    Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, 
-                            pairingInfo, maintenanceMarginExpressions, initialMarginExpressions, strategyMeta.marginDebugPatterns);
-                    foundStrategies.add(strategy);
+        if (strategyMeta.childStrategies == null) {
+            Integer strategyQty = findMaxQty(legs);
+            if (strategyQty > 0) {
+                Integer[] legsRatio = getLegsRatio();
+                List<Leg> strategyLegs = new ArrayList<>(legList.size());
+                for (int i = 0; i < legList.size(); i++) {
+                    AbstractLeg sourceLeg1 = (AbstractLeg) legs[i];
+                    Integer testQty = strategyQty * legsRatio[i];
+                    Leg newLeg1 = sourceLeg1.reduceBy(testQty);
+                    strategyLegs.add(newLeg1);
                 }
-            } else {
-                // delegate to child strategies
-                Object[] legObjectArray =  (Object[]) strategyMeta.childStrategiesLegs.evaluate(context);
-                for (int i = 0; i < strategyMeta.childStrategies.size(); i++) {
-                    Leg[] childLegs = (Leg[]) legObjectArray[i];
-                    StrategyMeta childStrategy = strategyMeta.childStrategies.get(i);
-                    StrategyFinder childFinder = StrategyFinder.newInstance(pairingInfo, childStrategy);
-                    childFinder.testLegs(childLegs);
-                    foundStrategies.addAll(childFinder.getFoundStrategies());
-                }
+                Collections.sort(strategyLegs, ASC_STRIKE);
+                List<JexlExpression> maintenanceMarginExpressions = strategyMeta.maintenanceMarginPatterns;
+                List<JexlExpression> initialMarginExpressions = strategyMeta.initialMarginPatterns;
+                String strategyName = strategyMeta.strategyName;
+                Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, 
+                        pairingInfo, maintenanceMarginExpressions, initialMarginExpressions, strategyMeta.marginDebugPatterns);
+                foundStrategies.add(strategy);
+            }
+        } else {
+            // delegate to child strategies
+            Object[] legObjectArray =  (Object[]) strategyMeta.childStrategiesLegs.evaluate(context);
+            for (int i = 0; i < strategyMeta.childStrategies.size(); i++) {
+                Leg[] childLegs = (Leg[]) legObjectArray[i];
+                StrategyMeta childStrategy = strategyMeta.childStrategies.get(i);
+                StrategyFinder childFinder = StrategyFinder.newInstance(pairingInfo, childStrategy);
+                childFinder.testLegs(childLegs);
+                foundStrategies.addAll(childFinder.getFoundStrategies());
             }
         }
     }

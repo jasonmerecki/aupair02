@@ -9,6 +9,7 @@ import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.MapContext;
 
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
+import com.jkmcllc.aupair01.structure.ExerciseStyle;
 
 class TacoCat {
     private final JexlEngine jexlEngine = (new JexlBuilder()).cache(512).strict(true).silent(false).create();
@@ -39,9 +40,15 @@ class TacoCat {
     }
     private static JexlContext buildCommonContext(List<Leg> legs, AccountInfo accountInfo, PairingInfo pairingInfo) {
         JexlContext context = new MapContext();
+        // some helpful constants
+        context.set("zero",BigDecimal.ZERO);
+        context.set("true",Boolean.TRUE);
+        context.set("false",Boolean.FALSE);
+        context.set("exerciseEuropean", ExerciseStyle.E);
+        context.set("exerciseAmerican", ExerciseStyle.A);
+        // context-specific stuff
         context.set("legs", legs);
         context.set("accountInfo", accountInfo);
-        context.set("zero",BigDecimal.ZERO);
         context.set("maintenanceMargin",BigDecimal.ZERO);
         PublicPairingInfo i = new PublicPairingInfo(pairingInfo);
         context.set("pairingInfo", i);

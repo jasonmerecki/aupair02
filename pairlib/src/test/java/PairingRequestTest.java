@@ -5,12 +5,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
-import com.jkmcllc.aupair01.pairing.impl.PairingService;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
 
@@ -19,14 +16,8 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
  *
  * @author Jason Merecki, @date 8/9/16 4:59 PM
  */
-public class PairingRequestTest {
+public class PairingRequestTest extends PairingRequestTestBase {
    
-    private PairingService pairingService = null;
-    
-    @Before
-    public void setUp() {
-        pairingService = PairingService.getInstance();
-    }
     
     @Test
     public void buildAndPair1() {
@@ -87,15 +78,14 @@ public class PairingRequestTest {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest3(false);
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 1);
+        commonTestAndPrintOutput(pairingResponse, 2);
         // test outcomes
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account31result = responseByAccount.get("account3_1").getStrategies();
+        boolean found = findStrategy(account31result, "GPRO", "IronButterflyShort", 5, new BigDecimal("2500"));
+        assertTrue(found);
         Map<String, List<Strategy>> account3result = responseByAccount.get("account3").getStrategies();
-        boolean found = findStrategy(account3result, "GPRO", "IronButterflyShort", 4, new BigDecimal("2000"));
-        assertTrue(found);
-        found = findStrategy(account3result, "GPRO", "IronButterflyLong", 1, new BigDecimal("0"));
-        assertTrue(found);
-        found = findStrategy(account3result, "GPRO", "CallVerticalShort", 1, new BigDecimal("500"));
+        found = findStrategy(account3result, "GPRO", "IronButterflyLong", 6, new BigDecimal("0"));
         assertTrue(found);
     }
     
@@ -104,7 +94,7 @@ public class PairingRequestTest {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest3(true);
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 1);
+        commonTestAndPrintOutput(pairingResponse, 2);
     }
     
     @Test
@@ -170,75 +160,42 @@ public class PairingRequestTest {
         assertTrue(found);
     }
     
-    private void commonTestAndPrintOutput(PairingResponse pairingResponse, int accountsInRequest) {
-        StringBuilder sb = new StringBuilder();
-        assertNotNull(pairingResponse);
+    @Test
+    public void buildAndPair8() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest8();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 4);
+
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
-        assertNotNull(responseByAccount);
-        assertEquals(accountsInRequest, responseByAccount.size());
-        for (Map.Entry<String, AccountPairingResponse> entry : responseByAccount.entrySet()) {
-            String accountId = entry.getKey();
-            AccountPairingResponse accountResponse = entry.getValue();
-            Map<String, List<Strategy>> strategies = accountResponse.getStrategies();
-            BigDecimal totalMaintMargin = accountResponse.getTotalMaintenanceMargin();
-            BigDecimal totalInitialMargin = accountResponse.getTotalInitialMargin();
-            Map<String, Map<String, List<Strategy>>> allStrategyListResults = accountResponse.getAllStrategyListResults();
-            sb.append("AccountID '").append(accountId).append("' total initial margin=").append(totalInitialMargin).append(" total maintenance margin=").append(totalMaintMargin);
-            if (allStrategyListResults == null) {
-                sb.append(", strategies:").append("\n");
-                for (Map.Entry<String, List<Strategy>> entry2 : strategies.entrySet()) {
-                    sb.append("Option root '").append(entry2.getKey()).append("'\n");
-                    for (Strategy strategy : entry2.getValue()) {
-                        sb.append(strategy).append("\n");
-                    }
-                } 
-                sb.append("all strategy groups by root:").append("\n");
-                sb.append(accountResponse.getStrategyGroupByRoot()).append("\n");
-            } else {
-                sb.append("' all strategy lists:").append("\n");
-                for (Map.Entry<String, Map<String, List<Strategy>>> entry2 : allStrategyListResults.entrySet()) {
-                    sb.append("Option root '").append(entry2.getKey()).append("'\n");
-                    for (Map.Entry<String, List<Strategy>> strategyGroupList : entry2.getValue().entrySet()) {
-                        sb.append(strategyGroupList.getKey()).append("\n");
-                        for (Strategy strategy : strategyGroupList.getValue()) {
-                            sb.append(strategy).append("\n");
-                        }
-                    }
-                } 
-            }
-        }
-        System.out.println(sb.toString());
-    }
-    
-    private void commonPrintInput(PairingRequest pairingRequest) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Input for PairingRequest\n");
-        pairingRequest.getOptionRoots().values().forEach( root -> {
-            sb.append(root.toString());
-        });
-        sb.append("\n");
-        pairingRequest.getAccounts().forEach( act -> {
-            sb.append("Account: ").append(act.getAccountId()).append("\nPositions:\n");
-            act.getPositions().forEach( pos -> {
-                sb.append(pos).append("\n");
-            });
-        });
-        System.out.println(sb.toString());
-    }
-    
-    private boolean findStrategy(Map<String, List<Strategy>> strategyMap, String optionRoot, String strategyName, 
-            Integer quantity, BigDecimal margin) {
-        boolean found = false;
-        List<Strategy> strategyResultList = strategyMap.get(optionRoot);
-        for (Strategy strategy : strategyResultList) {
-            if (strategyName.equals(strategy.getStrategyName())) {
-                BigDecimal strategyMargin = strategy.getMaintenanceMargin();
-                Integer strategyQuantity = strategy.getQuantity();
-                found = (strategyMargin.compareTo(margin) == 0 && strategyQuantity.compareTo(quantity) == 0);
-                if (found) break;
-            }
-        }
-        return found;
+        Map<String, List<Strategy>> account81result = responseByAccount.get("account8_1").getStrategies();
+        boolean found = findStrategy(account81result, "GPRO", "CallBrokenCondorLong", 8, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account81result, "GPRO", "CallVerticalShort", 3, new BigDecimal("3000"));
+        assertTrue(found);
+        
+        Map<String, List<Strategy>> account8result = responseByAccount.get("account8").getStrategies();
+        found = findStrategy(account8result, "GPRO", "PutBrokenCondorLong", 8, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account8result, "GPRO", "PutVerticalShort", 2, new BigDecimal("2000"));
+        assertTrue(found);
+        
+        Map<String, List<Strategy>> account82result = responseByAccount.get("account8_2").getStrategies();
+        found = findStrategy(account82result, "GPRO", "CallBrokenButterflyLong", 4, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account82result, "GPRO", "CallUnpairedLong", 4, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account82result, "GPRO", "CallUnpairedLong", 7, new BigDecimal("0"));
+        assertTrue(found);
+        
+        Map<String, List<Strategy>> account83result = responseByAccount.get("account8_3").getStrategies();
+        found = findStrategy(account83result, "GPRO", "PutBrokenButterflyLong", 5, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account83result, "GPRO", "PutUnpairedLong", 3, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account83result, "GPRO", "PutUnpairedLong", 5, new BigDecimal("0"));
+        assertTrue(found);
+
     }
     
 }

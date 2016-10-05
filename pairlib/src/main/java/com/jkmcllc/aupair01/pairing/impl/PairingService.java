@@ -94,6 +94,9 @@ public class PairingService {
             }
             AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap);
             resultMap.put(account.getAccountId(), accountPairingResponse);
+            if (allStrategyListResultMap != null) {
+                allStrategyListResultMap = new HashMap<>();
+            }
         }
         PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);
         return response;
