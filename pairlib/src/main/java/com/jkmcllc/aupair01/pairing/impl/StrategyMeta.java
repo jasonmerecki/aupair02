@@ -168,6 +168,14 @@ class StrategyMeta implements Cloneable {
         }
         return this;
     }
+    StrategyMeta addInitialMarginPattern(String pattern) {
+        if (pattern != null) {
+            JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+            initialMarginPatterns.add(p);
+            initialMarginPatternStrings.add(pattern);
+        }
+        return this;
+    }
     
     
     StrategyMeta copy(String strategyName) {

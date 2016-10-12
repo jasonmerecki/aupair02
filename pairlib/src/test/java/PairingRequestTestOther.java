@@ -14,7 +14,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 public class PairingRequestTestOther extends PairingRequestTestBase {
     @Test
     public void buildAndPair3other1() {
-        PairingRequest pairingRequest = PairingRequestBuilderTestOthers.buildRequest3(false, false);
+        PairingRequest pairingRequest = PairingRequestBuilderTestOthers.buildRequest3(true, false);
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);
@@ -31,7 +31,7 @@ public class PairingRequestTestOther extends PairingRequestTestBase {
     
     @Test
     public void buildAndPair3other2() {
-        PairingRequest pairingRequest = PairingRequestBuilderTestOthers.buildRequest3(false, true);
+        PairingRequest pairingRequest = PairingRequestBuilderTestOthers.buildRequest3(true, true);
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
         commonTestAndPrintOutput(pairingResponse, 1);

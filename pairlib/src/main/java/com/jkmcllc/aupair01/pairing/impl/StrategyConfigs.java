@@ -37,6 +37,7 @@ public class StrategyConfigs {
     private static final String STRATEGY_OTHER_PATTERN = "otherPattern";
     private static final String STRATETY_MAINTENANCE_MARGIN = "maintenanceMargin";
     private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
+    private static final String STRATETY_INITIAL_MARGIN = "intialMargin";
     
     private static StrategyConfigs strategyConfigsInstance;
     private final ConcurrentMap<String, List<StrategyGroupLists>> strategyConfigsMap = new ConcurrentHashMap<>();
@@ -95,6 +96,7 @@ public class StrategyConfigs {
     }
     
     private void loadConfigs(Reader reader, boolean core) {
+        String coreName = core ? "core" : "";
         try {
             Ini paircoreini = new Ini(reader);
             findAllStrategies(paircoreini);
@@ -104,20 +106,22 @@ public class StrategyConfigs {
                 Ini.Section coreStrategies = strategies.getChild(CORE);
                 List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
                 strategyConfigsMap.put(CORE, strategiesList);
-            } else {
-                for (String groupName : strategies.childrenNames()) {
-                    Ini.Section coreStrategies = strategies.getChild(groupName);
-                    List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
-                    strategyConfigsMap.put(CORE, strategiesList);
+            } 
+            for (String groupName : strategies.childrenNames()) {
+                if (CORE.equals(groupName)) {
+                    continue;
                 }
+                Ini.Section coreStrategies = strategies.getChild(groupName);
+                List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
+                strategyConfigsMap.put(groupName, strategiesList);
             }
             
         } catch (IOException e) {
-            String reallyBadError = "Missing core configuration file; exiting! " + e;
+            String reallyBadError = "Missing " + coreName + " configuration file; exiting! " + e;
             logger.error(reallyBadError, e);
             throw new ConfigurationException(reallyBadError);
         } catch (Exception e) {
-            String reallyBadError = "Misconfigured core configuration file; exiting! " + e;
+            String reallyBadError = "Misconfigured " + coreName + " configuration file; exiting! " + e;
             logger.error(reallyBadError, e);
             throw new ConfigurationException(reallyBadError);
         }
@@ -292,6 +296,17 @@ public class StrategyConfigs {
                 strategyMeta.addMarginDebugPattern(marginVal);
             }
         }
+        tempMarginKey = STRATETY_INITIAL_MARGIN;
+        nonEvalValues = strategySection.getAll(tempMarginKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.initialMarginPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String marginVal = strategySection.fetch(tempMarginKey, i);
+                strategyMeta.addInitialMarginPattern(marginVal);
+            }
+        } 
 
         masterStrategyMap.put(strategyMeta.strategyName, strategyMeta);
         return strategyMeta;

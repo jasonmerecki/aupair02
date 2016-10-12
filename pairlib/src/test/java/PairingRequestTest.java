@@ -18,6 +18,26 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
  */
 public class PairingRequestTest extends PairingRequestTestBase {
    
+    @Test
+    public void buildAndPairEach() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildEachStrategyAmerican();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        boolean found = false;
+        Map<String, List<Strategy>> singleAccountResult = null;
+        
+        singleAccountResult = responseByAccount.get("Conversion").getStrategies();
+        found = findStrategy(singleAccountResult, "MSFT", "Conversion", 5, new BigDecimal("3000"));
+        assertTrue(found);
+        
+        singleAccountResult = responseByAccount.get("Reversal").getStrategies();
+        found = findStrategy(singleAccountResult, "MSFT", "Reversal", 5, new BigDecimal("3000"));
+        assertTrue(found);
+        
+    }
     
     @Test
     public void buildAndPair1() {

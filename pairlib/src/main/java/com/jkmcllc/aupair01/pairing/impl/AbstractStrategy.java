@@ -30,7 +30,7 @@ class AbstractStrategy implements Strategy {
         }
         if (initialMarginExpressions == null || initialMarginExpressions.isEmpty()) {
             initialMarginExpressions = maintenanceMarginExpressions;
-        }
+        } 
         for (JexlExpression marginExpression : initialMarginExpressions) {
             this.initialMargin = (BigDecimal) marginExpression.evaluate(context);
         }
@@ -84,12 +84,14 @@ class AbstractStrategy implements Strategy {
         builder.append(strategyName);
         builder.append(", quantity: ");
         builder.append(quantity);
-        builder.append(", margin: ");
+        builder.append(", maintenanceMargin: ");
         builder.append(maintenanceMargin);
         if (marginDebug != null) {
             builder.append(", marginDebug: ");
             builder.append(marginDebug);
         }
+        builder.append(", initialMargin: ");
+        builder.append(initialMargin);
         builder.append(", legs: ");
         builder.append(legs);
         builder.append("}");
