@@ -48,6 +48,10 @@ class TacoCat {
         context.set("exerciseAmerican", ExerciseStyle.A);
         // context-specific stuff
         context.set("legs", legs);
+        // if there is only one leg, then it can be 'leg' in the context
+        if (legs.size() == 1) {
+            context.set("leg",legs.get(0));
+        }
         context.set("accountInfo", accountInfo);
         context.set("maintenanceMargin",BigDecimal.ZERO);
         PublicPairingInfo i = new PublicPairingInfo(pairingInfo);

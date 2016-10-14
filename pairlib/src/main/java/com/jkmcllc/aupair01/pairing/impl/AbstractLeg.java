@@ -63,6 +63,23 @@ abstract class AbstractLeg implements Leg {
         return newLegWith(used * startSign);
     }
     
+    protected void restoreBy(Integer used) {
+        int startSign = Integer.signum(resetQty);
+        if (startSign == -1) {
+            remainQty = remainQty - used;
+        } else if (startSign == 1) {
+            remainQty = remainQty + used;
+        } else {
+            throw new PairingException("Error: restoring leg with resetQty of zero, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
+        }
+        int endSign = Integer.signum(remainQty);
+        if (endSign != startSign) {
+            throw new PairingException("Error: restoring a leg crossed tbe sign for leg, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
+        }
+        this.qty = this.remainQty;
+        this.bigDecimalQty = new BigDecimal(this.qty);
+    }
+    
     protected void resetQty() {
         this.remainQty = this.resetQty;
         this.qty = this.resetQty;

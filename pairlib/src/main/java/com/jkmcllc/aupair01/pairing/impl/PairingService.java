@@ -74,7 +74,13 @@ public class PairingService {
                         testFound.addAll(foundForMeta);
                     }
                     // TODO: configure for maintenance or initial margin
-                    BigDecimal testMargin = AccountPairingResponse.getMaintenanceMargin(testFound);
+                    BigDecimal testMargin = BigDecimal.ZERO;
+                    String leastMarginConfig = strategyConfigs.getGlobalConfig(StrategyConfigs.TEST_LEAST_MARGIN);
+                    if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
+                        testMargin = AccountPairingResponse.getMaintenanceMargin(testFound);
+                    } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
+                        testMargin = AccountPairingResponse.getInitialMargin(testFound);
+                    }
                     if (leastMargin == null
                             || leastMargin.compareTo(testMargin) > 0) {
                         leastMargin = testMargin;

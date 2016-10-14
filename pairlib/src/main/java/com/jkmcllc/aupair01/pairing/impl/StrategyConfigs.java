@@ -1,5 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,15 +15,31 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.jexl3.JexlExpression;
 import org.ini4j.Ini;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jkmcllc.aupair01.exception.ConfigurationException;
+import com.jkmcllc.aupair01.structure.OptionType;
 
 public class StrategyConfigs {
 
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
+
+    private static final String CONFIG_FILE = "pairconfig";
+    
+    private static final String GLOBAL = "global";
+    static final String CORE = "core";
+    
+    public static final String DEFAULT_STRATEGY_GROUP = "defaultStrategyGroup";
+    public static final String TEST_LEAST_MARGIN = "testLeastMargin";
+    public static final String MAINTENANCE = "maintenance";
+    public static final String INITIAL = "initial";
+
+    private static final String NAKED_MARGINS = "nakedMargins";
+    private static final String NAKED_CALL_MARGIN = "nakedCallMargin";
+    private static final String NAKED_PUT_MARGIN = "nakedPutMargin";
     private static final String STRATEGY_GROUP = "strategyGroup";
     private static final String STRATEGY_LISTS = "strategyLists";
     private static final String STRATEGY_CONFIG_PREFIX = "strategy/";
@@ -30,6 +48,7 @@ public class StrategyConfigs {
     private static final String CHILD_STRATEGIES_LEGS = "childStrategiesLegs";
     private static final String STRATETY_LEGS = "legs";
     private static final String STRATETY_LEGS_RATIO = "legsRatio";
+    private static final String PROHIBITED_STRATEGY = "prohibitedStrategy";
     private static final String STRATEGY_STRIKES_PATTERN = "strikesPattern";
     private static final String STRATEGY_WIDTH_PATTERN = "widthPattern";
     private static final String STRATEGY_EXPIRATION_PATTERN = "expirationPattern";
@@ -37,13 +56,14 @@ public class StrategyConfigs {
     private static final String STRATEGY_OTHER_PATTERN = "otherPattern";
     private static final String STRATETY_MAINTENANCE_MARGIN = "maintenanceMargin";
     private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
-    private static final String STRATETY_INITIAL_MARGIN = "intialMargin";
+    private static final String STRATETY_INITIAL_MARGIN = "initialMargin";
     
+    private final ConcurrentMap<String, String> globalConfiMap = new ConcurrentHashMap<>();
     private static StrategyConfigs strategyConfigsInstance;
     private final ConcurrentMap<String, List<StrategyGroupLists>> strategyConfigsMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StrategyMeta> masterStrategyMap = new ConcurrentHashMap<>();
     
-    public static final String CORE = "core";
+    final ConcurrentMap<OptionType, List<JexlExpression>> nakedMarginMap = new ConcurrentHashMap<>();
     
     public static final String SHORT_DELIVERABLES = "shortDeliverables";
     public static final String LONG_DELIVERABLES = "longDeliverables";
@@ -82,8 +102,25 @@ public class StrategyConfigs {
             Reader reader = new InputStreamReader(strategyConfigsInstance.getClass().getClassLoader()
                     .getResourceAsStream("paircore.ini"));
             strategyConfigsInstance.loadConfigs(reader, true);
+            
+            String fileName = System.getProperty(CONFIG_FILE, "");
+            if (fileName != null && fileName.isEmpty() == false) {
+                logger.info("loading custom configuration file: " + fileName);
+                try {
+                    File file = new File(fileName);
+                    Reader fileReader = new FileReader(file);
+                    strategyConfigsInstance.loadConfigs(fileReader, false);
+                } catch (Exception e) {
+                    throw new ConfigurationException("Could not load properties from file: " + fileName);
+                }
+            }
+                    
         }
         return strategyConfigsInstance;
+    }
+    
+    public String getGlobalConfig(String configName) {
+        return globalConfiMap.get(configName);
     }
     
     public List<StrategyGroupLists> getStrategyGroup(String groupName) {
@@ -98,10 +135,12 @@ public class StrategyConfigs {
     private void loadConfigs(Reader reader, boolean core) {
         String coreName = core ? "core" : "";
         try {
-            Ini paircoreini = new Ini(reader);
-            findAllStrategies(paircoreini);
+            Ini iniFile = new Ini(reader);
+            findAllStrategies(iniFile);
+            findNakedMargins(iniFile);
+            findGlobalConfigs(iniFile);
             // initialize core
-            Ini.Section strategies = paircoreini.get(STRATEGY_GROUP);
+            Ini.Section strategies = iniFile.get(STRATEGY_GROUP);
             if (core) {
                 Ini.Section coreStrategies = strategies.getChild(CORE);
                 List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
@@ -208,7 +247,16 @@ public class StrategyConfigs {
             String legsRatio = strategySection.fetch(STRATETY_LEGS_RATIO);
             String childStrategiesString = strategySection.get(CHILD_STRATEGIES);
             String childStrategiesLegsString = strategySection.get(CHILD_STRATEGIES_LEGS);
-            strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, childStrategiesString, childStrategiesLegsString);
+            boolean prohibitedStrategy = false;
+            String prohibitedString = strategySection.get(PROHIBITED_STRATEGY);
+            if (prohibitedString != null) {
+                if (prohibitedString.isEmpty() == false) {
+                    prohibitedStrategy = Boolean.parseBoolean(prohibitedString);
+                } else {
+                    prohibitedStrategy = true;
+                }
+            }
+            strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, prohibitedStrategy, childStrategiesString, childStrategiesLegsString);
         }
 
 
@@ -313,4 +361,50 @@ public class StrategyConfigs {
         
     }
     
+    private void findNakedMargins(Ini iniFile) {
+        Ini.Section nakeds = iniFile.get(NAKED_MARGINS);
+        if (nakeds == null || nakeds.isEmpty()) {
+            return;
+        }
+        List<String> nonEvalValues = nakeds.getAll(NAKED_CALL_MARGIN);
+        if (nonEvalValues != null && nonEvalValues.size() > 0) {
+            List<JexlExpression> nakedExpressions = new ArrayList<>(nonEvalValues.size());
+            for (int i = 0; i < nakeds.size(); i++) {
+                String pattern = nakeds.fetch(NAKED_CALL_MARGIN, i);
+                JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+                nakedExpressions.add(p);
+            }
+            nakedMarginMap.putIfAbsent(OptionType.C, nakedExpressions);
+        }
+        nonEvalValues = nakeds.getAll(NAKED_PUT_MARGIN);
+        if (nonEvalValues != null && nonEvalValues.size() > 0) {
+            List<JexlExpression> nakedExpressions = new ArrayList<>(nonEvalValues.size());
+            for (int i = 0; i < nakeds.size(); i++) {
+                String pattern = nakeds.fetch(NAKED_PUT_MARGIN, i);
+                JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+                nakedExpressions.add(p);
+            }
+            nakedMarginMap.put(OptionType.P, nakedExpressions);
+        }
+    }
+    
+    private void findGlobalConfigs(Ini iniFile) {
+        Ini.Section globals = iniFile.get(GLOBAL);
+        if (globals == null || globals.isEmpty()) {
+            return;
+        }
+        String defaultStrategyGroup = globals.get(DEFAULT_STRATEGY_GROUP);
+        if (defaultStrategyGroup == null && globalConfiMap.get(DEFAULT_STRATEGY_GROUP) == null) {
+            throw new ConfigurationException("No default strategy group defined");
+        }
+        globalConfiMap.put(DEFAULT_STRATEGY_GROUP, defaultStrategyGroup);
+        String testLeastMargin = globals.get(TEST_LEAST_MARGIN);
+        if ( (testLeastMargin == null && globalConfiMap.get(TEST_LEAST_MARGIN) == null) 
+                || (MAINTENANCE.equals(testLeastMargin) == false && INITIAL.equals(testLeastMargin) == false) ) {
+            throw new ConfigurationException("No least margin test defined");
+        }
+        globalConfiMap.put(TEST_LEAST_MARGIN, testLeastMargin);
+    }
+    
+
 }

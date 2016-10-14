@@ -50,6 +50,22 @@ abstract class AbstractOptionLeg extends AbstractLeg {
         return BigDecimal.ZERO.max(grossItmAmount());
     }
     
+    public BigDecimal getDeliverablesValue() {
+        return optionRoot.getDeliverables().getDeliverablesValue();
+    }
+    
+    public BigDecimal getCashDeliverableValue() {
+        return optionRoot.getDeliverables().getCashDeliverableValue();
+    }
+    
+    public BigDecimal getStrikePrice() {
+        return optionConfig.getStrikePrice();
+    }
+    
+    public BigDecimal getMultiplier() {
+        return optionRoot.getMultiplier();
+    }
+    
     @Override
     public String getType() {
         return AbstractLeg.STOCKOPTION;

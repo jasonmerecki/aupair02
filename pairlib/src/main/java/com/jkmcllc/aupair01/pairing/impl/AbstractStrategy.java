@@ -12,16 +12,18 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 class AbstractStrategy implements Strategy {
 
     final String strategyName;
+    final boolean prohibitedStrategy;
     final List<? extends Leg> legs;
     BigDecimal maintenanceMargin = BigDecimal.ZERO;
     BigDecimal initialMargin = BigDecimal.ZERO;
     String marginDebug = null;
     final Integer quantity;
     
-    AbstractStrategy(String strategyName, List<Leg> legs, Integer quantity, AccountInfo accountInfo, PairingInfo pairingInfo,
+    AbstractStrategy(String strategyName, boolean prohibitedStrategy, List<Leg> legs, Integer quantity, AccountInfo accountInfo, PairingInfo pairingInfo,
             List<JexlExpression> maintenanceMarginExpressions, List<JexlExpression> initialMarginExpressions, 
             List<JexlExpression> marginDebugExpressions) {
         this.strategyName = strategyName;
+        this.prohibitedStrategy = prohibitedStrategy;
         this.legs = legs;
         this.quantity = quantity;
         JexlContext context = TacoCat.buildMarginContext(legs, accountInfo, pairingInfo, this);
@@ -71,6 +73,10 @@ class AbstractStrategy implements Strategy {
         return initialMargin;
     }
     
+    @Override
+    public boolean isProhibitedStrategy() {
+        return prohibitedStrategy;
+    }
     
     @Override
     public Integer getQuantity() {
@@ -82,6 +88,9 @@ class AbstractStrategy implements Strategy {
         StringBuilder builder = new StringBuilder();
         builder.append("Strategy: {strategyName: ");
         builder.append(strategyName);
+        if (prohibitedStrategy) {
+            builder.append(" (prohibited)");
+        }
         builder.append(", quantity: ");
         builder.append(quantity);
         builder.append(", maintenanceMargin: ");

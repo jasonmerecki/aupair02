@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -186,13 +187,29 @@ class StrategyFinder {
                     Leg newLeg1 = sourceLeg1.reduceBy(testQty);
                     strategyLegs.add(newLeg1);
                 }
-                Collections.sort(strategyLegs, ASC_STRIKE);
+                
                 List<JexlExpression> maintenanceMarginExpressions = strategyMeta.maintenanceMarginPatterns;
                 List<JexlExpression> initialMarginExpressions = strategyMeta.initialMarginPatterns;
                 String strategyName = strategyMeta.strategyName;
-                Strategy strategy = new AbstractStrategy(strategyName, strategyLegs, strategyQty, pairingInfo.accountInfo, 
+                Collections.sort(strategyLegs, ASC_STRIKE);
+                Strategy strategy = new AbstractStrategy(strategyName, strategyMeta.prohibitedStrategy, strategyLegs, strategyQty, pairingInfo.accountInfo, 
                         pairingInfo, maintenanceMarginExpressions, initialMarginExpressions, strategyMeta.marginDebugPatterns);
-                foundStrategies.add(strategy);
+                
+                
+                // if the strategy margin isn't lower than the equivalent naked margin, then restore the legs
+                // and do not add the strategy
+                
+                boolean nakedBetter = false;
+                
+                if (nakedBetter) {
+                    for (int i = 0; i < legList.size(); i++) {
+                        AbstractLeg sourceLeg1 = (AbstractLeg) legs[i];
+                        Integer testQty = strategyQty * legsRatio[i];
+                        sourceLeg1.restoreBy(testQty);
+                    }
+                } else {
+                    foundStrategies.add(strategy);
+                }
             }
         } else {
             // delegate to child strategies

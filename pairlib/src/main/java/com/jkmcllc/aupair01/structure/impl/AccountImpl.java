@@ -18,7 +18,7 @@ class AccountImpl implements Account {
         this.positions = legs;
         this.customProperties = customProperties;
         if (strategyGroupName == null) {
-            strategyGroupName = StrategyConfigs.CORE;
+            strategyGroupName = StrategyConfigs.getInstance().getGlobalConfig(StrategyConfigs.DEFAULT_STRATEGY_GROUP);
         }
         this.strategyGroupName = strategyGroupName;
     }
