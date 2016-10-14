@@ -247,18 +247,9 @@ public class StrategyConfigs {
             String legsRatio = strategySection.fetch(STRATETY_LEGS_RATIO);
             String childStrategiesString = strategySection.get(CHILD_STRATEGIES);
             String childStrategiesLegsString = strategySection.get(CHILD_STRATEGIES_LEGS);
-            boolean prohibitedStrategy = false;
-            String prohibitedString = strategySection.get(PROHIBITED_STRATEGY);
-            if (prohibitedString != null) {
-                if (prohibitedString.isEmpty() == false) {
-                    prohibitedStrategy = Boolean.parseBoolean(prohibitedString);
-                } else {
-                    prohibitedStrategy = true;
-                }
-            }
-            strategyMeta = new StrategyMeta(strategyName, legs, legsRatio, prohibitedStrategy, childStrategiesString, childStrategiesLegsString);
-        }
 
+            strategyMeta = new StrategyMeta(strategyName, legs, legsRatio,  childStrategiesString, childStrategiesLegsString);
+        }
 
         String tempPatternKey = STRATEGY_STRIKES_PATTERN;
         List<String> nonEvalValues = strategySection.getAll(tempPatternKey);
@@ -356,6 +347,17 @@ public class StrategyConfigs {
             }
         } 
 
+        boolean prohibitedStrategy = false;
+        String prohibitedString = strategySection.get(PROHIBITED_STRATEGY);
+        if (prohibitedString != null) {
+            if (prohibitedString.isEmpty() == false) {
+                prohibitedStrategy = Boolean.parseBoolean(prohibitedString);
+            } else {
+                prohibitedStrategy = true;
+            }
+        }
+        strategyMeta.prohibitedStrategy = prohibitedStrategy;
+        
         masterStrategyMap.put(strategyMeta.strategyName, strategyMeta);
         return strategyMeta;
         

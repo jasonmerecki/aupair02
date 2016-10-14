@@ -12,7 +12,7 @@ class StrategyMeta implements Cloneable {
     final String[] legs;
     final Integer[] legsRatio;
     final String sort;
-    final boolean prohibitedStrategy;
+    boolean prohibitedStrategy;
     final List<StrategyMeta> childStrategies;
     final JexlExpression childStrategiesLegs;
     final List<String> childStrategiesString;
@@ -33,7 +33,7 @@ class StrategyMeta implements Cloneable {
     final List<JexlExpression> marginDebugPatterns = new ArrayList<>();
     final List<String> marginDebugPatternStrings = new ArrayList<>();
     
-    private StrategyMeta(String strategyName, String[] legs, Integer[] legsRatio, String sort, boolean prohibitedStratgy, List<StrategyMeta> childStrategies,
+    private StrategyMeta(String strategyName, String[] legs, Integer[] legsRatio, String sort, List<StrategyMeta> childStrategies,
             JexlExpression childStrategiesLegs, List<String> childStrategiesString, 
             List<JexlExpression> strikesPatterns, List<String> strikesPatternStrings,
             List<JexlExpression> widthPatterns, List<String> widthPatternStrings,
@@ -45,7 +45,6 @@ class StrategyMeta implements Cloneable {
         this.legs = legs;
         this.legsRatio = legsRatio;
         this.sort = sort;
-        this.prohibitedStrategy = prohibitedStratgy;
         this.childStrategies = childStrategies;
         this.childStrategiesLegs = childStrategiesLegs;
         this.childStrategiesString = childStrategiesString;
@@ -79,7 +78,7 @@ class StrategyMeta implements Cloneable {
         this.childStrategiesString = null;
     }
     
-    StrategyMeta(String strategyName, String legs, String legsRatioString, boolean prohibitedStratgy, String childStrategiesString, String childStrategiesLegsString) {
+    StrategyMeta(String strategyName, String legs, String legsRatioString,  String childStrategiesString, String childStrategiesLegsString) {
         this.strategyName = strategyName;
         String[] legsTemp = legs.split(",");
         for (int i = 0; i < legsTemp.length; i++) {
@@ -101,7 +100,6 @@ class StrategyMeta implements Cloneable {
         }
         this.legsRatio = legsRatioIntegers;
         this.sort = null;
-        this.prohibitedStrategy = prohibitedStratgy;
         if (childStrategiesString != null) {
             this.childStrategiesString = new ArrayList<>();
             String[] childStrategyTemp = childStrategiesString.split(",");
@@ -184,7 +182,7 @@ class StrategyMeta implements Cloneable {
     
     StrategyMeta copy(String strategyName) {
         // must be a deep copy 
-        StrategyMeta copy = new StrategyMeta(strategyName, legs, legsRatio, sort, prohibitedStrategy, childStrategies, 
+        StrategyMeta copy = new StrategyMeta(strategyName, legs, legsRatio, sort, childStrategies, 
                 childStrategiesLegs, childStrategiesString, 
                 strikesPatterns, strikesPatternStrings, 
                 widthPatterns, widthPatternStrings, 
@@ -192,6 +190,7 @@ class StrategyMeta implements Cloneable {
                 otherPatterns, otherPatternStrings, 
                 maintenanceMarginPatterns, maintenanceMarginPatternStrings, 
                 initialMarginPatterns, initialMarginPatternStrings, marginDebugPatterns, marginDebugPatternStrings);
+        copy.prohibitedStrategy = this.prohibitedStrategy;
         return copy;
     }
     @Override
