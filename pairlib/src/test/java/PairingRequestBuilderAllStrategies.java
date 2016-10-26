@@ -93,6 +93,23 @@ public class PairingRequestBuilderAllStrategies {
         builder.setAccountStrategyGroupName("cashSecured");
         builder.addAccount("PutCashSecured");
         
+        // short straddle
+        builder.setPositionSymbol("MSFT  160115C00060000").setPositionOptionRoot("MSFT").setPositionQty(-5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.01").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00060000").setPositionOptionRoot("MSFT").setPositionQty(-5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("3.03").addPosition();
+        builder.setAccountStrategyGroupName("pairEach");
+        builder.addAccount("ShortStraddle");
+        
+        // short straddle (i.e. strangle)
+        builder.setPositionSymbol("MSFT  160115C00060000").setPositionOptionRoot("MSFT").setPositionQty(-5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.01").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.03").addPosition();
+        builder.setAccountStrategyGroupName("pairEach");
+        builder.addAccount("ShortStraddle2");
+    
+        
         PairingRequest pairingRequest = builder.build();
         return pairingRequest;
         

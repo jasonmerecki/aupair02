@@ -10,6 +10,9 @@ public interface Strategy {
     List<? extends Leg> getLegs();
     BigDecimal getMaintenanceMargin();
     BigDecimal getInitialMargin();
+    BigDecimal getPureNakedCallMargin();
+    BigDecimal getPureNakedPutMargin();
+    BigDecimal getPureNakedMargin();
     Integer getQuantity();
     boolean isProhibitedStrategy();
 }

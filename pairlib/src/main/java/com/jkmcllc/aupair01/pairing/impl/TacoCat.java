@@ -10,8 +10,12 @@ import org.apache.commons.jexl3.MapContext;
 
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
+import com.jkmcllc.aupair01.structure.OptionConfig;
+import com.jkmcllc.aupair01.structure.OptionRoot;
 
 class TacoCat {
+    public static final String NAKED_LEG = "nakedLeg";
+    
     private final JexlEngine jexlEngine = (new JexlBuilder()).cache(512).strict(true).silent(false).create();
     private static TacoCat cat;
     private TacoCat() {};
@@ -36,6 +40,8 @@ class TacoCat {
         JexlContext context = buildCommonContext(legs, accountInfo, pairingInfo);
         context.set("strategy",strategy);
         context.set("strategyQuantity",new BigDecimal(strategy.getQuantity()));
+        // special holder objects to swap out of context
+        context.set(NAKED_LEG,new NakedOptionLegWrapper());
         return context;
     }
     private static JexlContext buildCommonContext(List<Leg> legs, AccountInfo accountInfo, PairingInfo pairingInfo) {
@@ -48,10 +54,6 @@ class TacoCat {
         context.set("exerciseAmerican", ExerciseStyle.A);
         // context-specific stuff
         context.set("legs", legs);
-        // if there is only one leg, then it can be 'leg' in the context
-        if (legs.size() == 1) {
-            context.set("leg",legs.get(0));
-        }
         context.set("accountInfo", accountInfo);
         context.set("maintenanceMargin",BigDecimal.ZERO);
         PublicPairingInfo i = new PublicPairingInfo(pairingInfo);
@@ -70,5 +72,45 @@ class TacoCat {
         public List<? extends Leg> getShortDeliverables() {
             return pairingInfo.getShortDeliverables();
         }
+    }
+    public static class NakedOptionLegWrapper {
+        AbstractOptionLeg leg;
+        public Integer getQty() {
+            return leg.getQty();
+        }
+        public String getSymbol() {
+            return leg.getSymbol();
+        }
+        public String getType() {
+            return leg.getType();
+        }
+        public OptionConfig getOptionConfig() {
+            return leg.getOptionConfig();
+        }
+        public OptionRoot getOptionRoot() {
+            return leg.getOptionRoot();
+        }
+        public BigDecimal getOtmAmount() {
+            return leg.getOtmAmount();
+        }
+        public BigDecimal getItmAmount() {
+            return leg.getItmAmount();
+        }
+        public BigDecimal getDeliverablesValue() {
+            return leg.getDeliverablesValue() ;
+        }
+        public BigDecimal getCashDeliverableValue() {
+            return leg.getCashDeliverableValue();
+        }
+        public BigDecimal getStrikePrice() {
+            return leg.getStrikePrice();
+        }
+        public BigDecimal getMultiplier() {
+            return leg.getMultiplier();
+        }
+        public BigDecimal getLegValue() {
+            return leg.getLegValue();
+        }
+        
     }
 }

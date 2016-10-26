@@ -6,18 +6,25 @@ import java.util.List;
 
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.jkmcllc.aupair01.pairing.impl.TacoCat.NakedOptionLegWrapper;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
+import com.jkmcllc.aupair01.structure.OptionType;
 
 class AbstractStrategy implements Strategy {
-
-    final String strategyName;
-    final boolean prohibitedStrategy;
-    final List<? extends Leg> legs;
+    private static final Logger logger = LoggerFactory.getLogger(AbstractStrategy.class);
+    private final String strategyName;
+    private final boolean prohibitedStrategy;
+    private final List<? extends Leg> legs;
     BigDecimal maintenanceMargin = BigDecimal.ZERO;
     BigDecimal initialMargin = BigDecimal.ZERO;
+    BigDecimal pureNakedCallMargin = BigDecimal.ZERO;
+    BigDecimal pureNakedPutMargin = BigDecimal.ZERO;
+    BigDecimal pureNakedMargin = BigDecimal.ZERO;
     String marginDebug = null;
-    final Integer quantity;
+    private final Integer quantity;
     
     AbstractStrategy(String strategyName, boolean prohibitedStrategy, List<Leg> legs, Integer quantity, AccountInfo accountInfo, PairingInfo pairingInfo,
             List<JexlExpression> maintenanceMarginExpressions, List<JexlExpression> initialMarginExpressions, 
@@ -26,7 +33,43 @@ class AbstractStrategy implements Strategy {
         this.prohibitedStrategy = prohibitedStrategy;
         this.legs = legs;
         this.quantity = quantity;
+
         JexlContext context = TacoCat.buildMarginContext(legs, accountInfo, pairingInfo, this);
+        for (Leg leg : legs) { 
+            if (leg instanceof ShortCall || leg instanceof ShortPut) {
+                OptionType optionType = null;
+                AbstractOptionLeg optionLeg = null;
+                if (leg instanceof ShortCall) {
+                    optionType = OptionType.C;
+                    optionLeg = (ShortCall) leg;
+                } else if (leg instanceof ShortPut) {
+                    optionType = OptionType.P;
+                    optionLeg = (ShortPut) leg;
+                }
+
+                List<JexlExpression> shortMarginExpressions = StrategyConfigs.getInstance().nakedMarginMap.get(optionType);
+                if (shortMarginExpressions == null || shortMarginExpressions.isEmpty()) {
+                    logger.warn("No naked margin expression found for type: " + optionType);
+                    return;
+                }
+                NakedOptionLegWrapper mcHammer = (NakedOptionLegWrapper) context.get(TacoCat.NAKED_LEG);
+                mcHammer.leg = optionLeg;
+                for (JexlExpression expression : shortMarginExpressions) {
+                    BigDecimal nakedResult = (BigDecimal) expression.evaluate(context);
+                    switch (optionType) {
+                    case C:
+                        pureNakedCallMargin = nakedResult;
+                        break;
+                    case P:
+                        pureNakedPutMargin = nakedResult;
+                        break;
+                    }
+                }
+            } 
+        }
+
+        pureNakedMargin = pureNakedCallMargin.add(pureNakedPutMargin);
+        
         for (JexlExpression marginExpression : maintenanceMarginExpressions) {
             this.maintenanceMargin = (BigDecimal) marginExpression.evaluate(context);
         }
@@ -51,6 +94,7 @@ class AbstractStrategy implements Strategy {
                 marginDebug = sb.toString();
             }
         }
+
     }
     
     @Override
@@ -82,6 +126,21 @@ class AbstractStrategy implements Strategy {
     public Integer getQuantity() {
         return quantity;
     }
+    
+    @Override
+    public BigDecimal getPureNakedCallMargin() {
+        return pureNakedCallMargin;
+    }
+    
+    @Override
+    public BigDecimal getPureNakedPutMargin() {
+        return pureNakedPutMargin;
+    }
+    
+    @Override
+    public BigDecimal getPureNakedMargin() {
+        return pureNakedMargin;
+    }
 
     @Override
     public String toString() {
@@ -101,6 +160,8 @@ class AbstractStrategy implements Strategy {
         }
         builder.append(", initialMargin: ");
         builder.append(initialMargin);
+        builder.append(", pureNakedMargin: ");
+        builder.append(pureNakedMargin);
         builder.append(", legs: ");
         builder.append(legs);
         builder.append("}");

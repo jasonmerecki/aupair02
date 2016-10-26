@@ -101,12 +101,13 @@ public class PairingRequestTest extends PairingRequestTestBase {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest4();
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 1);
+        commonTestAndPrintOutput(pairingResponse, 2);
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
-        Map<String, List<Strategy>> account3result = responseByAccount.get("account4").getStrategies();
-        boolean found = findStrategy(account3result, "GPRO", "PutUnpairedShort", 10, new BigDecimal("13430.00"));
+        Map<String, List<Strategy>> account4result = responseByAccount.get("account4").getStrategies();
+        boolean found = findStrategy(account4result, "GPRO", "PutUnpairedShort", 10, new BigDecimal("13430.00"));
         assertTrue(found);
-        found = findStrategy(account3result, "GPRO", "CallUnpairedShort", 10, new BigDecimal("7610.00"));
+        Map<String, List<Strategy>> account41result = responseByAccount.get("account4_1").getStrategies();
+        found = findStrategy(account41result, "GPRO", "CallUnpairedShort", 10, new BigDecimal("7610.00"));
         assertTrue(found);
     }
     

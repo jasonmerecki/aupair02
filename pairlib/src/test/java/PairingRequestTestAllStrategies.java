@@ -62,6 +62,15 @@ public class PairingRequestTestAllStrategies extends PairingRequestTestBase {
         found = findStrategy(singleAccountResult, "MSFT", "PutCashSecured", 5, new BigDecimal("30000"));
         assertTrue(found);
         
+        singleAccountResult = responseByAccount.get("ShortStraddle").getStrategies();
+        found = findStrategy(singleAccountResult, "MSFT", "ShortStraddle", 5, new BigDecimal("7355.00"));
+        assertTrue(found);
+        
+        singleAccountResult = responseByAccount.get("ShortStraddle2").getStrategies();
+        found = findStrategy(singleAccountResult, "MSFT", "ShortStraddle", 5, new BigDecimal("6545.00"));
+        assertTrue(found);
+        
+        
     }
     
 }

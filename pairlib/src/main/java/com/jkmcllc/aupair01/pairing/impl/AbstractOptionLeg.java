@@ -27,7 +27,7 @@ abstract class AbstractOptionLeg extends AbstractLeg {
         return optionRoot;
     }
     
-    private BigDecimal grossItmAmount() {
+    BigDecimal grossItmAmount() {
         if (this.grossItmAmount == null) {
             BigDecimal value = BigDecimal.ZERO;
             BigDecimal deliverablesValue = this.optionRoot.getDeliverables().getDeliverablesValue();

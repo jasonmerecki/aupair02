@@ -6,6 +6,6 @@ public interface Leg {
     Integer getQty();
     String getSymbol();
     String getDescription();
-    Collection<? extends Leg> getMultiLegs();
     String getType();
+    Collection<? extends Leg> getMultiLegs();
 }

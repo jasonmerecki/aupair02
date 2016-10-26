@@ -198,6 +198,9 @@ public class PairingRequestBuilderTest {
         // margin = max(((4600.00 * 0.2 + 0) * 10) + 14560.0000, (60.00 * 100.00 * 0.01) + 14560.0000)
         builder.setPositionSymbol("GPRO  160115P00060000").setPositionOptionRoot("GPRO").setPositionQty(-10)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("14.56").addPosition();
+        
+        builder.addAccount("account4");
+        
         // margin = max(((4600.00 * 0.2 + 0) * 10) + 6570.0000, (4600.00 * 10 * 0.1) + 6570.0000)
         builder.setPositionSymbol("GPRO  160115C00040000").setPositionOptionRoot("GPRO").setPositionQty(-10)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("40.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.57").addPosition();
@@ -208,7 +211,7 @@ public class PairingRequestBuilderTest {
         builder.setPositionSymbol("GPRO  160115P00060000").setPositionOptionRoot("GPRO").setPositionQty(-10)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.75").addPosition();
 
-        builder.addAccount("account4");
+        builder.addAccount("account4_1");
         
         PairingRequest pairingRequest = builder.build();
         return pairingRequest;
