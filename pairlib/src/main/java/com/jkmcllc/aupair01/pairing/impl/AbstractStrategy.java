@@ -23,6 +23,7 @@ class AbstractStrategy implements Strategy {
     BigDecimal pureNakedCallMargin = BigDecimal.ZERO;
     BigDecimal pureNakedPutMargin = BigDecimal.ZERO;
     BigDecimal pureNakedMargin = BigDecimal.ZERO;
+    BigDecimal pureNakedLastResult = BigDecimal.ZERO;
     String marginDebug = null;
     private final Integer quantity;
     
@@ -47,6 +48,7 @@ class AbstractStrategy implements Strategy {
                     optionLeg = (ShortPut) leg;
                 }
 
+                this.pureNakedLastResult = BigDecimal.ZERO;
                 List<JexlExpression> shortMarginExpressions = StrategyConfigs.getInstance().nakedMarginMap.get(optionType);
                 if (shortMarginExpressions == null || shortMarginExpressions.isEmpty()) {
                     logger.warn("No naked margin expression found for type: " + optionType);
@@ -55,16 +57,18 @@ class AbstractStrategy implements Strategy {
                 NakedOptionLegWrapper mcHammer = (NakedOptionLegWrapper) context.get(TacoCat.NAKED_LEG);
                 mcHammer.leg = optionLeg;
                 for (JexlExpression expression : shortMarginExpressions) {
-                    BigDecimal nakedResult = (BigDecimal) expression.evaluate(context);
-                    switch (optionType) {
-                    case C:
-                        pureNakedCallMargin = nakedResult;
-                        break;
-                    case P:
-                        pureNakedPutMargin = nakedResult;
-                        break;
-                    }
+                    pureNakedLastResult = (BigDecimal) expression.evaluate(context);
                 }
+                
+                switch (optionType) {
+                case C:
+                    pureNakedCallMargin = pureNakedCallMargin.add(pureNakedLastResult);
+                    break;
+                case P:
+                    pureNakedPutMargin = pureNakedPutMargin.add(pureNakedLastResult);
+                    break;
+                }
+                this.pureNakedLastResult = BigDecimal.ZERO;
             } 
         }
 
@@ -140,6 +144,10 @@ class AbstractStrategy implements Strategy {
     @Override
     public BigDecimal getPureNakedMargin() {
         return pureNakedMargin;
+    }
+    
+    public BigDecimal getPureNakedLastResult() {
+        return pureNakedLastResult;
     }
 
     @Override

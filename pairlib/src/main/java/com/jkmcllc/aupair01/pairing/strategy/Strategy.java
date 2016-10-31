@@ -13,6 +13,7 @@ public interface Strategy {
     BigDecimal getPureNakedCallMargin();
     BigDecimal getPureNakedPutMargin();
     BigDecimal getPureNakedMargin();
+    BigDecimal getPureNakedLastResult();
     Integer getQuantity();
     boolean isProhibitedStrategy();
 }

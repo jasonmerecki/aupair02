@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,12 +12,14 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.Constants;
 
 class StrategyFinder {
     
     private static final Logger logger = LoggerFactory.getLogger(StrategyFinder.class);
+    private final StrategyConfigs strategyConfigs;
     
     private static final Comparator<Leg> ASC_STRIKE = (Leg o1, Leg o2)-> {
         AbstractLeg o1leg = (AbstractLeg) o1, o2leg = (AbstractLeg) o2;
@@ -48,13 +51,14 @@ class StrategyFinder {
     protected final StrategyMeta strategyMeta;
     protected final List<Strategy> foundStrategies = new ArrayList<>();
     
-    public static StrategyFinder newInstance(PairingInfo pairingInfo, StrategyMeta strategyMeta) {
-        return new StrategyFinder(pairingInfo, strategyMeta);
+    public static StrategyFinder newInstance(PairingInfo pairingInfo, StrategyConfigs strategyConfigs, StrategyMeta strategyMeta) {
+        return new StrategyFinder(pairingInfo, strategyConfigs, strategyMeta);
     }
     
-    private StrategyFinder(PairingInfo pairingInfo, StrategyMeta strategyMeta) {
+    private StrategyFinder(PairingInfo pairingInfo, StrategyConfigs strategyConfigs, StrategyMeta strategyMeta) {
         this.pairingInfo = pairingInfo;
         this.strategyMeta = strategyMeta;
+        this.strategyConfigs = strategyConfigs;
     }
     
     List<? extends Strategy> find() {
@@ -197,18 +201,28 @@ class StrategyFinder {
                 
                 // if the strategy margin isn't lower than the equivalent naked margin, then restore the legs
                 // and do not add the strategy
-                
-                boolean nakedBetter = false;
-                
-                if (nakedBetter) {
-                    for (int i = 0; i < legList.size(); i++) {
-                        AbstractLeg sourceLeg1 = (AbstractLeg) legs[i];
-                        Integer testQty = strategyQty * legsRatio[i];
-                        sourceLeg1.restoreBy(testQty);
+                if (strategyMeta.allowLowerNaked) {
+                    String leastMarginConfig = strategyConfigs.getGlobalConfig(StrategyConfigs.TEST_LEAST_MARGIN);
+                    BigDecimal testMargin = BigDecimal.ZERO;
+                    if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
+                        testMargin = strategy.getMaintenanceMargin();
+                    } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
+                        testMargin = strategy.getInitialMargin();
+                    }
+                    BigDecimal pureNakedMargin = strategy.getPureNakedMargin();
+                    if (pureNakedMargin.compareTo(testMargin) >= 0) {
+                        foundStrategies.add(strategy);
+                    } else {
+                        for (int i = 0; i < legList.size(); i++) {
+                            AbstractLeg sourceLeg1 = (AbstractLeg) legs[i];
+                            Integer testQty = strategyQty * legsRatio[i];
+                            sourceLeg1.restoreBy(testQty);
+                        }
                     }
                 } else {
                     foundStrategies.add(strategy);
                 }
+                
             }
         } else {
             // delegate to child strategies
@@ -216,7 +230,7 @@ class StrategyFinder {
             for (int i = 0; i < strategyMeta.childStrategies.size(); i++) {
                 Leg[] childLegs = (Leg[]) legObjectArray[i];
                 StrategyMeta childStrategy = strategyMeta.childStrategies.get(i);
-                StrategyFinder childFinder = StrategyFinder.newInstance(pairingInfo, childStrategy);
+                StrategyFinder childFinder = StrategyFinder.newInstance(pairingInfo, strategyConfigs, childStrategy);
                 childFinder.testLegs(childLegs);
                 foundStrategies.addAll(childFinder.getFoundStrategies());
             }

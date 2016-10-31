@@ -57,6 +57,7 @@ public class StrategyConfigs {
     private static final String STRATETY_MAINTENANCE_MARGIN = "maintenanceMargin";
     private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
     private static final String STRATETY_INITIAL_MARGIN = "initialMargin";
+    private static final String LOWER_NAKED_TEST = "allowLowerNaked";
     
     private final ConcurrentMap<String, String> globalConfiMap = new ConcurrentHashMap<>();
     private static StrategyConfigs strategyConfigsInstance;
@@ -357,6 +358,17 @@ public class StrategyConfigs {
             }
         }
         strategyMeta.prohibitedStrategy = prohibitedStrategy;
+        
+        boolean allowLowerNaked = true;
+        String allowLowerNakedString = strategySection.get(LOWER_NAKED_TEST);
+        if (allowLowerNakedString != null) {
+            if (allowLowerNakedString.isEmpty() == false) {
+                allowLowerNaked = Boolean.parseBoolean(allowLowerNakedString);
+            } else {
+                allowLowerNaked = true;
+            }
+        }
+        strategyMeta.allowLowerNaked = allowLowerNaked;
         
         masterStrategyMap.put(strategyMeta.strategyName, strategyMeta);
         return strategyMeta;

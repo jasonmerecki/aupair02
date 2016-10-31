@@ -13,6 +13,7 @@ class StrategyMeta implements Cloneable {
     final Integer[] legsRatio;
     final String sort;
     boolean prohibitedStrategy;
+    boolean allowLowerNaked;
     final List<StrategyMeta> childStrategies;
     final JexlExpression childStrategiesLegs;
     final List<String> childStrategiesString;

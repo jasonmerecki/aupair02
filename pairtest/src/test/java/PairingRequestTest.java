@@ -101,12 +101,13 @@ public class PairingRequestTest extends PairingRequestTestBase {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest4();
         commonPrintInput(pairingRequest);
         PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 1);
+        commonTestAndPrintOutput(pairingResponse, 2);
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
-        Map<String, List<Strategy>> account3result = responseByAccount.get("account4").getStrategies();
-        boolean found = findStrategy(account3result, "GPRO", "PutUnpairedShort", 10, new BigDecimal("13430.00"));
+        Map<String, List<Strategy>> account4result = responseByAccount.get("account4").getStrategies();
+        boolean found = findStrategy(account4result, "GPRO", "PutUnpairedShort", 10, new BigDecimal("13430.00"));
         assertTrue(found);
-        found = findStrategy(account3result, "GPRO", "CallUnpairedShort", 10, new BigDecimal("7610.00"));
+        Map<String, List<Strategy>> account41result = responseByAccount.get("account4_1").getStrategies();
+        found = findStrategy(account41result, "GPRO", "CallUnpairedShort", 10, new BigDecimal("7610.00"));
         assertTrue(found);
     }
     
@@ -170,7 +171,12 @@ public class PairingRequestTest extends PairingRequestTestBase {
         Map<String, List<Strategy>> account81result = responseByAccount.get("account8_1").getStrategies();
         boolean found = findStrategy(account81result, "GPRO", "CallBrokenCondorLong", 8, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account81result, "GPRO", "CallVerticalShort", 3, new BigDecimal("3000"));
+        // the short vertical is not the best result... actually, the short leg is so far out of the money
+        // that pairing is better off with the naked leg
+        // found = findStrategy(account81result, "GPRO", "CallVerticalShort", 3, new BigDecimal("3000"));
+        found = findStrategy(account81result, "GPRO", "CallUnpairedShort", 3, new BigDecimal("2103.00"));
+        assertTrue(found);
+        found = findStrategy(account81result, "GPRO", "CallUnpairedLong", 4, new BigDecimal("0"));
         assertTrue(found);
         
         Map<String, List<Strategy>> account8result = responseByAccount.get("account8").getStrategies();

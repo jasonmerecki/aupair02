@@ -70,7 +70,7 @@ public class PairingService {
                     List<StrategyMeta> strategyMetas = strategyGroupLists.getStrategyMetas();
                     List<Strategy> testFound = new ArrayList<>();
                     for (StrategyMeta strategyMeta : strategyMetas) {
-                        List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyMeta).find() ;
+                        List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyConfigs, strategyMeta).find() ;
                         testFound.addAll(foundForMeta);
                     }
                     // TODO: configure for maintenance or initial margin
