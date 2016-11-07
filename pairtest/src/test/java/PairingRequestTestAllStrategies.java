@@ -35,7 +35,7 @@ public class PairingRequestTestAllStrategies extends PairingRequestTestBase {
         assertTrue(found);
         
         singleAccountResult = responseByAccount.get("ShortBoxSpread").getStrategies();
-        found = findStrategy(singleAccountResult, "MSFT", "ShortBoxSpread", 5, new BigDecimal("0"));
+        found = findStrategy(singleAccountResult, "MSFT", "ShortBoxSpread", 5, new BigDecimal("5000.00"));
         assertTrue(found);
         
         singleAccountResult = responseByAccount.get("Collar").getStrategies();
