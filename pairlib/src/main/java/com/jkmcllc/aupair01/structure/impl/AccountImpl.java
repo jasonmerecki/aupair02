@@ -3,6 +3,7 @@ package com.jkmcllc.aupair01.structure.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.jkmcllc.aupair01.pairing.impl.GlobalConfigType;
 import com.jkmcllc.aupair01.pairing.impl.StrategyConfigs;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.Position;
@@ -18,7 +19,7 @@ class AccountImpl implements Account {
         this.positions = legs;
         this.customProperties = customProperties;
         if (strategyGroupName == null) {
-            strategyGroupName = StrategyConfigs.getInstance().getGlobalConfig(StrategyConfigs.DEFAULT_STRATEGY_GROUP);
+            strategyGroupName = StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.DEFAULT_STRATEGY_GROUP);
         }
         this.strategyGroupName = strategyGroupName;
     }

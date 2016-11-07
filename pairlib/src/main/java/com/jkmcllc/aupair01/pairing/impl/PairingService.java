@@ -75,7 +75,7 @@ public class PairingService {
                     }
                     // TODO: configure for maintenance or initial margin
                     BigDecimal testMargin = BigDecimal.ZERO;
-                    String leastMarginConfig = strategyConfigs.getGlobalConfig(StrategyConfigs.TEST_LEAST_MARGIN);
+                    String leastMarginConfig = strategyConfigs.getGlobalConfig(GlobalConfigType.TEST_LEAST_MARGIN);
                     if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
                         testMargin = AccountPairingResponse.getMaintenanceMargin(testFound);
                     } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {

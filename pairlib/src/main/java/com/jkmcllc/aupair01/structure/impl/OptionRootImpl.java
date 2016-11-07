@@ -13,13 +13,17 @@ class OptionRootImpl implements OptionRoot {
     private final UnderlyerType underlyerType;
     private final Deliverables deliverables;
     private final BigDecimal multiplier;
+    private final BigDecimal nakedCashPct;
+    private final BigDecimal nakedDeliverablePct;
     OptionRootImpl(String optionRootSymbol, ExerciseStyle exerciseStyle, UnderlyerType underlyerType,
-            BigDecimal multiplier, Deliverables deliverables) {
+            BigDecimal multiplier, Deliverables deliverables, BigDecimal nakedDeliverablePct, BigDecimal nakedCashPct) {
         this.optionRootSymbol = optionRootSymbol;
         this.exerciseStyle = exerciseStyle;
         this.underlyerType = underlyerType;
         this.deliverables = deliverables;
         this.multiplier = multiplier;
+        this.nakedCashPct = nakedCashPct;
+        this.nakedDeliverablePct = nakedDeliverablePct;
     }
     @Override
     public String getOptionRootSymbol() {
@@ -41,6 +45,7 @@ class OptionRootImpl implements OptionRoot {
     public BigDecimal getMultiplier() {
         return multiplier;
     }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -52,6 +57,12 @@ class OptionRootImpl implements OptionRoot {
         builder.append(underlyerType);
         builder.append(", deliverables:");
         builder.append(deliverables);
+        if (nakedDeliverablePct != null) {
+            builder.append(", nakedDeliverablePct:").append(nakedDeliverablePct);
+        }
+        if (nakedCashPct != null) {
+            builder.append(", nakedCashPct:").append(nakedCashPct);
+        }
         builder.append("}");
         return builder.toString();
     }
@@ -65,5 +76,13 @@ class OptionRootImpl implements OptionRoot {
             return false;
         }
         return optionRootSymbol.equals( ((OptionRootImpl) obj).optionRootSymbol );
+    }
+    @Override
+    public BigDecimal getNakedCashPct() {
+        return nakedCashPct;
+    }
+    @Override
+    public BigDecimal getNakedDeliverablePct() {
+        return nakedDeliverablePct;
     }
 }

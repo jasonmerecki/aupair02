@@ -12,7 +12,6 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.Constants;
 
@@ -191,18 +190,15 @@ class StrategyFinder {
                     strategyLegs.add(newLeg1);
                 }
                 
-                List<JexlExpression> maintenanceMarginExpressions = strategyMeta.maintenanceMarginPatterns;
-                List<JexlExpression> initialMarginExpressions = strategyMeta.initialMarginPatterns;
-                String strategyName = strategyMeta.strategyName;
                 Collections.sort(strategyLegs, ASC_STRIKE);
-                Strategy strategy = new AbstractStrategy(strategyName, strategyMeta.prohibitedStrategy, strategyLegs, strategyQty, pairingInfo.accountInfo, 
-                        pairingInfo, maintenanceMarginExpressions, initialMarginExpressions, strategyMeta.marginDebugPatterns);
+                Strategy strategy = new AbstractStrategy(strategyMeta, strategyLegs, strategyQty, pairingInfo.accountInfo, 
+                        pairingInfo);
                 
                 
                 // if the strategy margin isn't lower than the equivalent naked margin, then restore the legs
                 // and do not add the strategy
                 if (strategyMeta.allowLowerNaked) {
-                    String leastMarginConfig = strategyConfigs.getGlobalConfig(StrategyConfigs.TEST_LEAST_MARGIN);
+                    String leastMarginConfig = strategyConfigs.getGlobalConfig(GlobalConfigType.TEST_LEAST_MARGIN);
                     BigDecimal testMargin = BigDecimal.ZERO;
                     if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
                         testMargin = strategy.getMaintenanceMargin();

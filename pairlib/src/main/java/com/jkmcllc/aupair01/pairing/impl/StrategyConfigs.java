@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class StrategyConfigs {
     public static final String TEST_LEAST_MARGIN = "testLeastMargin";
     public static final String MAINTENANCE = "maintenance";
     public static final String INITIAL = "initial";
+    public static final String NAKED_DELIVERABLE_PCT = "nakedDeliverablePct";
+    public static final String NAKED_CASH_PCT = "nakedCashPct";
 
     private static final String NAKED_MARGINS = "nakedMargins";
     private static final String NAKED_CALL_MARGIN = "nakedCallMargin";
@@ -59,7 +62,7 @@ public class StrategyConfigs {
     private static final String STRATETY_INITIAL_MARGIN = "initialMargin";
     private static final String LOWER_NAKED_TEST = "allowLowerNaked";
     
-    private final ConcurrentMap<String, String> globalConfiMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Object> globalConfiMap = new ConcurrentHashMap<>();
     private static StrategyConfigs strategyConfigsInstance;
     private final ConcurrentMap<String, List<StrategyGroupLists>> strategyConfigsMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StrategyMeta> masterStrategyMap = new ConcurrentHashMap<>();
@@ -112,7 +115,7 @@ public class StrategyConfigs {
                     Reader fileReader = new FileReader(file);
                     strategyConfigsInstance.loadConfigs(fileReader, false);
                 } catch (Exception e) {
-                    throw new ConfigurationException("Could not load properties from file: " + fileName);
+                    throw new ConfigurationException("Could not load properties from file: " + fileName, e);
                 }
             }
                     
@@ -120,8 +123,9 @@ public class StrategyConfigs {
         return strategyConfigsInstance;
     }
     
-    public String getGlobalConfig(String configName) {
-        return globalConfiMap.get(configName);
+    @SuppressWarnings("unchecked")
+    public <T> T getGlobalConfig(GlobalConfigType<T> typeValue) {
+        return (T) globalConfiMap.get(typeValue.getTypeName());
     }
     
     public List<StrategyGroupLists> getStrategyGroup(String groupName) {
@@ -418,6 +422,31 @@ public class StrategyConfigs {
             throw new ConfigurationException("No least margin test defined");
         }
         globalConfiMap.put(TEST_LEAST_MARGIN, testLeastMargin);
+        
+        String nakedDeliverablePctString = globals.get(NAKED_DELIVERABLE_PCT);
+        if ( (nakedDeliverablePctString == null && globalConfiMap.get(NAKED_DELIVERABLE_PCT) == null) ) {
+            throw new ConfigurationException("No naked deliverable percent defined");
+        } else if (nakedDeliverablePctString != null) {
+            BigDecimal nakedDeliverablePct = null;
+            try {
+                nakedDeliverablePct = new BigDecimal(nakedDeliverablePctString);
+            } catch (Exception e) {
+                throw new ConfigurationException("Invalid naked deliverable percent defined: " + nakedDeliverablePctString);
+            }
+            globalConfiMap.put(NAKED_DELIVERABLE_PCT, nakedDeliverablePct);
+        }
+        String nakedCashPctString = globals.get(NAKED_CASH_PCT);
+        if ( (nakedCashPctString == null && globalConfiMap.get(NAKED_CASH_PCT) == null) ) {
+            throw new ConfigurationException("No naked cash percent defined");
+        } else if (nakedCashPctString != null) {
+            BigDecimal nakedCashPct = null;
+            try {
+                nakedCashPct = new BigDecimal(nakedCashPctString);
+            } catch (Exception e) {
+                throw new ConfigurationException("Invalid naked cash percent defined: " + nakedCashPctString);
+            }
+            globalConfiMap.put(NAKED_CASH_PCT, nakedCashPct);
+        }
     }
     
 

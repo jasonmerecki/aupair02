@@ -42,6 +42,17 @@ class TacoCat {
         context.set("strategyQuantity",new BigDecimal(strategy.getQuantity()));
         // special holder objects to swap out of context
         context.set(NAKED_LEG,new NakedOptionLegWrapper());
+        if (pairingInfo.allOptions != null && !pairingInfo.allOptions.isEmpty() ) {
+            BigDecimal nakedDeliverablePct = pairingInfo.allOptions.get(0).getOptionRoot().getNakedDeliverablePct();
+            if (nakedDeliverablePct != null) {
+                context.set(GlobalConfigType.NAKED_DELIVERABLE_PCT.getTypeName(), nakedDeliverablePct);
+            }
+            BigDecimal nakedCashPct = pairingInfo.allOptions.get(0).getOptionRoot().getNakedCashPct();
+            if (nakedCashPct != null) {
+                context.set(GlobalConfigType.NAKED_CASH_PCT.getTypeName(), nakedCashPct);
+            }
+        }
+        
         return context;
     }
     private static JexlContext buildCommonContext(List<Leg> legs, AccountInfo accountInfo, PairingInfo pairingInfo) {
@@ -58,6 +69,8 @@ class TacoCat {
         context.set("maintenanceMargin",BigDecimal.ZERO);
         PublicPairingInfo i = new PublicPairingInfo(pairingInfo);
         context.set("pairingInfo", i);
+        context.set(GlobalConfigType.NAKED_DELIVERABLE_PCT.getTypeName(), StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.NAKED_DELIVERABLE_PCT));
+        context.set(GlobalConfigType.NAKED_CASH_PCT.getTypeName(), StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.NAKED_CASH_PCT));
         return context;
     }
     public static class PublicPairingInfo {

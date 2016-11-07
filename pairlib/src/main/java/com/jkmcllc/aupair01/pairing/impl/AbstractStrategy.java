@@ -27,11 +27,11 @@ class AbstractStrategy implements Strategy {
     String marginDebug = null;
     private final Integer quantity;
     
-    AbstractStrategy(String strategyName, boolean prohibitedStrategy, List<Leg> legs, Integer quantity, AccountInfo accountInfo, PairingInfo pairingInfo,
-            List<JexlExpression> maintenanceMarginExpressions, List<JexlExpression> initialMarginExpressions, 
-            List<JexlExpression> marginDebugExpressions) {
-        this.strategyName = strategyName;
-        this.prohibitedStrategy = prohibitedStrategy;
+    AbstractStrategy(StrategyMeta strategyMeta, List<Leg> legs, Integer quantity, AccountInfo accountInfo, PairingInfo pairingInfo) {
+        List<JexlExpression> maintenanceMarginExpressions = strategyMeta.maintenanceMarginPatterns;
+        List<JexlExpression> initialMarginExpressions = strategyMeta.initialMarginPatterns;
+        this.strategyName = strategyMeta.strategyName;
+        this.prohibitedStrategy = strategyMeta.prohibitedStrategy;
         this.legs = legs;
         this.quantity = quantity;
 
@@ -83,9 +83,9 @@ class AbstractStrategy implements Strategy {
         for (JexlExpression marginExpression : initialMarginExpressions) {
             this.initialMargin = (BigDecimal) marginExpression.evaluate(context);
         }
-        if (marginDebugExpressions != null) {
+        if (strategyMeta.marginDebugPatterns != null) {
             StringBuilder sb = new StringBuilder("{\"");
-            Iterator<JexlExpression> iter = marginDebugExpressions.iterator();
+            Iterator<JexlExpression> iter = strategyMeta.marginDebugPatterns.iterator();
             while (iter.hasNext()) {
                 JexlExpression marginDebugExpression = iter.next();
                 sb.append(marginDebugExpression.evaluate(context).toString());

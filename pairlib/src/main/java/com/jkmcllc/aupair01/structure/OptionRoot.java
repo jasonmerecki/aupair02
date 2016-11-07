@@ -14,6 +14,8 @@ public interface OptionRoot {
     UnderlyerType getUnderlyerType();
     Deliverables getDeliverables();
     BigDecimal getMultiplier();
+    BigDecimal getNakedDeliverablePct();
+    BigDecimal getNakedCashPct();
 
     class OptionRootBuilder {
         private String optionRootSymbol;
@@ -21,10 +23,30 @@ public interface OptionRoot {
         private UnderlyerType underlyerType;
         private Deliverables deliverables;
         private BigDecimal multiplier;
+        private BigDecimal nakedCashPct;
+        private BigDecimal nakedDeliverablePct;
         private final DeliverablesBuilder deliverablesBuilder = Deliverables.newBuilder();
         private OptionRootBuilder() {}
         public OptionRootBuilder setOptionRootSymbol(String optionRootSymbol) {
             this.optionRootSymbol = optionRootSymbol;
+            return this;
+        }
+        public OptionRootBuilder setNakedDeliverablePct(String pctString) {
+            try {
+                BigDecimal nakedDeliverablePct = new BigDecimal(pctString);
+                this.nakedDeliverablePct = nakedDeliverablePct;
+            } catch (Exception e) {
+                throw new BuilderException("Unable to parse naked deliverable percent: " + pctString);
+            }
+            return this;
+        }
+        public OptionRootBuilder setNakedCashPct(String pctString) {
+            try {
+                BigDecimal nakedCashPct = new BigDecimal(pctString);
+                this.nakedCashPct = nakedCashPct;
+            } catch (Exception e) {
+                throw new BuilderException("Unable to parse naked cash percent: " + pctString);
+            }
             return this;
         }
         public OptionRootBuilder setExerciseStyle(ExerciseStyle exerciseStyle) {
@@ -87,7 +109,7 @@ public interface OptionRoot {
                 throw new BuilderException(err.toString());
             }
             this.deliverables = deliverablesBuilder.build();
-            OptionRoot optionRoot = StructureImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, multiplier, deliverables);
+            OptionRoot optionRoot = StructureImplFactory.buildOptionRoot(optionRootSymbol, exerciseStyle, underlyerType, multiplier, deliverables, nakedDeliverablePct, nakedCashPct);
             optionRootSymbol = null;
             exerciseStyle = null;
             underlyerType = null;
