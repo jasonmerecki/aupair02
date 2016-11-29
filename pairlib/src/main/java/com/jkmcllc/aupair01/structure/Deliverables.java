@@ -17,6 +17,7 @@ public interface Deliverables {
         private String symbol;
         private BigDecimal qty;
         private BigDecimal price;
+        private BigDecimal maintenancePct;
         private DeliverableType deliverableType;
         private List<Deliverable> deliverableList = new ArrayList<>();
         private DeliverablesBuilder() {}
@@ -37,6 +38,14 @@ public interface Deliverables {
                 this.price = new BigDecimal(price);
             } catch (Exception e) {
                 throw new BuilderException("Invalid deliverable price: " + price);
+            }
+            return this;
+        }
+        public DeliverablesBuilder setDeliverableMaintenancePct(String maintenancePct) {
+            try {
+                this.maintenancePct = new BigDecimal(maintenancePct);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid maintenance percentage: " + maintenancePct);
             }
             return this;
         }
@@ -73,9 +82,9 @@ public interface Deliverables {
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            Deliverable deliverable = StructureImplFactory.buildDeliverable(symbol, qty, price, deliverableType);
+            Deliverable deliverable = StructureImplFactory.buildDeliverable(symbol, qty, price, maintenancePct, deliverableType);
             deliverableList.add(deliverable);
-            symbol = null; qty = null; deliverableType = null; price = null;
+            symbol = null; qty = null; deliverableType = null; price = null; maintenancePct = null;
             return this;
         }
         public Deliverables build() {

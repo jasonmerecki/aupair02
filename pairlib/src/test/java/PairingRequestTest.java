@@ -68,7 +68,7 @@ public class PairingRequestTest extends PairingRequestTestBase {
         Map<String, List<Strategy>> account3result = responseByAccount.get("account2").getStrategies();
         boolean found = findStrategy(account3result, "MSFT", "CallVerticalLongNoStock", 7, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account3result, "MSFT", "CoveredCall", 3, new BigDecimal("0"));
+        found = findStrategy(account3result, "MSFT", "CoveredCall", 3, new BigDecimal("1215.00"));
         assertTrue(found);
     }
     
@@ -122,7 +122,10 @@ public class PairingRequestTest extends PairingRequestTestBase {
         Map<String, List<Strategy>> account5result = responseByAccount.get("account5").getStrategies();
         
         // find the 5 covered call, that should have matched with the quantity -5 strike 40 calls b/c they are lower strike
-        boolean found = findStrategy(account5result, "GPRO", "CoveredCall", 5, new BigDecimal("0"));
+        boolean found = findStrategy(account5result, "GPRO", "CoveredCall", 5, new BigDecimal("2250.00"));
+        assertTrue(found);
+        
+        found = findStrategy(account5result, "GPRO", "CoveredCall", 4, new BigDecimal("0.00"));
         assertTrue(found);
         
         // and find the 6 quantity covered put, that should have matched with the quantity -6 strike 45 puts b/c they are higher strike

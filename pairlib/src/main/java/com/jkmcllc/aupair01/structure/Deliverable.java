@@ -7,4 +7,5 @@ public interface Deliverable {
     BigDecimal getQty();
     BigDecimal getPrice();
     DeliverableType getDeliverableType();
+    BigDecimal getMaintenancePct();
 }

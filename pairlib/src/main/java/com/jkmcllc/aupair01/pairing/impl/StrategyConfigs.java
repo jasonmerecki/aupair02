@@ -37,6 +37,7 @@ public class StrategyConfigs {
     public static final String TEST_LEAST_MARGIN = "testLeastMargin";
     public static final String MAINTENANCE = "maintenance";
     public static final String INITIAL = "initial";
+    public static final String MAINTENANCE_PCT = "maintenancePct";
     public static final String NAKED_DELIVERABLE_PCT = "nakedDeliverablePct";
     public static final String NAKED_CASH_PCT = "nakedCashPct";
 
@@ -107,15 +108,18 @@ public class StrategyConfigs {
                     .getResourceAsStream("paircore.ini"));
             strategyConfigsInstance.loadConfigs(reader, true);
             
-            String fileName = System.getProperty(CONFIG_FILE, "");
-            if (fileName != null && fileName.isEmpty() == false) {
-                logger.info("loading custom configuration file: " + fileName);
-                try {
-                    File file = new File(fileName);
-                    Reader fileReader = new FileReader(file);
-                    strategyConfigsInstance.loadConfigs(fileReader, false);
-                } catch (Exception e) {
-                    throw new ConfigurationException("Could not load properties from file: " + fileName, e);
+            String fileNames = System.getProperty(CONFIG_FILE, "");
+            if (fileNames != null && fileNames.isEmpty() == false) {
+                String[] fileNamesArray = fileNames.split(",");
+                for (String fileName : fileNamesArray) {
+                    logger.info("loading custom configuration file: " + fileName);
+                    try {
+                        File file = new File(fileName);
+                        Reader fileReader = new FileReader(file);
+                        strategyConfigsInstance.loadConfigs(fileReader, false);
+                    } catch (Exception e) {
+                        throw new ConfigurationException("Could not load properties from file: " + fileName, e);
+                    }
                 }
             }
                     
@@ -414,14 +418,28 @@ public class StrategyConfigs {
         String defaultStrategyGroup = globals.get(DEFAULT_STRATEGY_GROUP);
         if (defaultStrategyGroup == null && globalConfiMap.get(DEFAULT_STRATEGY_GROUP) == null) {
             throw new ConfigurationException("No default strategy group defined");
+        } else if (defaultStrategyGroup != null) {
+            globalConfiMap.put(DEFAULT_STRATEGY_GROUP, defaultStrategyGroup);
         }
-        globalConfiMap.put(DEFAULT_STRATEGY_GROUP, defaultStrategyGroup);
         String testLeastMargin = globals.get(TEST_LEAST_MARGIN);
         if ( (testLeastMargin == null && globalConfiMap.get(TEST_LEAST_MARGIN) == null) 
                 || (MAINTENANCE.equals(testLeastMargin) == false && INITIAL.equals(testLeastMargin) == false) ) {
             throw new ConfigurationException("No least margin test defined");
         }
         globalConfiMap.put(TEST_LEAST_MARGIN, testLeastMargin);
+        
+        String maintenancePctString = globals.get(MAINTENANCE_PCT);
+        if ( (maintenancePctString == null && globalConfiMap.get(MAINTENANCE_PCT) == null) ) {
+            throw new ConfigurationException("No maintenance percent defined");
+        } else if (maintenancePctString != null) {
+            BigDecimal maintenancePct = null;
+            try {
+                maintenancePct = new BigDecimal(maintenancePctString);
+            } catch (Exception e) {
+                throw new ConfigurationException("Invalid maintenance percent defined: " + maintenancePctString);
+            }
+            globalConfiMap.put(MAINTENANCE_PCT, maintenancePct);
+        }
         
         String nakedDeliverablePctString = globals.get(NAKED_DELIVERABLE_PCT);
         if ( (nakedDeliverablePctString == null && globalConfiMap.get(NAKED_DELIVERABLE_PCT) == null) ) {

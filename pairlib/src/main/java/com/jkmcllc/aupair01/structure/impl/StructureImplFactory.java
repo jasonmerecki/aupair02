@@ -28,8 +28,8 @@ public final class StructureImplFactory {
     public static Deliverables buildDeliverables(List<Deliverable> deliverableList) {
         return new DeliverablesImpl(deliverableList);
     }
-    public static Deliverable buildDeliverable(String symbol, BigDecimal qty, BigDecimal price, DeliverableType type) {
-        return new DeliverableImpl(symbol, qty, price, type);
+    public static Deliverable buildDeliverable(String symbol, BigDecimal qty, BigDecimal price, BigDecimal maintancePct, DeliverableType type) {
+        return new DeliverableImpl(symbol, qty, price, maintancePct, type);
     }
     public static OptionConfig buildOptionConfig(String optionRoot, OptionType optionType, 
             String strike, BigDecimal strikePrice, String expiry, LocalDateTime expiryTimeLocal, Date expiryDate) {

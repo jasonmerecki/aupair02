@@ -2,7 +2,10 @@ package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
+import com.jkmcllc.aupair01.structure.Deliverable;
+import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
@@ -11,6 +14,7 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     protected final OptionConfig optionConfig;
     protected final OptionRoot optionRoot;
     protected BigDecimal grossItmAmount;
+    protected BigDecimal weightedItmCompliment;
     
     protected AbstractOptionLeg(String symbol, String description, Integer qty, BigDecimal price, 
             OptionConfig optionConfig, OptionRoot optionRoot) {
@@ -48,6 +52,31 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     
     public BigDecimal getItmAmount() {
         return BigDecimal.ZERO.max(grossItmAmount());
+    }
+    
+    public BigDecimal getWeightedItmCompliment() {
+        if (this.weightedItmCompliment == null) {
+            BigDecimal weightedItmCompliment = BigDecimal.ZERO;
+            BigDecimal itmAmount = getItmAmount();
+            BigDecimal deliverablesValue = this.optionRoot.getDeliverables().getDeliverablesValue();
+            if (itmAmount.signum() > 0) {
+                for (Deliverable d : this.optionRoot.getDeliverables().getDeliverableList()) {
+                    if (DeliverableType.S.equals(d.getDeliverableType()) 
+                            && d.getPrice() != null && d.getQty() != null) {
+                        BigDecimal maintenanceCompliment = BigDecimal.ONE.subtract(d.getMaintenancePct());
+                        BigDecimal value = d.getPrice().multiply(d.getQty());
+                        BigDecimal pctOfDeliv = value.divide(deliverablesValue, RoundingMode.HALF_UP);
+                        BigDecimal partOfItm = itmAmount.multiply(pctOfDeliv);
+                        weightedItmCompliment = weightedItmCompliment.add(partOfItm.multiply(maintenanceCompliment));
+                    } else if (DeliverableType.C.equals(d.getDeliverableType())
+                            && d.getPrice() != null) {
+                        // do nothing for cash deliverables; they do not have margin applied therefore they do not have adjustments
+                    }
+                }
+            }
+            this.weightedItmCompliment = weightedItmCompliment;
+        }
+        return this.weightedItmCompliment;
     }
     
     public BigDecimal getDeliverablesValue() {

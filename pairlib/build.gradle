@@ -1,7 +1,7 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
-version = '0.0.4' 
+version = '0.0.6' 
 description = 'Pairing engine'
 
 // In this section you declare where to find the dependencies of your project
@@ -37,6 +37,10 @@ jar {
     }
     baseName 'pairing'
     version '0.0.1'
+}
+
+test {
+    // systemProperty 'pairconfig', '/opt/pair/pairconfig.ini,/opt/pair/apexdefault.ini'
 }
 
 /*
