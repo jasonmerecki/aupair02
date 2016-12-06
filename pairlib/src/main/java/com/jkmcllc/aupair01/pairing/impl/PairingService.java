@@ -60,8 +60,8 @@ public class PairingService {
                 List<Strategy> found = new ArrayList<>();
                 String strategyGroupListName = null;
                 String testStrategyGroupName = account.getStrategyGroupName();
-                // TODO: validation, group config must be non null
-                List<StrategyGroupLists> strategyGroupListsList = strategyConfigs.getStrategyGroup(testStrategyGroupName);
+                StrategyGroup strategyGroup = strategyConfigs.getStrategyGroup(testStrategyGroupName);
+                List<StrategyGroupLists> strategyGroupListsList = strategyGroup.strategyGroupLists;
                 PairingInfo pairingInfo = entry.getValue();
                 String optionRoot = entry.getKey();
                 BigDecimal leastMargin = null;
@@ -73,9 +73,11 @@ public class PairingService {
                         List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyConfigs, strategyMeta).find() ;
                         testFound.addAll(foundForMeta);
                     }
-                    // TODO: configure for maintenance or initial margin
                     BigDecimal testMargin = BigDecimal.ZERO;
-                    String leastMarginConfig = strategyConfigs.getGlobalConfig(GlobalConfigType.TEST_LEAST_MARGIN);
+                    String leastMarginConfig = strategyGroup.testLeastMargin;
+                    if (leastMarginConfig == null) {
+                        leastMarginConfig = strategyConfigs.getGlobalConfig(GlobalConfigType.TEST_LEAST_MARGIN);
+                    }
                     if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
                         testMargin = AccountPairingResponse.getMaintenanceMargin(testFound);
                     } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {

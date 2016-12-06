@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.323s</div>
+<div class="counter">0.175s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,57 +79,57 @@
 </thead>
 <tr>
 <td class="success">buildAndPair1</td>
-<td>0.137s</td>
+<td>0.095s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair1_1</td>
-<td>0.009s</td>
+<td>0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair1_2</td>
-<td>0.050s</td>
+<td>0.012s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair2</td>
-<td>0.016s</td>
+<td>0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair3</td>
-<td>0.010s</td>
+<td>0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair3_1</td>
-<td>0.011s</td>
+<td>0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair4</td>
-<td>0.010s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair5</td>
-<td>0.015s</td>
+<td>0.011s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair6</td>
-<td>0.022s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair7</td>
-<td>0.014s</td>
+<td>0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair8</td>
-<td>0.029s</td>
+<td>0.011s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -138,7 +138,7 @@
 <h2>Standard output</h2>
 <span class="code">
 <pre>Input for PairingRequest
-OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, deliverableType:S}]}OptionRoot: {optionRootSymbol:CSCO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:CSCO, qty:100, price:84.30, deliverableType:S}]}OptionRoot: {optionRootSymbol:BP, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:BP, qty:100, price:134.03, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, maintenancePct:0.25, deliverableType:S}]}OptionRoot: {optionRootSymbol:CSCO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:CSCO, qty:100, price:84.30, maintenancePct:0.25, deliverableType:S}]}OptionRoot: {optionRootSymbol:BP, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:BP, qty:100, price:134.03, maintenancePct:0.25, deliverableType:S}]}
 Account: account1
 Positions:
 Position: {symbol:MSFT  160115C00047500, qty: 6, price: 13.06, optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -184,7 +184,7 @@ all strategy groups by root:
 {MSFT=coreList1, CSCO=coreList1, BP=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, maintenancePct:0.25, deliverableType:S}]}
 Account: account2
 Positions:
 Position: {symbol:MSFT  160115C00047500, qty: 6, price: 12.68, optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -192,17 +192,17 @@ Position: {symbol:MSFT  160115C00050000, qty: 7, price: 9.89, optionConfig: {opt
 Position: {symbol:MSFT  160115C00055000, qty: -10, price: 5.89, optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}
 Position: {symbol:MSFT, qty: 960, price: 60.40}
 
-AccountID 'account2' total initial margin=0 total maintenance margin=0, strategies:
+AccountID 'account2' total initial margin=1215.00000000 total maintenance margin=1215.00000000, strategies:
 Option root 'MSFT'
 Strategy: {strategyName: CallVerticalLongNoStock, quantity: 7, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 12579.0000, legs: [optionLeg: {symbol: &quot;MSFT  160115C00050000&quot;, qty: 7, price: 9.89, optionConfig: {optionRoot: MSFT, optionType: C, strike: 50.00, expiry: &quot;2016-02-19 16:00&quot;}}, optionLeg: {symbol: &quot;MSFT  160115C00055000&quot;, qty: -7, price: 5.89, optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}]}
-Strategy: {strategyName: CoveredCall, quantity: 3, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 5391.0000, legs: [optionLeg: {symbol: &quot;MSFT  160115C00055000&quot;, qty: -3, price: 5.89, optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}, DeliverableLeg: {qty: 3, price: 6040.00, multiLegs:[stockLeg: {symbol: &quot;MSFT&quot;, qty: 300, price: 60.40}]}]}
+Strategy: {strategyName: CoveredCall, quantity: 3, maintenanceMargin: 1215.00000000, initialMargin: 1215.00000000, pureNakedMargin: 5391.0000, legs: [optionLeg: {symbol: &quot;MSFT  160115C00055000&quot;, qty: -3, price: 5.89, optionConfig: {optionRoot: MSFT, optionType: C, strike: 55.00, expiry: &quot;2016-02-19 16:00&quot;}}, DeliverableLeg: {qty: 3, price: 6040.00, multiLegs:[stockLeg: {symbol: &quot;MSFT&quot;, qty: 300, price: 60.40}]}]}
 Strategy: {strategyName: CallUnpairedLong, quantity: 6, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [optionLeg: {symbol: &quot;MSFT  160115C00047500&quot;, qty: 6, price: 12.68, optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}]}
 Strategy: {strategyName: StockUnpairedLong, quantity: 660, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [stockLeg: {symbol: &quot;MSFT&quot;, qty: 660, price: 60.40}]}
 all strategy groups by root:
 {MSFT=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account3_1
 Positions:
 Position: {symbol:GPRO  160115P00045000, qty: 5, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -233,7 +233,7 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account4
 Positions:
 Position: {symbol:GPRO  160115P00040000, qty: -10, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 40.00, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -261,7 +261,7 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account5
 Positions:
 Position: {symbol:GPRO  160115P00040000, qty: -10, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 40.00, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -280,9 +280,9 @@ Position: {symbol:GPRO  160115C00040000, qty: 6, price: 6.57, optionConfig: {opt
 Position: {symbol:GPRO  160115C00050000, qty: -10, price: 2.41, optionConfig: {optionRoot: GPRO, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}
 Position: {symbol:GPRO  160115C00060000, qty: 8, price: 2.41, optionConfig: {optionRoot: GPRO, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}
 
-AccountID 'account5' total initial margin=2283.0000 total maintenance margin=2283.0000, strategies:
+AccountID 'account5' total initial margin=4533.00000000 total maintenance margin=4533.00000000, strategies:
 Option root 'GPRO'
-Strategy: {strategyName: CoveredCall, quantity: 5, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 7885.0000, legs: [optionLeg: {symbol: &quot;GPRO  160115C00040000&quot;, qty: -5, price: 6.57, optionConfig: {optionRoot: GPRO, optionType: C, strike: 40.00, expiry: &quot;2016-01-15 16:00&quot;}}, DeliverableLeg: {qty: 5, price: 4600.00, multiLegs:[stockLeg: {symbol: &quot;GPRO&quot;, qty: 500, price: 46.00}]}]}
+Strategy: {strategyName: CoveredCall, quantity: 5, maintenanceMargin: 2250.00000000, initialMargin: 2250.00000000, pureNakedMargin: 7885.0000, legs: [optionLeg: {symbol: &quot;GPRO  160115C00040000&quot;, qty: -5, price: 6.57, optionConfig: {optionRoot: GPRO, optionType: C, strike: 40.00, expiry: &quot;2016-01-15 16:00&quot;}}, DeliverableLeg: {qty: 5, price: 4600.00, multiLegs:[stockLeg: {symbol: &quot;GPRO&quot;, qty: 500, price: 46.00}]}]}
 Strategy: {strategyName: CoveredCall, quantity: 4, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 3044.0000, legs: [optionLeg: {symbol: &quot;GPRO  160115C00050000&quot;, qty: -4, price: 2.41, optionConfig: {optionRoot: GPRO, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, DeliverableLeg: {qty: 4, price: 4600.00, multiLegs:[stockLeg: {symbol: &quot;GPRO&quot;, qty: 400, price: 46.00}]}]}
 Strategy: {strategyName: PutVerticalLong, quantity: 10, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 5030.00000, legs: [optionLeg: {symbol: &quot;GPRO  160115P00040000&quot;, qty: -10, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 40.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;GPRO  160115P00050000&quot;, qty: 10, price: 4.23, optionConfig: {optionRoot: GPRO, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 Strategy: {strategyName: CallUnpairedShort, quantity: 3, maintenanceMargin: 2283.0000, marginDebug: {&quot;((4600.00 * 0.2 + -400.0000) * 3) + 723.0000, ((4600.00 + 0) * 3 * 0.1) + 723.0000&quot;}, initialMargin: 2283.0000, pureNakedMargin: 2283.0000, legs: [optionLeg: {symbol: &quot;GPRO  160115C00050000&quot;, qty: -3, price: 2.41, optionConfig: {optionRoot: GPRO, optionType: C, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
@@ -304,7 +304,7 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account6
 Positions:
 Position: {symbol:GPRO  160115P00040000, qty: 10, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 40.00, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -332,7 +332,7 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account7
 Positions:
 Position: {symbol:GPRO  160115P00040000, qty: 10, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 40.00, expiry: &quot;2016-02-19 16:00&quot;}}
@@ -360,7 +360,7 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account8
 Positions:
 Position: {symbol:GPRO  160115P00040000, qty: 10, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 40.00, expiry: &quot;2016-02-19 16:00&quot;}}
@@ -413,7 +413,7 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:NKE1, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:NKE, qty:100, price:65.20, deliverableType:S}, Deliverable: {symbol:LULU, qty:45, price:40.93, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:NKE1, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:NKE, qty:100, price:65.20, maintenancePct:0.25, deliverableType:S}, Deliverable: {symbol:LULU, qty:45, price:40.93, maintenancePct:0.25, deliverableType:S}]}
 Account: Nike account 1
 Positions:
 Position: {symbol:NKE1  160115C00055000, qty: 7, price: 74.09, optionConfig: {optionRoot: NKE1, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -421,17 +421,17 @@ Position: {symbol:NKE1  160115C00060000, qty: -8, price: 60.22, optionConfig: {o
 Position: {symbol:NKE, qty: 430, price: 65.20}
 Position: {symbol:LULU, qty: 205, price: 40.93}
 
-AccountID 'Nike account 1' total initial margin=0 total maintenance margin=0, strategies:
+AccountID 'Nike account 1' total initial margin=1771.3875000 total maintenance margin=1771.3875000, strategies:
 Option root 'NKE1'
 Strategy: {strategyName: CallVerticalLongNoStock, quantity: 7, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 53860.5900, legs: [optionLeg: {symbol: &quot;NKE1  160115C00055000&quot;, qty: 7, price: 74.09, optionConfig: {optionRoot: NKE1, optionType: C, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;NKE1  160115C00060000&quot;, qty: -7, price: 60.22, optionConfig: {optionRoot: NKE1, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
-Strategy: {strategyName: CoveredCall, quantity: 1, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 7694.3700, legs: [optionLeg: {symbol: &quot;NKE1  160115C00060000&quot;, qty: -1, price: 60.22, optionConfig: {optionRoot: NKE1, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, DeliverableLeg: {qty: 1, price: 8361.85, multiLegs:[stockLeg: {symbol: &quot;LULU&quot;, qty: 45, price: 40.93}, stockLeg: {symbol: &quot;NKE&quot;, qty: 100, price: 65.20}]}]}
+Strategy: {strategyName: CoveredCall, quantity: 1, maintenanceMargin: 1771.3875000, initialMargin: 1771.3875000, pureNakedMargin: 7694.3700, legs: [optionLeg: {symbol: &quot;NKE1  160115C00060000&quot;, qty: -1, price: 60.22, optionConfig: {optionRoot: NKE1, optionType: C, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, DeliverableLeg: {qty: 1, price: 8361.85, multiLegs:[stockLeg: {symbol: &quot;LULU&quot;, qty: 45, price: 40.93}, stockLeg: {symbol: &quot;NKE&quot;, qty: 100, price: 65.20}]}]}
 Strategy: {strategyName: StockUnpairedLong, quantity: 330, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [stockLeg: {symbol: &quot;NKE&quot;, qty: 330, price: 65.20}]}
 Strategy: {strategyName: StockUnpairedLong, quantity: 160, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [stockLeg: {symbol: &quot;LULU&quot;, qty: 160, price: 40.93}]}
 all strategy groups by root:
 {NKE1=coreList1}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, deliverableType:S}]}OptionRoot: {optionRootSymbol:CSCO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:CSCO, qty:100, price:84.30, deliverableType:S}]}OptionRoot: {optionRootSymbol:BP, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:BP, qty:100, price:134.03, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, maintenancePct:0.25, deliverableType:S}]}OptionRoot: {optionRootSymbol:CSCO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:CSCO, qty:100, price:84.30, maintenancePct:0.25, deliverableType:S}]}OptionRoot: {optionRootSymbol:BP, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:BP, qty:100, price:134.03, maintenancePct:0.25, deliverableType:S}]}
 Account: account1
 Positions:
 Position: {symbol:MSFT  160115C00047500, qty: 6, price: 13.06, optionConfig: {optionRoot: MSFT, optionType: C, strike: 47.50, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -498,7 +498,7 @@ Strategy: {strategyName: CallUnpairedLong, quantity: 3, maintenanceMargin: 0, in
 Strategy: {strategyName: PutUnpairedLong, quantity: 3, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 3, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 
 Input for PairingRequest
-OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, deliverableType:S}]}
+OptionRoot: {optionRootSymbol:GPRO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:GPRO, qty:100, price:46.00, maintenancePct:0.25, deliverableType:S}]}
 Account: account3_1
 Positions:
 Position: {symbol:GPRO  160115P00045000, qty: 5, price: 1.03, optionConfig: {optionRoot: GPRO, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}
@@ -546,7 +546,7 @@ Strategy: {strategyName: PutUnpairedLong, quantity: 2, maintenanceMargin: 0, ini
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 2.14</a> at Nov 6, 2016 8:32:06 PM</p>
+<a href="http://www.gradle.org">Gradle 2.14</a> at Nov 28, 2016 10:24:28 PM</p>
 </div>
 </div>
 </body>

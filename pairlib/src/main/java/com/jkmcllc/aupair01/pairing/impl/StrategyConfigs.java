@@ -65,7 +65,7 @@ public class StrategyConfigs {
     
     private final ConcurrentMap<String, Object> globalConfiMap = new ConcurrentHashMap<>();
     private static StrategyConfigs strategyConfigsInstance;
-    private final ConcurrentMap<String, List<StrategyGroupLists>> strategyConfigsMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, StrategyGroup> strategyConfigsMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StrategyMeta> masterStrategyMap = new ConcurrentHashMap<>();
     
     final ConcurrentMap<OptionType, List<JexlExpression>> nakedMarginMap = new ConcurrentHashMap<>();
@@ -132,8 +132,8 @@ public class StrategyConfigs {
         return (T) globalConfiMap.get(typeValue.getTypeName());
     }
     
-    public List<StrategyGroupLists> getStrategyGroup(String groupName) {
-        List<StrategyGroupLists> group = strategyConfigsMap.get(groupName);
+    public StrategyGroup getStrategyGroup(String groupName) {
+        StrategyGroup group = strategyConfigsMap.get(groupName);
         if (group == null) {
             logger.warn("Unknown strategy group \"" + groupName + "\" requested, using core group instead.");
             group = strategyConfigsMap.get(CORE);
@@ -153,7 +153,8 @@ public class StrategyConfigs {
             if (core) {
                 Ini.Section coreStrategies = strategies.getChild(CORE);
                 List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
-                strategyConfigsMap.put(CORE, strategiesList);
+                StrategyGroup coreGroup = new StrategyGroup(CORE, strategiesList);
+                strategyConfigsMap.put(CORE, coreGroup);
             } 
             for (String groupName : strategies.childrenNames()) {
                 if (CORE.equals(groupName)) {
@@ -161,7 +162,14 @@ public class StrategyConfigs {
                 }
                 Ini.Section coreStrategies = strategies.getChild(groupName);
                 List<StrategyGroupLists> strategiesList = buildStrategyMeta(coreStrategies);
-                strategyConfigsMap.put(groupName, strategiesList);
+                
+                StrategyGroup thisGroup = new StrategyGroup(groupName, strategiesList);
+                String testLeastMargin = coreStrategies.get(TEST_LEAST_MARGIN);
+                if ( testLeastMargin != null
+                        && (MAINTENANCE.equals(testLeastMargin) == false && INITIAL.equals(testLeastMargin) == false) ) {
+                    throw new ConfigurationException("Bad testLeastMargin defined: " + testLeastMargin);
+                }
+                strategyConfigsMap.put(groupName, thisGroup);
             }
             
         } catch (IOException e) {

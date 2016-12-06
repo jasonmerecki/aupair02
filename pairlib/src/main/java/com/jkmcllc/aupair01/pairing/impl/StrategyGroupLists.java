@@ -2,7 +2,7 @@ package com.jkmcllc.aupair01.pairing.impl;
 
 import java.util.List;
 
-public class StrategyGroupLists {
+class StrategyGroupLists {
     private final String strategyListName;
     private final List<StrategyMeta> strategyMetas;
     
