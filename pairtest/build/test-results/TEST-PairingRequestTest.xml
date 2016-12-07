@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="PairingRequestTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2016-11-29T05:24:27" hostname="Mereckis-iMac.local" time="0.175">
+<testsuite name="PairingRequestTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2016-12-07T00:42:31" hostname="Mereckis-iMac.local" time="0.24">
   <properties/>
-  <testcase name="buildAndPair1" classname="PairingRequestTest" time="0.095"/>
+  <testcase name="buildAndPair1" classname="PairingRequestTest" time="0.109"/>
   <testcase name="buildAndPair2" classname="PairingRequestTest" time="0.009"/>
-  <testcase name="buildAndPair3" classname="PairingRequestTest" time="0.007"/>
-  <testcase name="buildAndPair4" classname="PairingRequestTest" time="0.005"/>
-  <testcase name="buildAndPair5" classname="PairingRequestTest" time="0.011"/>
-  <testcase name="buildAndPair6" classname="PairingRequestTest" time="0.005"/>
-  <testcase name="buildAndPair7" classname="PairingRequestTest" time="0.007"/>
-  <testcase name="buildAndPair8" classname="PairingRequestTest" time="0.011"/>
-  <testcase name="buildAndPair1_1" classname="PairingRequestTest" time="0.007"/>
-  <testcase name="buildAndPair1_2" classname="PairingRequestTest" time="0.012"/>
-  <testcase name="buildAndPair3_1" classname="PairingRequestTest" time="0.006"/>
+  <testcase name="buildAndPair3" classname="PairingRequestTest" time="0.013"/>
+  <testcase name="buildAndPair4" classname="PairingRequestTest" time="0.009"/>
+  <testcase name="buildAndPair5" classname="PairingRequestTest" time="0.015"/>
+  <testcase name="buildAndPair6" classname="PairingRequestTest" time="0.012"/>
+  <testcase name="buildAndPair7" classname="PairingRequestTest" time="0.012"/>
+  <testcase name="buildAndPair8" classname="PairingRequestTest" time="0.017"/>
+  <testcase name="buildAndPair1_1" classname="PairingRequestTest" time="0.008"/>
+  <testcase name="buildAndPair1_2" classname="PairingRequestTest" time="0.024"/>
+  <testcase name="buildAndPair3_1" classname="PairingRequestTest" time="0.009"/>
   <system-out><![CDATA[Input for PairingRequest
 OptionRoot: {optionRootSymbol:MSFT, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:MSFT, qty:100, price:60.40, maintenancePct:0.25, deliverableType:S}]}OptionRoot: {optionRootSymbol:CSCO, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:CSCO, qty:100, price:84.30, maintenancePct:0.25, deliverableType:S}]}OptionRoot: {optionRootSymbol:BP, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:BP, qty:100, price:134.03, maintenancePct:0.25, deliverableType:S}]}
 Account: account1

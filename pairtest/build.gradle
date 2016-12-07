@@ -16,4 +16,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-
+test {
+    systemProperty 'pairconfig', '/opt/pair/pairconfig.ini,/opt/pair/apexdefault.ini'
+}

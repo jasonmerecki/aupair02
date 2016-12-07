@@ -165,10 +165,12 @@ public class StrategyConfigs {
                 
                 StrategyGroup thisGroup = new StrategyGroup(groupName, strategiesList);
                 String testLeastMargin = coreStrategies.get(TEST_LEAST_MARGIN);
-                if ( testLeastMargin != null
-                        && (MAINTENANCE.equals(testLeastMargin) == false && INITIAL.equals(testLeastMargin) == false) ) {
-                    throw new ConfigurationException("Bad testLeastMargin defined: " + testLeastMargin);
-                }
+                if ( testLeastMargin != null) {
+                    if (MAINTENANCE.equals(testLeastMargin) == false && INITIAL.equals(testLeastMargin) == false) {
+                        throw new ConfigurationException("Bad testLeastMargin defined: " + testLeastMargin);
+                    }
+                    thisGroup.testLeastMargin = testLeastMargin;
+                } 
                 strategyConfigsMap.put(groupName, thisGroup);
             }
             
