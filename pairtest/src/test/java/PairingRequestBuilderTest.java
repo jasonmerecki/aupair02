@@ -392,5 +392,82 @@ public class PairingRequestBuilderTest {
         return pairingRequest;
     }
     
+    public static PairingRequest buildRequest9() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        // an interesting scenario, this should be five ShortIronButterfly strategies
+        // even though it's possible to also create a LongPutButterfly and spreads with the same options
+        // the short iron butterfly strategies are more optimal
+        builder.setDeliverableSymbol("RUT").setDeliverableQty("100").setDeliverablePrice("1359.30").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("RUTW").setOptionRootExerciseStyle(ExerciseStyle.E)
+            .setOptionRootnderlyerType(UnderlyerType.I).setOptionRootMultiplier("100.00").addOptionRoot();
+
+        builder.setPositionSymbol("RUTW  161209P01300000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1300.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.55").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01350000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1350.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("14.00").addPosition();
+        builder.setPositionSymbol("RUTW  161209P01350000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1350.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("3.80").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01400000").setPositionOptionRoot("RUTW").setPositionQty(4)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1400.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.275").addPosition();
+        
+        builder.setPositionSymbol("RUTW  161209P01160000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1160.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.125").addPosition();
+        builder.setPositionSymbol("RUTW  161209P01280000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1280.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.25").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01280000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1280.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("80.10").addPosition();
+        
+        builder.setPositionSymbol("RUTW  161209P01220000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1220.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.40").addPosition();
+        builder.setPositionSymbol("RUTW  161209P01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1320.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("3.075").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1320.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("42.35").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01420000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1420.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.575").addPosition();
+            
+        builder.setPositionSymbol("RUTW  161209P01260000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1260.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.20").addPosition();
+        builder.setPositionSymbol("RUTW  161209P01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1320.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.675").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1320.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("40.45").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01380000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1380.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("1.15").addPosition();
+        
+        builder.setPositionSymbol("RUTW  161209P01250000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1250.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.175").addPosition();
+        builder.setPositionSymbol("RUTW  161209P01310000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1310.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.475").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01310000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1310.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("50.30").addPosition();
+        builder.setPositionSymbol("RUTW  161209C01370000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1370.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("3.25").addPosition();
+        
+        builder.addAccount("accountAllShortIronButterfly");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+    }
+    
     
 }

@@ -206,4 +206,26 @@ public class PairingRequestTest extends PairingRequestTestBase {
 
     }
     
+    @Test
+    public void buildAndPair9() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest9();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        
+        boolean found;
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> allShortIbResult = responseByAccount.get("accountAllShortIronButterfly").getStrategies();
+        
+        found = findStrategy(allShortIbResult, "RUTW", "IronButterflyShort", 2, new BigDecimal("10000.00"));
+        assertTrue(found);
+        found = findStrategy(allShortIbResult, "RUTW", "IronButterflyShort", 2, new BigDecimal("20000.00"));
+        assertTrue(found);
+        found = findStrategy(allShortIbResult, "RUTW", "IronButterflyShort", 2, new BigDecimal("24000.00"));
+        assertTrue(found);
+        
+        BigDecimal totalMargin = responseByAccount.get("accountAllShortIronButterfly").getTotalMaintenanceMargin();
+        assertEquals(totalMargin, new BigDecimal("78000.0000"));
+    }
+    
 }

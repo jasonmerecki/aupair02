@@ -1,7 +1,7 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
-version = '0.0.7' 
+version = '0.0.8' 
 description = 'Pairing engine'
 
 // In this section you declare where to find the dependencies of your project
@@ -33,7 +33,7 @@ dependencies {
 jar {
     manifest {
         attributes("Implementation-Title": "Pairing Library",
-                   "Implementation-Version": "0.0.7")
+                   "Implementation-Version": "0.0.8")
     }
     baseName 'pairing'
     version '0.0.7'

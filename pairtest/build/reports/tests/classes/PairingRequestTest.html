@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">11</div>
+<div class="counter">12</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.237s</div>
+<div class="counter">0.242s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,17 +79,17 @@
 </thead>
 <tr>
 <td class="success">buildAndPair1</td>
-<td>0.109s</td>
+<td>0.105s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair1_1</td>
-<td>0.008s</td>
+<td>0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair1_2</td>
-<td>0.024s</td>
+<td>0.010s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -99,37 +99,42 @@
 </tr>
 <tr>
 <td class="success">buildAndPair3</td>
-<td>0.013s</td>
+<td>0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair3_1</td>
-<td>0.009s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair4</td>
-<td>0.009s</td>
+<td>0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair5</td>
-<td>0.015s</td>
+<td>0.012s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair6</td>
-<td>0.012s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair7</td>
-<td>0.012s</td>
+<td>0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">buildAndPair8</td>
-<td>0.017s</td>
+<td>0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">buildAndPair9</td>
+<td>0.055s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -413,6 +418,40 @@ all strategy groups by root:
 {GPRO=coreList1}
 
 Input for PairingRequest
+OptionRoot: {optionRootSymbol:RUTW, exerciseStyle:E, underlyerType:I, deliverables:[Deliverable: {symbol:RUT, qty:100, price:1359.30, maintenancePct:0.25, deliverableType:S}]}
+Account: accountAllShortIronButterfly
+Positions:
+Position: {symbol:RUTW  161209P01300000, qty: 2, price: 0.55, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1300.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01350000, qty: -2, price: 14.00, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1350.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01350000, qty: -2, price: 3.80, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1350.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01400000, qty: 4, price: 0.275, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1400.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01160000, qty: 2, price: 0.125, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1160.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01280000, qty: -2, price: 0.25, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1280.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01280000, qty: -2, price: 80.10, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1280.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01220000, qty: 2, price: 0.40, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1220.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01320000, qty: -2, price: 3.075, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01320000, qty: -2, price: 42.35, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01420000, qty: 2, price: 0.575, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1420.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01260000, qty: 2, price: 0.20, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1260.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01320000, qty: -2, price: 0.675, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01320000, qty: -2, price: 40.45, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01380000, qty: 2, price: 1.15, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1380.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01250000, qty: 2, price: 0.175, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1250.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209P01310000, qty: -2, price: 0.475, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1310.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01310000, qty: -2, price: 50.30, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1310.00, expiry: &quot;2016-12-09 16:00&quot;}}
+Position: {symbol:RUTW  161209C01370000, qty: 2, price: 3.25, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1370.00, expiry: &quot;2016-12-09 16:00&quot;}}
+
+AccountID 'accountAllShortIronButterfly' total initial margin=78000.0000 total maintenance margin=78000.0000, strategies:
+Option root 'RUTW'
+Strategy: {strategyName: IronButterflyShort, quantity: 2, maintenanceMargin: 10000.0000, initialMargin: 10000.0000, pureNakedMargin: 110444.0000, legs: [optionLeg: {symbol: &quot;RUTW  161209P01300000&quot;, qty: 2, price: 0.55, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1300.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209P01350000&quot;, qty: -2, price: 3.80, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1350.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01350000&quot;, qty: -2, price: 14.00, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1350.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01400000&quot;, qty: 2, price: 0.275, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1400.00, expiry: &quot;2016-12-09 16:00&quot;}}]}
+Strategy: {strategyName: IronButterflyShort, quantity: 2, maintenanceMargin: 12000.0000, initialMargin: 12000.0000, pureNakedMargin: 109969.00000, legs: [optionLeg: {symbol: &quot;RUTW  161209P01260000&quot;, qty: 2, price: 0.20, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1260.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209P01320000&quot;, qty: -2, price: 3.075, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01320000&quot;, qty: -2, price: 42.35, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01380000&quot;, qty: 2, price: 1.15, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1380.00, expiry: &quot;2016-12-09 16:00&quot;}}]}
+Strategy: {strategyName: IronButterflyShort, quantity: 2, maintenanceMargin: 12000.0000, initialMargin: 12000.0000, pureNakedMargin: 109039.00000, legs: [optionLeg: {symbol: &quot;RUTW  161209P01250000&quot;, qty: 2, price: 0.175, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1250.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209P01310000&quot;, qty: -2, price: 0.475, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1310.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01310000&quot;, qty: -2, price: 50.30, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1310.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01370000&quot;, qty: 2, price: 3.25, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1370.00, expiry: &quot;2016-12-09 16:00&quot;}}]}
+Strategy: {strategyName: IronButterflyShort, quantity: 2, maintenanceMargin: 20000.0000, initialMargin: 20000.0000, pureNakedMargin: 109109.00000, legs: [optionLeg: {symbol: &quot;RUTW  161209P01220000&quot;, qty: 2, price: 0.40, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1220.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209P01320000&quot;, qty: -2, price: 0.675, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01320000&quot;, qty: -2, price: 40.45, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1320.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01420000&quot;, qty: 2, price: 0.575, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1420.00, expiry: &quot;2016-12-09 16:00&quot;}}]}
+Strategy: {strategyName: IronButterflyShort, quantity: 2, maintenanceMargin: 24000.0000, initialMargin: 24000.0000, pureNakedMargin: 108954.0000, legs: [optionLeg: {symbol: &quot;RUTW  161209P01160000&quot;, qty: 2, price: 0.125, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1160.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209P01280000&quot;, qty: -2, price: 0.25, optionConfig: {optionRoot: RUTW, optionType: P, strike: 1280.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01280000&quot;, qty: -2, price: 80.10, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1280.00, expiry: &quot;2016-12-09 16:00&quot;}}, optionLeg: {symbol: &quot;RUTW  161209C01400000&quot;, qty: 2, price: 0.275, optionConfig: {optionRoot: RUTW, optionType: C, strike: 1400.00, expiry: &quot;2016-12-09 16:00&quot;}}]}
+all strategy groups by root:
+{RUTW=coreList2}
+
+Input for PairingRequest
 OptionRoot: {optionRootSymbol:NKE1, exerciseStyle:A, underlyerType:S, deliverables:[Deliverable: {symbol:NKE, qty:100, price:65.20, maintenancePct:0.25, deliverableType:S}, Deliverable: {symbol:LULU, qty:45, price:40.93, maintenancePct:0.25, deliverableType:S}]}
 Account: Nike account 1
 Positions:
@@ -484,11 +523,10 @@ Option root 'BP'
 coreList2
 Strategy: {strategyName: IronCondorLong, quantity: 6, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 52305.60000, legs: [optionLeg: {symbol: &quot;BP    160115P00050000&quot;, qty: -6, price: 0.70, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 6, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00075000&quot;, qty: 6, price: 59.20, optionConfig: {optionRoot: BP, optionType: C, strike: 75.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00080000&quot;, qty: -6, price: 54.67, optionConfig: {optionRoot: BP, optionType: C, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 Strategy: {strategyName: IronCondorLong, quantity: 4, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 30722.40000, legs: [optionLeg: {symbol: &quot;BP    160115P00050000&quot;, qty: -4, price: 0.70, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 4, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00085000&quot;, qty: 4, price: 49.21, optionConfig: {optionRoot: BP, optionType: C, strike: 85.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00090000&quot;, qty: -4, price: 44.30, optionConfig: {optionRoot: BP, optionType: C, strike: 90.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
-Strategy: {strategyName: PutButterflyLong, quantity: 3, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 1920.00000, legs: [optionLeg: {symbol: &quot;BP    160115P00045000&quot;, qty: 3, price: 0.04, optionConfig: {optionRoot: BP, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00050000&quot;, qty: -6, price: 0.70, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 3, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 Strategy: {strategyName: IronCondorShort, quantity: 4, maintenanceMargin: 2000.0000, initialMargin: 2000.0000, pureNakedMargin: 35690.40000, legs: [optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 4, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00060000&quot;, qty: -4, price: 1.75, optionConfig: {optionRoot: BP, optionType: P, strike: 60.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00080000&quot;, qty: -4, price: 54.67, optionConfig: {optionRoot: BP, optionType: C, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00085000&quot;, qty: 4, price: 49.21, optionConfig: {optionRoot: BP, optionType: C, strike: 85.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
-Strategy: {strategyName: CallVerticalShort, quantity: 6, maintenanceMargin: 3000.0000, initialMargin: 3000.0000, pureNakedMargin: 48885.6000, legs: [optionLeg: {symbol: &quot;BP    160115C00080000&quot;, qty: -6, price: 54.67, optionConfig: {optionRoot: BP, optionType: C, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00085000&quot;, qty: 6, price: 49.21, optionConfig: {optionRoot: BP, optionType: C, strike: 85.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: IronCondorShort, quantity: 6, maintenanceMargin: 3000.0000, initialMargin: 3000.0000, pureNakedMargin: 52305.60000, legs: [optionLeg: {symbol: &quot;BP    160115P00045000&quot;, qty: 6, price: 0.04, optionConfig: {optionRoot: BP, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00050000&quot;, qty: -6, price: 0.70, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00080000&quot;, qty: -6, price: 54.67, optionConfig: {optionRoot: BP, optionType: C, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00085000&quot;, qty: 6, price: 49.21, optionConfig: {optionRoot: BP, optionType: C, strike: 85.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 Strategy: {strategyName: CallUnpairedLong, quantity: 3, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [optionLeg: {symbol: &quot;BP    160115C00085000&quot;, qty: 3, price: 49.21, optionConfig: {optionRoot: BP, optionType: C, strike: 85.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
-Strategy: {strategyName: PutUnpairedLong, quantity: 3, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [optionLeg: {symbol: &quot;BP    160115P00045000&quot;, qty: 3, price: 0.04, optionConfig: {optionRoot: BP, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
+Strategy: {strategyName: PutUnpairedLong, quantity: 3, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 0, legs: [optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 3, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 coreList1
 Strategy: {strategyName: CallButterflyLong, quantity: 6, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 81687.6000, legs: [optionLeg: {symbol: &quot;BP    160115C00075000&quot;, qty: 6, price: 59.20, optionConfig: {optionRoot: BP, optionType: C, strike: 75.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00080000&quot;, qty: -12, price: 54.67, optionConfig: {optionRoot: BP, optionType: C, strike: 80.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115C00085000&quot;, qty: 6, price: 49.21, optionConfig: {optionRoot: BP, optionType: C, strike: 85.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
 Strategy: {strategyName: PutButterflyLong, quantity: 6, maintenanceMargin: 0, initialMargin: 0, pureNakedMargin: 3840.00000, legs: [optionLeg: {symbol: &quot;BP    160115P00045000&quot;, qty: 6, price: 0.04, optionConfig: {optionRoot: BP, optionType: P, strike: 45.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00050000&quot;, qty: -12, price: 0.70, optionConfig: {optionRoot: BP, optionType: P, strike: 50.00, expiry: &quot;2016-01-15 16:00&quot;}}, optionLeg: {symbol: &quot;BP    160115P00055000&quot;, qty: 6, price: 1.30, optionConfig: {optionRoot: BP, optionType: P, strike: 55.00, expiry: &quot;2016-01-15 16:00&quot;}}]}
@@ -546,7 +584,7 @@ Strategy: {strategyName: PutUnpairedLong, quantity: 2, maintenanceMargin: 0, ini
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 2.14</a> at Dec 6, 2016 5:42:32 PM</p>
+<a href="http://www.gradle.org">Gradle 2.14</a> at Dec 7, 2016 7:26:42 PM</p>
 </div>
 </div>
 </body>
