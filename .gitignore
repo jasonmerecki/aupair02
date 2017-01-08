@@ -1,5 +1,7 @@
 /bin
 /build
+/*/bin
+/*/build
 .gradle
 ./.settings
 /pairlib/outputlib
