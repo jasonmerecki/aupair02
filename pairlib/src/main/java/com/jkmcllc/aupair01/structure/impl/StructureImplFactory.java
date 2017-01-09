@@ -19,11 +19,14 @@ import com.jkmcllc.aupair01.structure.Position;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
+import com.jkmcllc.aupair01.structure.Order;
+import com.jkmcllc.aupair01.structure.OrderLeg;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 public final class StructureImplFactory {
-    public static Position buildPosition(String symbol, String description, Integer qty, BigDecimal price, OptionConfig optionConfig) {
-        return new PositionImpl(symbol, description, qty, price, optionConfig);
+    public static Position buildPosition(String symbol, String description, Integer qty, BigDecimal price, 
+            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionConfig optionConfig) {
+        return new PositionImpl(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
     }
     public static Deliverables buildDeliverables(List<Deliverable> deliverableList) {
         return new DeliverablesImpl(deliverableList);
@@ -39,8 +42,8 @@ public final class StructureImplFactory {
             BigDecimal multiplier, Deliverables deliverables, BigDecimal nakedDeliverablePct, BigDecimal nakedCashPct) {
         return new OptionRootImpl(optionRootSymbol, exerciseStyle, underlyerType, multiplier, deliverables, nakedDeliverablePct, nakedCashPct);
     }
-    public static Account buildAccount(String accountId, List<Position> legs, String strategyGroupName, Map<String, String> customProperties) {
-        return new AccountImpl(accountId, legs, strategyGroupName, customProperties);
+    public static Account buildAccount(String accountId, List<Position> legs, List<Order> orders, String strategyGroupName, Map<String, String> customProperties) {
+        return new AccountImpl(accountId, legs, orders, strategyGroupName, customProperties);
     }
     
     public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
@@ -51,5 +54,12 @@ public final class StructureImplFactory {
     }
     public static PairingResponse buildPairingResponse(Map<String, AccountPairingResponse> resultMap) {
         return new PairingResponseImpl(resultMap);
+    }
+    public static OrderLeg buildOrderLeg(String symbol, String description, Integer qty, BigDecimal price, 
+            OptionConfig optionConfig) {
+        return new OrderLegImpl(symbol, description, qty, price, null, null, optionConfig);
+    }
+    public static Order buildOrder(String orderId, String orderDescription, List<OrderLeg> orderLegs, BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin) {
+        return new OrderImpl(orderId, orderDescription, orderLegs, equityMaintenanceMargin, equityInitialMargin);
     }
 }

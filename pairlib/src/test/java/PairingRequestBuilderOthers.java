@@ -5,7 +5,7 @@ import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.OptionType;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 
-public class PairingRequestBuilderTestOthers {
+public class PairingRequestBuilderOthers {
     
     public static PairingRequest buildRequest3(boolean requestAllStrategyLists, boolean addExtra) {
         PairingRequestBuilder builder = PairingRequest.newBuilder();

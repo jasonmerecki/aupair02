@@ -16,7 +16,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
  *
  * @author Jason Merecki, @date 8/9/16 4:59 PM
  */
-public class PairingRequestTestAllStrategies extends PairingRequestTestBase {
+public class PairingRequestAllStrategiesTest extends PairingRequestBase {
    
     @Test
     public void buildAndPairEachAmerican() {

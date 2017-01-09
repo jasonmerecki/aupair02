@@ -15,14 +15,18 @@ public interface Position {
     Integer getQty();
     BigDecimal getPrice();
     OptionConfig getOptionConfig();
+    BigDecimal getEquityMaintenanceMargin();
+    BigDecimal getEquityInitialMargin();
     
     class PositionBuilder {
-        private PositionBuilder() {};
-        private String symbol;
-        private String description;
-        private Integer qty;
-        private BigDecimal price;
-        private OptionConfig optionConfig;
+        protected PositionBuilder() {};
+        protected String symbol;
+        protected String description;
+        protected Integer qty;
+        protected BigDecimal price;
+        protected BigDecimal equityMaintenanceMargin;
+        protected BigDecimal equityInitialMargin;
+        protected OptionConfig optionConfig;
         private OptionConfigBuilder optionConfigBuilder;
         public PositionBuilder setSymbol(String symbol) {
             this.symbol = symbol;
@@ -37,6 +41,22 @@ public interface Position {
                 throw new BuilderException("Invalid qty: " + qty);
             }
             this.qty = qty;
+            return this;
+        }
+        public PositionBuilder setPositionEquityMaintenanceMargin(String equityMaintenanceMargin) {
+            try {
+                this.equityMaintenanceMargin = new BigDecimal(equityMaintenanceMargin);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid position equityMaintenanceMargin: " + equityMaintenanceMargin);
+            }
+            return this;
+        }
+        public PositionBuilder setPositionEquityInitialMargin(String equityInitialMargin) {
+            try {
+                this.equityInitialMargin = new BigDecimal(equityInitialMargin);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid position equityInitialMargin: " + equityInitialMargin);
+            }
             return this;
         }
         public PositionBuilder setPositionPrice(String price) {
@@ -68,6 +88,20 @@ public interface Position {
             return this;
         }
         public Position build() {
+            validate();
+            if (optionConfigBuilder != null) {
+                optionConfig = optionConfigBuilder.build();
+            }
+            Position position = StructureImplFactory.buildPosition(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            symbol = null;
+            qty = null;
+            optionConfig = null;
+            description = null;
+            price = null;
+            optionConfigBuilder = null;
+            return position;
+        }
+        protected boolean validate() {
             if (symbol == null || qty == null || price == null /* || optionConfig == null */) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Position, missing data: ");
@@ -88,17 +122,7 @@ public interface Position {
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            if (optionConfigBuilder != null) {
-                optionConfig = optionConfigBuilder.build();
-            }
-            Position position = StructureImplFactory.buildPosition(symbol, description, qty, price, optionConfig);
-            symbol = null;
-            qty = null;
-            optionConfig = null;
-            description = null;
-            price = null;
-            optionConfigBuilder = null;
-            return position;
+            return true;
         }
     }
     static PositionBuilder newBuilder() {

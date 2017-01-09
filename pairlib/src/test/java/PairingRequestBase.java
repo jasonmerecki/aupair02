@@ -13,7 +13,7 @@ import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.impl.PairingService;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
-public class PairingRequestTestBase {
+public class PairingRequestBase {
     
     protected PairingService pairingService = null;
     

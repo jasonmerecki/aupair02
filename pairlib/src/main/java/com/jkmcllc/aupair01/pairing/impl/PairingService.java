@@ -100,6 +100,9 @@ public class PairingService {
                 strategyGroupByRoot.put(optionRoot, strategyGroupListName);
                 optionRootResults.put(optionRoot, found);
             }
+            
+            
+            
             AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap);
             resultMap.put(account.getAccountId(), accountPairingResponse);
             if (allStrategyListResultMap != null) {

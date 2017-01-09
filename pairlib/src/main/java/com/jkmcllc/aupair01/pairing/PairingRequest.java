@@ -13,6 +13,10 @@ import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.Position;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
+import com.jkmcllc.aupair01.structure.Order;
+import com.jkmcllc.aupair01.structure.Order.OrderBuilder;
+import com.jkmcllc.aupair01.structure.OrderLeg;
+import com.jkmcllc.aupair01.structure.OrderLeg.OrderLegBuilder;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 import com.jkmcllc.aupair01.structure.Account.AccountBuilder;
 import com.jkmcllc.aupair01.structure.Position.PositionBuilder;
@@ -27,12 +31,15 @@ public interface PairingRequest extends Request {
     boolean isRequestAllStrategyLists();
 
     public class PairingRequestBuilder {
-        private final List<Account> accounts = new ArrayList<>();
-        private List<Position> legs = new ArrayList<>();
-        private final Map<String, OptionRoot> optionRoots = new HashMap<>();
-        private final PositionBuilder positionBuilder = Position.newBuilder();
-        private final OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
-        private final AccountBuilder accountBuilder = Account.newBuilder();
+        private List<Account> accounts = new ArrayList<>();
+        private List<Position> accountPositions = new ArrayList<>();
+        private List<Order> accountOrders = new ArrayList<>();
+        private Map<String, OptionRoot> optionRoots = new HashMap<>();
+        private PositionBuilder positionBuilder = Position.newBuilder();
+        private OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
+        private AccountBuilder accountBuilder = Account.newBuilder();
+        private OrderLegBuilder orderLegBuilder = OrderLeg.newBuilder();
+        private OrderBuilder orderBuilder = Order.newBuilder();
         
         private boolean requestAllStrategyLists = false;
         
@@ -54,6 +61,14 @@ public interface PairingRequest extends Request {
             positionBuilder.setPositionPrice(price);
             return this;
         }
+        public PairingRequestBuilder setPositionEquityMaintenanceMargin(String equityMaintenanceMargin) {
+            positionBuilder.setPositionEquityMaintenanceMargin(equityMaintenanceMargin);
+            return this;
+        }
+        public PairingRequestBuilder setPositionEquityInitialMargin(String equityInitialMargin) {
+            positionBuilder.setPositionEquityInitialMargin(equityInitialMargin);
+            return this;
+        }
         public PairingRequestBuilder setPositionOptionRoot(String optionRoot) {
             positionBuilder.setOptionRoot(optionRoot);
             return this;
@@ -71,9 +86,10 @@ public interface PairingRequest extends Request {
             return this;
         }
         public PairingRequestBuilder addPosition() {
-            legs.add(positionBuilder.build());
+            accountPositions.add(positionBuilder.build());
             return this;
         }
+        
         public PairingRequestBuilder setAccountStrategyGroupName(String strategyGroupName) {
             accountBuilder.setStrategyGroupName(strategyGroupName);
             return this;
@@ -83,11 +99,71 @@ public interface PairingRequest extends Request {
             return this;
         }
         
+        public PairingRequestBuilder setOrderLegSymbol(String symbol) {
+            orderLegBuilder.setSymbol(symbol);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegDescription(String description) {
+            orderLegBuilder.setDescription(description);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegQty(Integer qty) {
+            orderLegBuilder.setQty(qty);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegPrice(String price) {
+            orderLegBuilder.setPositionPrice(price);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegOptionRoot(String optionRoot) {
+            orderLegBuilder.setOptionRoot(optionRoot);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegOptionType(OptionType optionType) {
+            orderLegBuilder.setOptionType(optionType);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegOptionStrike(String strike) {
+            orderLegBuilder.setOptionStrike(strike);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegOptionExpiry(String expiry) {
+            orderLegBuilder.setOptionExpiry(expiry);
+            return this;
+        }
+        public PairingRequestBuilder addOrderLeg() {
+            orderBuilder.addOrderLeg(orderLegBuilder.build());
+            return this;
+        }
+        
+        public PairingRequestBuilder setOrderEquityMaintenanceMargin(String equityMaintenanceMargin) {
+            orderBuilder.setOrderEquityMaintenanceMargin(equityMaintenanceMargin);
+            return this;
+        }
+        public PairingRequestBuilder setOrderEquityInitialMargin(String equityInitialMargin) {
+            orderBuilder.setOrderEquityInitialMargin(equityInitialMargin);
+            return this;
+        }
+        public PairingRequestBuilder setOrderId(String orderId) {
+            orderBuilder.setOrderId(orderId);
+            return this;
+        }
+        public PairingRequestBuilder setOrderDescription(String orderDescription) {
+            orderBuilder.setOrderDescription(orderDescription);
+            return this;
+        }
+        public PairingRequestBuilder addOrder() {
+            accountOrders.add(orderBuilder.build());
+            return this;
+        }
+        
+        
         public PairingRequestBuilder addAccount(String accountId) {
             accountBuilder.setAccountId(accountId);
-            accountBuilder.setAccountLegs(legs);
+            accountBuilder.setAccountPositions(accountPositions);
+            accountBuilder.setAccountOrders(accountOrders);
             accounts.add(accountBuilder.build());
-            legs = new ArrayList<>();
+            accountPositions = new ArrayList<>();
             return this;
         }
         
@@ -160,6 +236,16 @@ public interface PairingRequest extends Request {
                 }
             }
             PairingRequest pairingRequest = StructureImplFactory.buildPairingRequest(accounts, optionRoots, requestAllStrategyLists);
+            
+            positionBuilder = Position.newBuilder();
+            optionRootBuilder = OptionRoot.newBuilder();
+            accountBuilder = Account.newBuilder();
+            orderLegBuilder = OrderLeg.newBuilder();
+            orderBuilder = Order.newBuilder();
+            accountOrders = new ArrayList<>();
+            optionRoots = new HashMap<>();
+            accounts = new ArrayList<>();
+            
             return pairingRequest;
         }
     }
