@@ -7,8 +7,8 @@ abstract class AbstractStockLeg extends AbstractLeg {
     public BigDecimal getLegValue() {
         if (this.legValue == null) {
             BigDecimal value = BigDecimal.ZERO;
-            if (this.bigDecimalQty != null && this.price != null) {
-                value = this.bigDecimalQty.multiply(this.price);
+            if (this.qty != null && this.price != null) {
+                value = this.price.multiply(new BigDecimal(this.qty));
             }
             this.legValue = value;
         }

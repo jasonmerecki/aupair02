@@ -22,7 +22,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
  * @author Jason Merecki
  */
 // @Ignore
-public class PairingRequestTestApexDefault extends PairingRequestTestBase {
+public class PairingRequestApexDefaultTest extends PairingRequestBase {
    
     @Test
     public void buildAndPairCustom1() {

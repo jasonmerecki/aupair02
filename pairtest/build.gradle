@@ -18,7 +18,9 @@ dependencies {
 
 test {
     systemProperty 'pairconfig', '/opt/pair/pairconfig.ini,/opt/pair/apexdefault.ini'
+    /*
     testLogging {
         showStandardStreams = true
     }
+    */
 }

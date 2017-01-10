@@ -16,7 +16,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
  *
  * @author Jason Merecki, @date 8/9/16 4:59 PM
  */
-public class PairingRequestTest extends PairingRequestTestBase {
+public class PairingRequestTest extends PairingRequestBase {
     
     @Test
     public void buildAndPair1() {
@@ -225,7 +225,7 @@ public class PairingRequestTest extends PairingRequestTestBase {
         assertTrue(found);
         
         BigDecimal totalMargin = responseByAccount.get("accountAllShortIronButterfly").getTotalMaintenanceMargin();
-        assertEquals(totalMargin, new BigDecimal("78000.0000"));
+        assertEquals(totalMargin, new BigDecimal("79000.0000"));
     }
     
 }

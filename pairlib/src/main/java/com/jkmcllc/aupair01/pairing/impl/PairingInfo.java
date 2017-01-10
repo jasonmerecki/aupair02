@@ -12,9 +12,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
+import com.jkmcllc.aupair01.store.Constants;
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.CorePosition;
+import com.jkmcllc.aupair01.structure.CorePosition.CorePositionType;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
@@ -81,7 +83,7 @@ class PairingInfo {
         
         account.getPositions().parallelStream().forEach(cpl);
         // account.getOrders().parallelStream().forEach(order -> order.getOrderLegs().parallelStream().forEach(cpl));
-        pairingInfoMap.values().forEach(p -> p.init());
+        pairingInfoMap.values().forEach(p -> p.reset(false));
         return pairingInfoMap;
     }
     
@@ -128,7 +130,10 @@ class PairingInfo {
                 return;
             } 
             OptionConfig optionConfig = position.getOptionConfig();
-            Integer qty = position.getQty();
+            Integer qty = position.getQty(), positionResetQty = position.getQty();
+            if (CorePositionType.ORDERLEG == position.getCorePositionType()) {
+                positionResetQty = Constants.ZERO;
+            }
             String symbol = position.getSymbol();
             String description = position.getDescription();
             BigDecimal price = position.getPrice();
@@ -139,26 +144,24 @@ class PairingInfo {
                 OptionType optionType = optionConfig.getOptionType();
                 OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
                 pairingInfo = findInfo(optionRoot);
-                OptionLeg leg = new OptionLeg(symbol, description, qty, qty, price, optionType, optionConfig, optionRoot);
+                OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, optionType, optionConfig, optionRoot);
                 newLeg = leg;
-                pairingInfo.sortingHat(leg);
                 pairingInfo.allLegs.put(symbol, newLeg);
             } else {
                 // assume it's a stock
                 String positionSymbol = position.getSymbol();
                 Set<OptionRoot> optionRoots = optionRootStore.findRootsByDeliverableSymbol(positionSymbol);
-                StockLeg leg = new StockLeg(position.getSymbol(), description, qty, qty, price);
+                StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price);
                 newLeg = leg;
                 for (OptionRoot optionRoot : optionRoots) {
                     pairingInfo = findInfo(optionRoot);
-                    pairingInfo.sortingHat(leg);
                     pairingInfo.allLegs.put(position.getSymbol(), newLeg);
                 }
             }
         }
     }
     
-    private void init() {
+    private void initDeliverables() {
         if (longDeliverables == null) {
             AbstractDeliverableLeg longDeliverableLeg = AbstractDeliverableLeg.from(longStocks, optionRoot);
             if (longDeliverableLeg != null) {
@@ -181,7 +184,7 @@ class PairingInfo {
         resetLegs(allLegs.values(), hardReset);
         longDeliverables = null;
         shortDeliverables = null;
-        init();
+        initDeliverables();
     }
     
     private void resetLegs(Collection<? extends AbstractLeg> legs, boolean hardReset) {

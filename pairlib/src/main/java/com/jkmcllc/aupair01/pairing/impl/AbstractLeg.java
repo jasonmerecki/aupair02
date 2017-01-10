@@ -19,7 +19,6 @@ abstract class AbstractLeg implements Leg {
     
     protected Integer remainQty;
     protected BigDecimal legValue;
-    protected BigDecimal bigDecimalQty;
     protected Integer qty;
     
     protected BigDecimal equityMaintenanceMargin = BigDecimal.ZERO;
@@ -31,9 +30,9 @@ abstract class AbstractLeg implements Leg {
         this.positionResetQty = positionResetQty;
         this.resetQty = this.remainQty = this.qty = qty;
         this.price = price;
-        this.bigDecimalQty = new BigDecimal(qty);
         this.legValue = null;
     }
+    
     protected String basicLegInfo() {
         StringBuilder basicInfo = new StringBuilder();
         if (symbol != null) {
@@ -50,6 +49,7 @@ abstract class AbstractLeg implements Leg {
         }
         return basicInfo.toString();
     }
+    
     protected Leg reduceBy(Integer used) {
         int startSign = Integer.signum(remainQty);
         if (startSign == -1) {
@@ -64,7 +64,6 @@ abstract class AbstractLeg implements Leg {
             throw new PairingException("Error: sign crossed for leg, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
         }
         this.qty = this.remainQty;
-        this.bigDecimalQty = new BigDecimal(this.qty);
         return newLegWith(used * startSign);
     }
     
@@ -82,13 +81,16 @@ abstract class AbstractLeg implements Leg {
             throw new PairingException("Error: restoring a leg crossed tbe sign for leg, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
         }
         this.qty = this.remainQty;
-        this.bigDecimalQty = new BigDecimal(this.qty);
     }
     
     protected void resetQty(boolean hardReset) {
         this.remainQty = hardReset ? this.positionResetQty : this.resetQty;
         this.qty = this.remainQty;
-        this.bigDecimalQty = new BigDecimal(this.qty);
+    }
+    
+    void modifyQty(Integer deltaQty) {
+        this.qty += deltaQty;
+        this.remainQty += deltaQty;
     }
     
     protected Integer getRemainQty() {

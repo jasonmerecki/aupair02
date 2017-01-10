@@ -14,6 +14,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
 
     private final Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty;
     private final OptionRoot optionRoot;
+    private BigDecimal legValue;
     
     static AbstractDeliverableLeg from(Collection<? extends AbstractStockLeg> deliverableLegs, OptionRoot optionRoot) {
         Map<AbstractStockLeg, BigDecimal> deliverableLegsAndQty = new HashMap<>();
@@ -97,8 +98,10 @@ class AbstractDeliverableLeg extends AbstractLeg {
 
     @Override
     public BigDecimal getLegValue() {
-        BigDecimal deliverablesValue = optionRoot.getDeliverables().getDeliverablesValue();
-        BigDecimal legValue = deliverablesValue.multiply(this.bigDecimalQty);
+        if (legValue == null) {
+            BigDecimal deliverablesValue = optionRoot.getDeliverables().getDeliverablesValue();
+            legValue = deliverablesValue.multiply(new BigDecimal(this.qty));
+        }
         return legValue;
     }
 
