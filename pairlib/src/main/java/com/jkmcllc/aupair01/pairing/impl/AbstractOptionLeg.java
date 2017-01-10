@@ -15,12 +15,14 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     protected final OptionRoot optionRoot;
     protected BigDecimal grossItmAmount;
     protected BigDecimal weightedItmCompliment;
+    protected final OptionType optionType;
     
     protected AbstractOptionLeg(String symbol, String description, Integer qty, BigDecimal price, 
-            OptionConfig optionConfig, OptionRoot optionRoot) {
+            OptionType optionType, OptionConfig optionConfig, OptionRoot optionRoot) {
         super(symbol, description, qty, price);
         this.optionConfig = optionConfig;
         this.optionRoot = optionRoot;
+        this.optionType = optionType;
     }
 
     public OptionConfig getOptionConfig() {
@@ -93,6 +95,10 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     
     public BigDecimal getMultiplier() {
         return optionRoot.getMultiplier();
+    }
+    
+    public OptionType getOptionType() {
+        return optionType;
     }
     
     @Override

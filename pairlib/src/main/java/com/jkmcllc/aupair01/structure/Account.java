@@ -29,6 +29,10 @@ public interface Account {
         }
         public AccountBuilder setAccountPositions(List<Position> legs) {
             this.legs = legs;
+            String hasDupe = CorePosition.findDuplicate(legs);
+            if (hasDupe != null) {
+                throw new BuilderException("Invalid account configuration, has duplicate position information: " + hasDupe);
+            }
             return this;
         }
         public AccountBuilder setAccountOrders(List<Order> orders) {

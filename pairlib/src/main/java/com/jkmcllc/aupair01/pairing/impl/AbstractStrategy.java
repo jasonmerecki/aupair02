@@ -37,16 +37,10 @@ class AbstractStrategy implements Strategy {
 
         JexlContext context = TacoCat.buildMarginContext(legs, accountInfo, pairingInfo, this);
         for (Leg leg : legs) { 
-            if (leg instanceof ShortCall || leg instanceof ShortPut) {
+            if (leg instanceof OptionLeg && leg.getQty() < 0) {
                 OptionType optionType = null;
-                AbstractOptionLeg optionLeg = null;
-                if (leg instanceof ShortCall) {
-                    optionType = OptionType.C;
-                    optionLeg = (ShortCall) leg;
-                } else if (leg instanceof ShortPut) {
-                    optionType = OptionType.P;
-                    optionLeg = (ShortPut) leg;
-                }
+                AbstractOptionLeg optionLeg = (AbstractOptionLeg) leg;
+                optionType = optionLeg.getOptionType();
 
                 this.pureNakedLastResult = BigDecimal.ZERO;
                 List<JexlExpression> shortMarginExpressions = StrategyConfigs.getInstance().nakedMarginMap.get(optionType);

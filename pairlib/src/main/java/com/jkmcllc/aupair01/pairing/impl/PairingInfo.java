@@ -1,21 +1,24 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Consumer;
 
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
+import com.jkmcllc.aupair01.structure.CorePosition;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 import com.jkmcllc.aupair01.structure.OptionType;
-import com.jkmcllc.aupair01.structure.Position;
 
 class PairingInfo {
     private static final Comparator<AbstractOptionLeg> ASC_DATE = (AbstractOptionLeg o1, AbstractOptionLeg o2)-> {
@@ -48,15 +51,16 @@ class PairingInfo {
         return DESC_STRIKE.compare(o1, o2);
     };
     final OptionRoot optionRoot;
-    final List<LongCall> longCalls = new ArrayList<>();
-    final List<ShortCall> shortCalls = new ArrayList<>();
-    final List<LongPut> longPuts = new ArrayList<>();
-    final List<ShortPut> shortPuts = new ArrayList<>();
-    private final List<LongStock> longStocks = new ArrayList<>();
-    private final List<ShortStock> shortStocks = new ArrayList<>();
+    final List<OptionLeg> longCalls = new CopyOnWriteArrayList<>();
+    final List<OptionLeg> shortCalls = new CopyOnWriteArrayList<>();
+    final List<OptionLeg> longPuts = new CopyOnWriteArrayList<>();
+    final List<OptionLeg> shortPuts = new CopyOnWriteArrayList<>();
+    private final List<StockLeg> longStocks = new CopyOnWriteArrayList<>();
+    private final List<StockLeg> shortStocks = new CopyOnWriteArrayList<>();
     private List<AbstractDeliverableLeg> longDeliverables = null;
     private List<AbstractDeliverableLeg> shortDeliverables = null;
-    final List<AbstractOptionLeg> allOptions = new ArrayList<>();
+    final Set<AbstractOptionLeg> allOptions = new CopyOnWriteArraySet<>();
+    final ConcurrentMap<String, AbstractLeg> allLegs = new ConcurrentHashMap<>();
     final AccountInfo accountInfo;
     
     private PairingInfo(OptionRoot optionRoot, Account account) {
@@ -65,8 +69,52 @@ class PairingInfo {
     };
     
     static Map<String, PairingInfo> from (Account account, OptionRootStore optionRootStore) {
-        Map<String, PairingInfo> pairingInfoMap = new HashMap<>();
-        for (Position position : account.getPositions()) {
+        Map<String, PairingInfo> pairingInfoMap = loadPositionsAndOrders(account, optionRootStore);
+        return pairingInfoMap;
+    }
+    private static Map<String, PairingInfo> loadPositionsAndOrders (Account account, OptionRootStore optionRootStore) {
+        ConcurrentMap<String, PairingInfo> pairingInfoMap = new ConcurrentHashMap<>();
+        CorePosLoader cpl = new CorePosLoader(pairingInfoMap, account, optionRootStore);
+        /* 
+        for (CorePosition pos : account.getPositions()) {
+            cpl.accept(pos);
+        }
+        */
+        
+        account.getPositions().parallelStream().forEach(cpl);
+        // account.getOrders().parallelStream().forEach(order -> order.getOrderLegs().parallelStream().forEach(cpl));
+        pairingInfoMap.values().forEach(p -> p.init());
+        return pairingInfoMap;
+    }
+    
+    /*
+     * Used to load multiple unique positions in parallel. 
+     * Assumes positions are unique; behavior is undefined if duplicate positions (including
+     * a position and an order leg for theh same symbol) are loaded in parallel.
+     */
+    private static class CorePosLoader implements Consumer<CorePosition> {
+        private final ConcurrentMap<String, PairingInfo> pairingInfoMap;
+        private final Account account;
+        private final OptionRootStore optionRootStore;
+        
+        private CorePosLoader(ConcurrentMap<String, PairingInfo> pairingInfoMap, Account account,
+                OptionRootStore optionRootStore) {
+            this.pairingInfoMap = pairingInfoMap;
+            this.account = account;
+            this.optionRootStore = optionRootStore;
+        }
+        private PairingInfo findInfo(OptionRoot optionRoot) {
+            String optionRootSymbol = optionRoot.getOptionRootSymbol();
+            PairingInfo pairingInfo = pairingInfoMap.get(optionRootSymbol);
+            if (pairingInfo == null) {
+                pairingInfo = new PairingInfo(optionRoot, account);
+                PairingInfo newPairingInfo = pairingInfoMap.putIfAbsent(optionRootSymbol, pairingInfo);
+                pairingInfo = newPairingInfo != null ? newPairingInfo : pairingInfo;
+            }
+            return pairingInfo;
+        }
+        @Override
+        public void accept(CorePosition position) {
             OptionConfig optionConfig = position.getOptionConfig();
             Integer qty = position.getQty();
             String symbol = position.getSymbol();
@@ -74,34 +122,32 @@ class PairingInfo {
             BigDecimal price = position.getPrice();
             int sign = Integer.signum(position.getQty());
             if (sign == 0) {
-                // TODO: throw exception here, can't have zero position qaty for pairing
+                // TODO: throw exception here, can't have zero position quantity for pairing
+                return;
             } 
             if (optionConfig != null) {
                 String optionRootSymbol = optionConfig.getOptionRoot();
-                PairingInfo pairingInfo = pairingInfoMap.get(optionConfig.getOptionRoot());
+                OptionType optionType = optionConfig.getOptionType();
                 OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
+                PairingInfo pairingInfo = findInfo(optionRoot);
                 AbstractOptionLeg optionLeg = null;
-                if (pairingInfo == null) {
-                    pairingInfo = new PairingInfo(optionRoot, account);
-                    pairingInfoMap.put(optionConfig.getOptionRoot(), pairingInfo);
-                }
                 if (OptionType.C.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        LongCall leg = new LongCall(symbol, description, qty, price, optionConfig, optionRoot);
+                        OptionLeg leg = new OptionLeg(symbol, description, qty, price, optionType, optionConfig, optionRoot);
                         pairingInfo.longCalls.add(leg);
                         optionLeg = leg;
                     } else {
-                        ShortCall leg = new ShortCall(symbol, description, qty, price, optionConfig, optionRoot);
+                        OptionLeg leg = new OptionLeg(symbol, description, qty, price, optionType, optionConfig, optionRoot);
                         pairingInfo.shortCalls.add(leg);
                         optionLeg = leg;
                     }
                 } else if (OptionType.P.equals(optionConfig.getOptionType())) {
                     if (sign == 1) {
-                        LongPut leg = new LongPut(symbol, description, qty, price, optionConfig, optionRoot);
+                        OptionLeg leg = new OptionLeg(symbol, description, qty, price, optionType, optionConfig, optionRoot);
                         pairingInfo.longPuts.add(leg);
                         optionLeg = leg;
                     } else {
-                        ShortPut leg = new ShortPut(symbol, description, qty, price, optionConfig, optionRoot);
+                        OptionLeg leg = new OptionLeg(symbol, description, qty, price, optionType, optionConfig, optionRoot);
                         pairingInfo.shortPuts.add(leg);
                         optionLeg = leg;
                     }
@@ -116,22 +162,16 @@ class PairingInfo {
                 String positionSymbol = position.getSymbol();
                 Set<OptionRoot> optionRoots = optionRootStore.findRootsByDeliverableSymbol(positionSymbol);
                 for (OptionRoot optionRoot : optionRoots) {
-                    String optionRootSymbol = optionRoot.getOptionRootSymbol();
-                    PairingInfo pairingInfo = pairingInfoMap.get(optionRootSymbol);
-                    if (pairingInfo == null) {
-                        pairingInfo = new PairingInfo(optionRoot, account);
-                        pairingInfoMap.put(optionRootSymbol, pairingInfo);
-                    }
+                    PairingInfo pairingInfo = findInfo(optionRoot);
                     if (sign == 1) {
-                        pairingInfo.longStocks.add(new LongStock(position.getSymbol(), description, position.getQty(), price));
+                        pairingInfo.longStocks.add(new StockLeg(position.getSymbol(), description, position.getQty(), price));
                     } else {
-                        pairingInfo.shortStocks.add(new ShortStock(position.getSymbol(), description, position.getQty(), price));
+                        pairingInfo.shortStocks.add(new StockLeg(position.getSymbol(), description, position.getQty(), price));
                     }
                 }
             }
+            
         }
-        pairingInfoMap.values().forEach(p -> p.init());
-        return pairingInfoMap;
     }
     
     private void init() {

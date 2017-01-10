@@ -56,10 +56,10 @@ public final class StructureImplFactory {
         return new PairingResponseImpl(resultMap);
     }
     public static OrderLeg buildOrderLeg(String symbol, String description, Integer qty, BigDecimal price, 
-            OptionConfig optionConfig) {
-        return new OrderLegImpl(symbol, description, qty, price, null, null, optionConfig);
+            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionConfig optionConfig) {
+        return new OrderLegImpl(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
     }
-    public static Order buildOrder(String orderId, String orderDescription, List<OrderLeg> orderLegs, BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin) {
-        return new OrderImpl(orderId, orderDescription, orderLegs, equityMaintenanceMargin, equityInitialMargin);
+    public static Order buildOrder(String orderId, String orderDescription, List<OrderLeg> orderLegs) {
+        return new OrderImpl(orderId, orderDescription, orderLegs);
     }
 }

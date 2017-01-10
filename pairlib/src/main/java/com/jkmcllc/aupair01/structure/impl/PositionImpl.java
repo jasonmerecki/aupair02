@@ -5,6 +5,7 @@ import com.jkmcllc.aupair01.structure.Position;
 import java.math.BigDecimal;
 
 import com.jkmcllc.aupair01.store.Constants;
+import com.jkmcllc.aupair01.structure.CorePosition;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 
 class PositionImpl implements Position {
@@ -46,6 +47,10 @@ class PositionImpl implements Position {
         builder.append(qty);
         builder.append(", price: ");
         builder.append(price);
+        builder.append(", equityMaintenanceMargin: ");
+        builder.append(equityMaintenanceMargin);
+        builder.append(", equityInitialMargin: ");
+        builder.append(equityInitialMargin);
         if (optionConfig != null) {
             builder.append(", ").append(optionConfig);
         }
@@ -78,6 +83,10 @@ class PositionImpl implements Position {
     @Override
     public BigDecimal getEquityInitialMargin() {
         return equityInitialMargin;
+    }
+    @Override
+    public CorePositionType getCorePositionType() {
+        return CorePosition.CorePositionType.POSITION;
     }
 
 }

@@ -19,6 +19,7 @@ import com.jkmcllc.aupair01.structure.OrderLeg;
 import com.jkmcllc.aupair01.structure.OrderLeg.OrderLegBuilder;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 import com.jkmcllc.aupair01.structure.Account.AccountBuilder;
+import com.jkmcllc.aupair01.structure.CorePosition;
 import com.jkmcllc.aupair01.structure.Position.PositionBuilder;
 import com.jkmcllc.aupair01.structure.OptionRoot.OptionRootBuilder;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
@@ -112,7 +113,7 @@ public interface PairingRequest extends Request {
             return this;
         }
         public PairingRequestBuilder setOrderLegPrice(String price) {
-            orderLegBuilder.setPositionPrice(price);
+            orderLegBuilder.setOrderLegPrice(price);
             return this;
         }
         public PairingRequestBuilder setOrderLegOptionRoot(String optionRoot) {
@@ -131,19 +132,20 @@ public interface PairingRequest extends Request {
             orderLegBuilder.setOptionExpiry(expiry);
             return this;
         }
+        public PairingRequestBuilder setOrderLegEquityMaintenanceMargin(String equityMaintenanceMargin) {
+            orderLegBuilder.setOrderLegEquityMaintenanceMargin(equityMaintenanceMargin);
+            return this;
+        }
+        public PairingRequestBuilder setOrderLegEquityInitialMargin(String equityInitialMargin) {
+            orderLegBuilder.setOrderLegEquityInitialMargin(equityInitialMargin);
+            return this;
+        }
         public PairingRequestBuilder addOrderLeg() {
             orderBuilder.addOrderLeg(orderLegBuilder.build());
             return this;
         }
         
-        public PairingRequestBuilder setOrderEquityMaintenanceMargin(String equityMaintenanceMargin) {
-            orderBuilder.setOrderEquityMaintenanceMargin(equityMaintenanceMargin);
-            return this;
-        }
-        public PairingRequestBuilder setOrderEquityInitialMargin(String equityInitialMargin) {
-            orderBuilder.setOrderEquityInitialMargin(equityInitialMargin);
-            return this;
-        }
+
         public PairingRequestBuilder setOrderId(String orderId) {
             orderBuilder.setOrderId(orderId);
             return this;
@@ -225,7 +227,7 @@ public interface PairingRequest extends Request {
         
         public PairingRequest build() {
             for (Account account : accounts) {
-                for (Position position : account.getPositions()) {
+                for (CorePosition position : account.getPositions()) {
                     if (position.getOptionConfig() != null) {
                         String optionRootSymbol = position.getOptionConfig().getOptionRoot();
                         OptionRoot root = optionRoots.get(optionRootSymbol);

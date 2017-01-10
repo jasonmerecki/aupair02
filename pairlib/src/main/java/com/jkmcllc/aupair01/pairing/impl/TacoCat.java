@@ -43,11 +43,11 @@ class TacoCat {
         // special holder objects to swap out of context
         context.set(NAKED_LEG,new NakedOptionLegWrapper());
         if (pairingInfo.allOptions != null && !pairingInfo.allOptions.isEmpty() ) {
-            BigDecimal nakedDeliverablePct = pairingInfo.allOptions.get(0).getOptionRoot().getNakedDeliverablePct();
+            BigDecimal nakedDeliverablePct = pairingInfo.allOptions.stream().findFirst().get().getOptionRoot().getNakedDeliverablePct();
             if (nakedDeliverablePct != null) {
                 context.set(GlobalConfigType.NAKED_DELIVERABLE_PCT.getTypeName(), nakedDeliverablePct);
             }
-            BigDecimal nakedCashPct = pairingInfo.allOptions.get(0).getOptionRoot().getNakedCashPct();
+            BigDecimal nakedCashPct = pairingInfo.allOptions.stream().findFirst().get().getOptionRoot().getNakedCashPct();
             if (nakedCashPct != null) {
                 context.set(GlobalConfigType.NAKED_CASH_PCT.getTypeName(), nakedCashPct);
             }

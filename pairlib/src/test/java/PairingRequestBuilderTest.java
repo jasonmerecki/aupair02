@@ -168,7 +168,7 @@ public class PairingRequestBuilderTest {
         
         builder.setPositionSymbol("GPRO  160115C00080000").setPositionOptionRoot("GPRO").setPositionQty(-6)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("80.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
-        builder.setPositionSymbol("GPRO  160115C00085000").setPositionOptionRoot("GPRO").setPositionQty(8)
+        builder.setPositionSymbol("GPRO  160115P00085000").setPositionOptionRoot("GPRO").setPositionQty(8)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("85.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
         builder.setPositionSymbol("GPRO  160115C00085000").setPositionOptionRoot("GPRO").setPositionQty(8)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("85.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
@@ -429,7 +429,7 @@ public class PairingRequestBuilderTest {
             .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.40").addPosition();
         builder.setPositionSymbol("RUTW  161209P01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("1320.00")
-            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("3.075").addPosition();
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("3.075").addPosition(); // 1
         builder.setPositionSymbol("RUTW  161209C01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("1320.00")
             .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("42.35").addPosition();
@@ -440,14 +440,14 @@ public class PairingRequestBuilderTest {
         builder.setPositionSymbol("RUTW  161209P01260000").setPositionOptionRoot("RUTW").setPositionQty(2)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("1260.00")
             .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.20").addPosition();
-        builder.setPositionSymbol("RUTW  161209P01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
-            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1320.00")
-            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.675").addPosition();
-        builder.setPositionSymbol("RUTW  161209C01320000").setPositionOptionRoot("RUTW").setPositionQty(-2)
-            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1320.00")
+        builder.setPositionSymbol("RUTW  161209P01325000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("1325.00")
+            .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("0.675").addPosition(); // 2
+        builder.setPositionSymbol("RUTW  161209C01325000").setPositionOptionRoot("RUTW").setPositionQty(-2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1325.00")
             .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("40.45").addPosition();
-        builder.setPositionSymbol("RUTW  161209C01380000").setPositionOptionRoot("RUTW").setPositionQty(2)
-            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1380.00")
+        builder.setPositionSymbol("RUTW  161209C01390000").setPositionOptionRoot("RUTW").setPositionQty(2)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("1390.00")
             .setPositionOptionExpiry("2016-12-09 16:00").setPositionPrice("1.15").addPosition();
         
         builder.setPositionSymbol("RUTW  161209P01250000").setPositionOptionRoot("RUTW").setPositionQty(2)

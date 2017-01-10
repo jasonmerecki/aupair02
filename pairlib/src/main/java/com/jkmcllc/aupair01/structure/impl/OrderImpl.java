@@ -1,6 +1,5 @@
 package com.jkmcllc.aupair01.structure.impl;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.jkmcllc.aupair01.structure.Order;
@@ -10,16 +9,12 @@ public class OrderImpl implements Order {
     private final List<OrderLeg> orderLegs;
     private final String orderId;
     private final String orderDescription;
-    private final BigDecimal equityMaintenanceMargin;
-    private final BigDecimal equityInitialMargin;
+    private boolean worstCaseOutcome;
     
-    
-    OrderImpl(String orderId, String orderDescription, List<OrderLeg> orderLegs, BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin) {
+    OrderImpl(String orderId, String orderDescription, List<OrderLeg> orderLegs) {
         this.orderId = orderId;
         this.orderDescription = orderDescription;
         this.orderLegs = orderLegs;
-        this.equityMaintenanceMargin = equityMaintenanceMargin;
-        this.equityInitialMargin = equityInitialMargin;
     }
     
     @Override
@@ -30,11 +25,7 @@ public class OrderImpl implements Order {
         builder.append(orderId);
         builder.append(", orderDescription: '");
         builder.append(orderDescription);
-        builder.append("', equityMaintenanceMargin: ");
-        builder.append(equityMaintenanceMargin);
-        builder.append(", equityInitialMargin: ");
-        builder.append(equityInitialMargin);
-        builder.append(", OrderLegs: ");
+        builder.append("', OrderLegs: ");
         builder.append(orderLegs);
         builder.append("}");
         return builder.toString();
@@ -45,15 +36,6 @@ public class OrderImpl implements Order {
         return orderLegs;
     }
 
-    @Override
-    public BigDecimal getEquityMaintenanceMargin() {
-        return equityMaintenanceMargin;
-    }
-
-    @Override
-    public BigDecimal getEquityInitialMargin() {
-        return equityInitialMargin;
-    }
 
     @Override
     public String getOrderId() {
@@ -63,6 +45,14 @@ public class OrderImpl implements Order {
     @Override
     public String getOrderDescription() {
         return orderDescription;
+    }
+
+    public boolean isWorstCaseOutcome() {
+        return worstCaseOutcome;
+    }
+
+    public void setWorstCaseOutcome(boolean worstCaseOutcome) {
+        this.worstCaseOutcome = worstCaseOutcome;
     }
 
 }

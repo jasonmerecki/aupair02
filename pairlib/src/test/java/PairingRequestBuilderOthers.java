@@ -35,7 +35,7 @@ public class PairingRequestBuilderOthers {
 
         builder.setPositionSymbol("GPRO  160115C00080000").setPositionOptionRoot("GPRO").setPositionQty(-6)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("80.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
-        builder.setPositionSymbol("GPRO  160115C00085000").setPositionOptionRoot("GPRO").setPositionQty(8)
+        builder.setPositionSymbol("GPRO  160115P00085000").setPositionOptionRoot("GPRO").setPositionQty(8)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("85.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
         builder.setPositionSymbol("GPRO  160115C00085000").setPositionOptionRoot("GPRO").setPositionQty(8)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("85.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
@@ -46,7 +46,7 @@ public class PairingRequestBuilderOthers {
         if (addExtra) {
             builder.setPositionSymbol("GPRO  160115C00120000").setPositionOptionRoot("GPRO").setPositionQty(4)
                 .setPositionOptionType(OptionType.P).setPositionOptionStrike("120.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
-            builder.setPositionSymbol("GPRO  160115C00125000").setPositionOptionRoot("GPRO").setPositionQty(-4)
+            builder.setPositionSymbol("GPRO  160115P00125000").setPositionOptionRoot("GPRO").setPositionQty(-4)
                 .setPositionOptionType(OptionType.P).setPositionOptionStrike("125.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();
             builder.setPositionSymbol("GPRO  160115C00125000").setPositionOptionRoot("GPRO").setPositionQty(-4)
                 .setPositionOptionType(OptionType.C).setPositionOptionStrike("125.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("6.50").addPosition();

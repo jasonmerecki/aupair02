@@ -79,4 +79,19 @@ public class OptionConfigImpl implements OptionConfig {
         return expiryTimeLocal;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OptionConfigImpl == false) {
+            return false;
+        }
+        OptionConfigImpl other = (OptionConfigImpl) obj;
+        boolean equals = this.optionRootSymbol.equals(other.optionRootSymbol)
+                && this.optionType.equals(other.optionType)
+                && this.strike.equals(other.strike)
+                && this.expiry.equals(other.expiry)
+                && this.strikePrice.compareTo(other.strikePrice) == 0
+                ;
+        return equals;
+    }
+
 }

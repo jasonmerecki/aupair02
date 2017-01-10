@@ -225,7 +225,7 @@ public class PairingRequestTest extends PairingRequestBase {
         assertTrue(found);
         
         BigDecimal totalMargin = responseByAccount.get("accountAllShortIronButterfly").getTotalMaintenanceMargin();
-        assertEquals(totalMargin, new BigDecimal("78000.0000"));
+        assertEquals(totalMargin, new BigDecimal("79000.0000"));
     }
     
 }

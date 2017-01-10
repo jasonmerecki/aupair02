@@ -38,6 +38,9 @@ public class PairingRequestBase {
             sb.append("AccountID '").append(accountId).append("' total initial margin=").append(totalInitialMargin).append(" total maintenance margin=").append(totalMaintMargin);
             if (allStrategyListResults == null) {
                 sb.append(", strategies:").append("\n");
+                if (strategies.entrySet().isEmpty()) {
+                    sb.append("(none)\n");
+                }
                 for (Map.Entry<String, List<Strategy>> entry2 : strategies.entrySet()) {
                     sb.append("Option root '").append(entry2.getKey()).append("'\n");
                     for (Strategy strategy : entry2.getValue()) {
@@ -71,9 +74,18 @@ public class PairingRequestBase {
         sb.append("\n");
         pairingRequest.getAccounts().forEach( act -> {
             sb.append("Account: ").append(act.getAccountId()).append("\nPositions:\n");
+            if (act.getPositions().isEmpty()) {
+                sb.append("(none)\n");
+            }
             act.getPositions().forEach( pos -> {
                 sb.append(pos).append("\n");
             });
+            if (!act.getOrders().isEmpty()) {
+                sb.append("Orders:\n");
+                act.getOrders().forEach( ord -> {
+                    sb.append(ord).append("\n");
+                });
+            }
         });
         System.out.println(sb.toString());
     }
