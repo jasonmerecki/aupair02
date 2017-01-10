@@ -145,7 +145,7 @@ public class PairingService {
                 if (strategyListResults != null) {
                     strategyListResults.put(testStrategyGroupListName, testFound);
                 }
-                pairingInfo.reset();
+                pairingInfo.reset(false);
             }
             LeastMarginOutcome outcome = new LeastMarginOutcome(leastMarginStrategyList, strategyGroupListName);
             return outcome;

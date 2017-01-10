@@ -67,7 +67,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
     
     private AbstractDeliverableLeg(String symbol, String description, Integer origQty, BigDecimal price,
             OptionRoot optionRoot, Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty) {
-        super(symbol, description, origQty, price);
+        super(symbol, description, origQty, origQty, price);
         this.optionRoot = optionRoot;
         this.stockLegsAndDeliverableQty = stockLegsAndDeliverableQty;
     }
