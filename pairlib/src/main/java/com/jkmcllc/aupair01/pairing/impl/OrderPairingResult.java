@@ -7,7 +7,7 @@ interface OrderPairingResult {
 
     boolean isWorstCaseOutcome();
 
-    List<AbstractLeg> getOrderLegs();
+    List<? extends Leg> getOrderLegs();
 
     String getOrderId();
 

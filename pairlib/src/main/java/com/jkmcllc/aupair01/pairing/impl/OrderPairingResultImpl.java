@@ -2,9 +2,10 @@ package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, OrderPairingResult {
-    private final List<AbstractLeg> orderLegs;
+    private final List<AbstractLeg> orderLegs = new CopyOnWriteArrayList<>();
     private final String orderId;
     private final String orderDescription;
     
@@ -23,10 +24,13 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     private BigDecimal optionInitialMargin = BigDecimal.ZERO;
     private BigDecimal optionMaintenanceMargin = BigDecimal.ZERO;
     
-    protected OrderPairingResultImpl(String orderId, String orderDescription, List<AbstractLeg> orderLegs) {
-        this.orderLegs = orderLegs;
+    protected OrderPairingResultImpl(String orderId, String orderDescription) {
         this.orderId = orderId;
         this.orderDescription = orderDescription;
+    }
+    
+    public void addOrderLegs(List<AbstractLeg> orderLegs) {
+        this.orderLegs.addAll(orderLegs);
         orderLegs.forEach( leg -> {
             String legType = leg.getType();
             int signum = Integer.signum(leg.getQty());
@@ -55,6 +59,7 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
             equityInitialMargin = equityInitialMargin.add(leg.getEquityInitialMargin());
         });
     }
+    
     @Override
     public int compareTo(OrderPairingResultImpl that) {
         // If order is all short options, then count of sell legs
@@ -101,7 +106,7 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
      * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getOrderLegs()
      */
     @Override
-    public List<AbstractLeg> getOrderLegs() {
+    public List<? extends Leg> getOrderLegs() {
         return orderLegs;
     }
     /* (non-Javadoc)
@@ -159,6 +164,27 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     @Override
     public BigDecimal getOptionMaintenanceMargin() {
         return optionMaintenanceMargin;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OrderPairingResultImpl == false) {
+            return false;
+        }
+        OrderPairingResultImpl that = (OrderPairingResultImpl) obj;
+        return that.orderId.equals(this.orderId);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.orderId.hashCode();
+    }
+
+    public int getOptionLegsCount() {
+        return sellOptionLegs + buyOptionLegs;
+    }
+    
+    public int getStockLegsCount() {
+        return sellStockLegs + buyStockLegs;
     }
 
 }

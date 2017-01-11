@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.jkmcllc.aupair01.store.Constants;
 import com.jkmcllc.aupair01.store.OptionRootStore;
@@ -61,6 +62,7 @@ class PairingInfo {
     private List<AbstractDeliverableLeg> longDeliverables = null;
     private List<AbstractDeliverableLeg> shortDeliverables = null;
     final ConcurrentMap<String, AbstractLeg> allLegs = new ConcurrentHashMap<>();
+    final List<OrderPairingResultImpl> orderPairings = new CopyOnWriteArrayList<>();
     final AccountInfo accountInfo;
     
     private PairingInfo(OptionRoot optionRoot, Account account) {
@@ -76,34 +78,78 @@ class PairingInfo {
     private static Map<String, PairingInfo> loadPositions (Account account, OptionRootStore optionRootStore) {
         ConcurrentMap<String, PairingInfo> pairingInfoMap = new ConcurrentHashMap<>();
         CorePosLoader cpl = new CorePosLoader(pairingInfoMap, account, optionRootStore);
-        /* 
-        for (CorePosition pos : account.getPositions()) {
-            cpl.accept(pos);
-        }
-        */
         
         account.getPositions().parallelStream().forEach(cpl);
-        // account.getOrders().parallelStream().forEach(order -> order.getOrderLegs().parallelStream().forEach(cpl));
+        
+        // Order sorting!
+        // step 1:
+        // forEach order, collect into a map using collect(Collectors.toMap( or toConcurrentMap
+        // where the Key is OrderPairingResultImpl and the values are the List<Leg> of legs
+        Map<OrderPairingResultImpl, List<AbstractLeg>> orderLegMap = account.getOrders().parallelStream()
+                .collect(Collectors.toConcurrentMap(
+                ord -> {
+                    return new OrderPairingResultImpl(ord.getOrderId(), ord.getOrderDescription());
+                }, 
+                ord -> {
+                    List<AbstractLeg> legs = ord.getOrderLegs().stream().map(orderLeg -> {
+                            AbstractLeg newLeg = createLeg(orderLeg, optionRootStore, true);
+                            return newLeg;
+                        })
+                    .collect(Collectors.toList());
+                    return legs;
+                }));
+        
+        // step 2:
+        // with the resulting map, the entries can be streamed,
+        // and be mapped so that the key OrderPairingResultImpl will grab and set its own List<Legs>
+        // and then collected into a set of OrderPairingResultImpl objects
+        Set<OrderPairingResultImpl> orderInfoSet = orderLegMap.entrySet().parallelStream().map(entry -> {
+            OrderPairingResultImpl orderpr = entry.getKey();
+            List<AbstractLeg> legs = entry.getValue();
+            orderpr.addOrderLegs(legs);
+            return orderpr;
+        }).collect(Collectors.toSet());
+
+        // step 3:
+        // the resulting set will be parallelStream and each OrderPairingResultImpl
+        // will be assigned to the appropriate mapped PairingInfo (possibly more than one depending on the legs)
+        orderInfoSet.parallelStream().forEach(ordInfo -> {
+            if (ordInfo.getStockLegsCount() != 0 && ordInfo.getOptionLegsCount() == 0) {
+                // only stock legs, add this to the 
+                StockLeg stockLeg = (StockLeg) ordInfo.getOrderLegs().stream().findFirst().get();
+                Set<OptionRoot> optionRoots = optionRootStore.findRootsByDeliverableSymbol(stockLeg.getSymbol());
+                for (OptionRoot optionRoot : optionRoots) {
+                    PairingInfo pairingInfo = cpl.findInfo(optionRoot);
+                    // PairingInfo might be null, odd deliverables
+                    if (pairingInfo != null) {
+                        pairingInfo.orderPairings.add(ordInfo);
+                    }
+                }
+            } else if (ordInfo.getOptionLegsCount() != 0) {
+                // unless the order has zero legs, it must have some options in it, 
+                // therefore the order will be associated with the pairing info for the option root
+                OptionLeg optionLeg = (OptionLeg) ordInfo.getOrderLegs().stream()
+                        .filter(l -> AbstractLeg.STOCKOPTION.equals(l.getType())).findFirst().get();
+                OptionRoot optionRoot = optionLeg.getOptionRoot();
+                PairingInfo pairingInfo = cpl.findInfo(optionRoot);
+                pairingInfo.orderPairings.add(ordInfo);
+            }
+        });
+        
+        // need to enforce that an order with option legs cannot mix option roots?
+        
         pairingInfoMap.values().forEach(p -> p.reset(false));
         return pairingInfoMap;
     }
     
-    private void addPos(CorePosition position) {
-        // find existing leg here
-        
-        // otherwise add new
-        addNew(position);
-    }
-    
-    private void addNew(CorePosition position) {
+    private static AbstractLeg createLeg(CorePosition position, OptionRootStore optionRootStore, boolean isOrder) {
         int sign = Integer.signum(position.getQty());
         if (sign == 0) {
             // TODO: throw exception here, can't have zero position quantity for pairing
-            return;
+            return null;
         } 
-        
         Integer qty = position.getQty(), positionResetQty = position.getQty();
-        if (CorePositionType.ORDERLEG == position.getCorePositionType()) {
+        if (isOrder) {
             positionResetQty = Constants.ZERO;
         }
         String symbol = position.getSymbol();
@@ -113,21 +159,23 @@ class PairingInfo {
         
         OptionConfig optionConfig = position.getOptionConfig();
         if (optionConfig != null) {
+            String optionRootSymbol = optionConfig.getOptionRoot();
+            OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
             OptionType optionType = optionConfig.getOptionType();
             OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, optionType, optionConfig, optionRoot);
             newLeg = leg;
-        } else {
+        } else if (optionConfig == null) {
             // assume it's a stock
             StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price);
             newLeg = leg;
         }
-        this.allLegs.put(symbol, newLeg);
+        return newLeg;
     }
     
     /*
      * Used to load multiple unique positions in parallel. 
      * Assumes positions are unique; behavior is undefined if duplicate positions (including
-     * a position and an order leg for theh same symbol) are loaded in parallel.
+     * a position and an order leg for the same symbol) are loaded in parallel.
      */
     private static class CorePosLoader implements Consumer<CorePosition> {
         private final ConcurrentMap<String, PairingInfo> pairingInfoMap;
@@ -153,23 +201,26 @@ class PairingInfo {
         @Override
         public void accept(CorePosition position) {
             OptionConfig optionConfig = position.getOptionConfig();
+            String positionSymbol = position.getSymbol();
+            boolean isOrder = (CorePositionType.ORDERLEG == position.getCorePositionType());
             if (optionConfig != null) {
-                String optionRootSymbol = optionConfig.getOptionRoot();
-                OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
+                AbstractOptionLeg newLeg = (AbstractOptionLeg) createLeg(position, optionRootStore, isOrder);
+                OptionRoot optionRoot = newLeg.getOptionRoot();
                 PairingInfo pairingInfo = findInfo(optionRoot);
-                pairingInfo.addPos(position);
+                pairingInfo.allLegs.put(positionSymbol, newLeg);
             } else {
                 // assume it's a stock
-                String positionSymbol = position.getSymbol();
                 Set<OptionRoot> optionRoots = optionRootStore.findRootsByDeliverableSymbol(positionSymbol);
+                AbstractLeg newLeg = createLeg(position, null, isOrder);
                 for (OptionRoot optionRoot : optionRoots) {
                     PairingInfo pairingInfo = findInfo(optionRoot);
-                    pairingInfo.addPos(position);
+                    // PairingInfo might be null, odd deliverables
+                    if (pairingInfo != null) {
+                        pairingInfo.allLegs.put(positionSymbol, newLeg);
+                    }
                 }
             }
-            
         }
-        
 
     }
     
