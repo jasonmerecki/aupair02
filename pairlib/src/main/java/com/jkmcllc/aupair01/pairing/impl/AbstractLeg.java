@@ -10,6 +10,7 @@ abstract class AbstractLeg implements Leg {
     static final String STOCK = "STOCK";
     static final String STOCKOPTION = "STOCKOPTION";
     static final String DELIVERABLE = "DELIVERABLE";
+    static enum OpenClose {OPEN, CLOSE};
     
     protected final String symbol;
     protected final String description;
@@ -23,6 +24,9 @@ abstract class AbstractLeg implements Leg {
     
     protected BigDecimal equityMaintenanceMargin = BigDecimal.ZERO;
     protected BigDecimal equityInitialMargin = BigDecimal.ZERO;
+    
+    // used only if this is an order
+    OpenClose openClose;
     
     protected AbstractLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price) {
         this.symbol = symbol;

@@ -11,7 +11,6 @@ public interface Order {
     List<OrderLeg> getOrderLegs();
     String getOrderId();
     String getOrderDescription();
-    boolean isWorstCaseOutcome();
     
     class OrderBuilder {
         private OrderBuilder() {};

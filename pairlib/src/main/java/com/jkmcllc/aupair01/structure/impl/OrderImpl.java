@@ -9,7 +9,6 @@ public class OrderImpl implements Order {
     private final List<OrderLeg> orderLegs;
     private final String orderId;
     private final String orderDescription;
-    private boolean worstCaseOutcome;
     
     OrderImpl(String orderId, String orderDescription, List<OrderLeg> orderLegs) {
         this.orderId = orderId;
@@ -45,14 +44,6 @@ public class OrderImpl implements Order {
     @Override
     public String getOrderDescription() {
         return orderDescription;
-    }
-
-    public boolean isWorstCaseOutcome() {
-        return worstCaseOutcome;
-    }
-
-    public void setWorstCaseOutcome(boolean worstCaseOutcome) {
-        this.worstCaseOutcome = worstCaseOutcome;
     }
 
 }
