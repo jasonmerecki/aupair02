@@ -69,10 +69,11 @@ class PairingInfo {
     };
     
     static Map<String, PairingInfo> from (Account account, OptionRootStore optionRootStore) {
-        Map<String, PairingInfo> pairingInfoMap = loadPositionsAndOrders(account, optionRootStore);
+        Map<String, PairingInfo> pairingInfoMap = loadPositions(account, optionRootStore);
         return pairingInfoMap;
     }
-    private static Map<String, PairingInfo> loadPositionsAndOrders (Account account, OptionRootStore optionRootStore) {
+    
+    private static Map<String, PairingInfo> loadPositions (Account account, OptionRootStore optionRootStore) {
         ConcurrentMap<String, PairingInfo> pairingInfoMap = new ConcurrentHashMap<>();
         CorePosLoader cpl = new CorePosLoader(pairingInfoMap, account, optionRootStore);
         /* 
@@ -85,6 +86,42 @@ class PairingInfo {
         // account.getOrders().parallelStream().forEach(order -> order.getOrderLegs().parallelStream().forEach(cpl));
         pairingInfoMap.values().forEach(p -> p.reset(false));
         return pairingInfoMap;
+    }
+    
+    private void addPos(CorePosition position) {
+        // find existing leg here
+        
+        // otherwise add new
+        addNew(position);
+    }
+    
+    private void addNew(CorePosition position) {
+        int sign = Integer.signum(position.getQty());
+        if (sign == 0) {
+            // TODO: throw exception here, can't have zero position quantity for pairing
+            return;
+        } 
+        
+        Integer qty = position.getQty(), positionResetQty = position.getQty();
+        if (CorePositionType.ORDERLEG == position.getCorePositionType()) {
+            positionResetQty = Constants.ZERO;
+        }
+        String symbol = position.getSymbol();
+        String description = position.getDescription();
+        BigDecimal price = position.getPrice();
+        AbstractLeg newLeg = null;
+        
+        OptionConfig optionConfig = position.getOptionConfig();
+        if (optionConfig != null) {
+            OptionType optionType = optionConfig.getOptionType();
+            OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, optionType, optionConfig, optionRoot);
+            newLeg = leg;
+        } else {
+            // assume it's a stock
+            StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price);
+            newLeg = leg;
+        }
+        this.allLegs.put(symbol, newLeg);
     }
     
     /*
@@ -115,50 +152,25 @@ class PairingInfo {
         }
         @Override
         public void accept(CorePosition position) {
-
-            // find existing leg here
-            
-            // otherwise add new
-            addNew(position);
-            
-        }
-        
-        private void addNew(CorePosition position) {
-            int sign = Integer.signum(position.getQty());
-            if (sign == 0) {
-                // TODO: throw exception here, can't have zero position quantity for pairing
-                return;
-            } 
             OptionConfig optionConfig = position.getOptionConfig();
-            Integer qty = position.getQty(), positionResetQty = position.getQty();
-            if (CorePositionType.ORDERLEG == position.getCorePositionType()) {
-                positionResetQty = Constants.ZERO;
-            }
-            String symbol = position.getSymbol();
-            String description = position.getDescription();
-            BigDecimal price = position.getPrice();
-            AbstractLeg newLeg = null;
-            PairingInfo pairingInfo = null;
             if (optionConfig != null) {
                 String optionRootSymbol = optionConfig.getOptionRoot();
-                OptionType optionType = optionConfig.getOptionType();
                 OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
-                pairingInfo = findInfo(optionRoot);
-                OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, optionType, optionConfig, optionRoot);
-                newLeg = leg;
-                pairingInfo.allLegs.put(symbol, newLeg);
+                PairingInfo pairingInfo = findInfo(optionRoot);
+                pairingInfo.addPos(position);
             } else {
                 // assume it's a stock
                 String positionSymbol = position.getSymbol();
                 Set<OptionRoot> optionRoots = optionRootStore.findRootsByDeliverableSymbol(positionSymbol);
-                StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price);
-                newLeg = leg;
                 for (OptionRoot optionRoot : optionRoots) {
-                    pairingInfo = findInfo(optionRoot);
-                    pairingInfo.allLegs.put(position.getSymbol(), newLeg);
+                    PairingInfo pairingInfo = findInfo(optionRoot);
+                    pairingInfo.addPos(position);
                 }
             }
+            
         }
+        
+
     }
     
     private void initDeliverables() {
