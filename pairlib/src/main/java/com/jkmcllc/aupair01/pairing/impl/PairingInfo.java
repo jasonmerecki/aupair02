@@ -136,8 +136,6 @@ class PairingInfo {
             }
         });
         
-        // need to enforce that an order with option legs cannot mix option roots?
-        
         pairingInfoMap.values().forEach(p -> p.reset(false));
         return pairingInfoMap;
     }
@@ -156,17 +154,21 @@ class PairingInfo {
         String description = position.getDescription();
         BigDecimal price = position.getPrice();
         AbstractLeg newLeg = null;
+        BigDecimal equityMaintenanceMargin = position.getEquityMaintenanceMargin();
+        BigDecimal equityInitialMargin = position.getEquityInitialMargin();
         
         OptionConfig optionConfig = position.getOptionConfig();
         if (optionConfig != null) {
             String optionRootSymbol = optionConfig.getOptionRoot();
             OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
             OptionType optionType = optionConfig.getOptionType();
-            OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, optionType, optionConfig, optionRoot);
+            OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, 
+                    equityMaintenanceMargin, equityInitialMargin, optionType, optionConfig, optionRoot);
             newLeg = leg;
         } else if (optionConfig == null) {
             // assume it's a stock
-            StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price);
+            StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price,
+                    equityMaintenanceMargin, equityInitialMargin);
             newLeg = leg;
         }
         return newLeg;

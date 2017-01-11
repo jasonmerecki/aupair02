@@ -28,12 +28,15 @@ abstract class AbstractLeg implements Leg {
     // used only if this is an order
     OpenClose openClose;
     
-    protected AbstractLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price) {
+    protected AbstractLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price,
+            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin) {
         this.symbol = symbol;
         this.description = description;
         this.positionResetQty = positionResetQty;
         this.resetQty = this.remainQty = this.qty = qty;
         this.price = price;
+        this.equityMaintenanceMargin = equityMaintenanceMargin;
+        this.equityInitialMargin = equityInitialMargin;
         this.legValue = null;
     }
     
@@ -51,6 +54,8 @@ abstract class AbstractLeg implements Leg {
         if (price != null) {
             basicInfo.append("price: ").append(price);
         }
+        basicInfo.append("equityMaintenanceMargin: ").append(equityMaintenanceMargin);
+        basicInfo.append("equityInitialMargin: ").append(equityInitialMargin);
         return basicInfo.toString();
     }
     

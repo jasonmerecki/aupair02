@@ -18,8 +18,8 @@ abstract class AbstractOptionLeg extends AbstractLeg {
     protected final OptionType optionType;
     
     protected AbstractOptionLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price, 
-            OptionType optionType, OptionConfig optionConfig, OptionRoot optionRoot) {
-        super(symbol, description, qty, positionResetQty, price);
+            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionType optionType, OptionConfig optionConfig, OptionRoot optionRoot) {
+        super(symbol, description, qty, positionResetQty, price, equityMaintenanceMargin, equityInitialMargin);
         this.optionConfig = optionConfig;
         this.optionRoot = optionRoot;
         this.optionType = optionType;
