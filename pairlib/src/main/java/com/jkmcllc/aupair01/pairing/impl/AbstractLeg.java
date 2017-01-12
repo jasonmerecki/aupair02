@@ -54,8 +54,8 @@ abstract class AbstractLeg implements Leg {
         if (price != null) {
             basicInfo.append("price: ").append(price);
         }
-        basicInfo.append("equityMaintenanceMargin: ").append(equityMaintenanceMargin);
-        basicInfo.append("equityInitialMargin: ").append(equityInitialMargin);
+        basicInfo.append(", equityMaintenanceMargin: ").append(equityMaintenanceMargin);
+        basicInfo.append(", equityInitialMargin: ").append(equityInitialMargin);
         return basicInfo.toString();
     }
     
