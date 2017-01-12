@@ -61,6 +61,21 @@ public class PairingRequestBase {
                     }
                 } 
             }
+            
+            Map<String, List<Strategy>> worstOrderStrategies = accountResponse.getWorstCaseOrderStrategies();
+            if (worstOrderStrategies != null) {
+                sb.append(", worstOrderStrategies:").append("\n");
+                if (strategies.entrySet().isEmpty()) {
+                    sb.append("(none)\n");
+                }
+                for (Map.Entry<String, List<Strategy>> entry2 : worstOrderStrategies.entrySet()) {
+                    sb.append("Option root '").append(entry2.getKey()).append("'\n");
+                    for (Strategy strategy : entry2.getValue()) {
+                        sb.append(strategy).append("\n");
+                    }
+                } 
+            }
+            
         }
         System.out.println(sb.toString());
     }

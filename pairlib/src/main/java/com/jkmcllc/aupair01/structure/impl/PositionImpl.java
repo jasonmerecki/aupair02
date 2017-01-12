@@ -13,18 +13,14 @@ class PositionImpl implements Position {
     private final String description;
     private final Integer qty;
     private final BigDecimal price;
-    private final BigDecimal equityMaintenanceMargin;
-    private final BigDecimal equityInitialMargin;
     private final OptionConfig optionConfig;
     
     PositionImpl(String symbol, String description, Integer qty, BigDecimal price, 
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionConfig optionConfig) {
+            OptionConfig optionConfig) {
         this.symbol = symbol;
         this.description = (description == null) ? Constants.EMPTY_STRING : description;
         this.qty = qty;
         this.price = price;
-        this.equityMaintenanceMargin = equityMaintenanceMargin != null ? equityMaintenanceMargin : BigDecimal.ZERO;
-        this.equityInitialMargin = equityInitialMargin != null ? equityInitialMargin : BigDecimal.ZERO;
         this.optionConfig = optionConfig;
     }
     @Override
@@ -47,10 +43,6 @@ class PositionImpl implements Position {
         builder.append(qty);
         builder.append(", price: ");
         builder.append(price);
-        builder.append(", equityMaintenanceMargin: ");
-        builder.append(equityMaintenanceMargin);
-        builder.append(", equityInitialMargin: ");
-        builder.append(equityInitialMargin);
         if (optionConfig != null) {
             builder.append(", ").append(optionConfig);
         }
@@ -75,14 +67,6 @@ class PositionImpl implements Position {
     @Override
     public OptionConfig getOptionConfig() {
         return optionConfig;
-    }
-    @Override
-    public BigDecimal getEquityMaintenanceMargin() {
-        return equityMaintenanceMargin;
-    }
-    @Override
-    public BigDecimal getEquityInitialMargin() {
-        return equityInitialMargin;
     }
     @Override
     public CorePositionType getCorePositionType() {

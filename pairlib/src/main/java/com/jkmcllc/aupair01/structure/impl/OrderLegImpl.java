@@ -9,8 +9,8 @@ import com.jkmcllc.aupair01.structure.OrderLeg;
 public class OrderLegImpl extends PositionImpl implements OrderLeg  {
 
     OrderLegImpl (String symbol, String description, Integer qty, BigDecimal price, 
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionConfig optionConfig) {
-        super(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            OptionConfig optionConfig) {
+        super(symbol, description, qty, price, optionConfig);
     }
     
     @Override

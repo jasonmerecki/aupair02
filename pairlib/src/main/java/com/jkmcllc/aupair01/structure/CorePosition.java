@@ -13,8 +13,6 @@ public interface CorePosition {
     Integer getQty();
     BigDecimal getPrice();
     OptionConfig getOptionConfig();
-    BigDecimal getEquityMaintenanceMargin();
-    BigDecimal getEquityInitialMargin();
 
     static String findDuplicate(Collection<? extends CorePosition> corePositions) {
         Set<OptionConfig> uniqConfigs = new HashSet<>();

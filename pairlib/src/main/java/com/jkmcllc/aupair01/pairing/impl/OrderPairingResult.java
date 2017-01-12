@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 interface OrderPairingResult {
@@ -13,16 +14,22 @@ interface OrderPairingResult {
 
     String getOrderDescription();
 
-    BigDecimal getEquityInitialMargin();
-
-    BigDecimal getEquityMaintMargin();
-
     BigDecimal getInitialMargin();
 
     BigDecimal getMaintenanceMargin();
 
-    BigDecimal getOptionInitialMargin();
+    BigDecimal getOrderInitialCost();
 
-    BigDecimal getOptionMaintenanceMargin();
+    BigDecimal getOrderMaintenanceCost();
+    
+    public static BigDecimal getOrderMaintenanceCost(Collection<? extends OrderPairingResult> orderPairingResults) {
+        BigDecimal totalMaintMargin = orderPairingResults.parallelStream().map(s1 -> s1.getOrderMaintenanceCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        return totalMaintMargin;
+    }
+    
+    public static BigDecimal getOrderInitialCost(Collection<? extends OrderPairingResult> orderPairingResults) {
+        BigDecimal totalMaintMargin = orderPairingResults.parallelStream().map(s1 -> s1.getOrderInitialCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        return totalMaintMargin;
+    }
 
 }

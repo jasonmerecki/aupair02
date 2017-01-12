@@ -18,9 +18,8 @@ abstract class AbstractStockLeg extends AbstractLeg {
     public String getType() {
         return AbstractLeg.STOCK;
     }
-    protected AbstractStockLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price,
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin) {
-        super(symbol, description, qty, positionResetQty, price, equityMaintenanceMargin, equityInitialMargin);
+    protected AbstractStockLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price) {
+        super(symbol, description, qty, positionResetQty, price);
     }
     public String toString() {
         StringBuilder builder = new StringBuilder();

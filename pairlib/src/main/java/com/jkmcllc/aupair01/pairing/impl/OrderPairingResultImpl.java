@@ -8,6 +8,8 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     private final List<AbstractLeg> orderLegs = new CopyOnWriteArrayList<>();
     private final String orderId;
     private final String orderDescription;
+    private final BigDecimal orderMaintenanceCost;
+    private final BigDecimal orderInitialCost;
     
     boolean worstCaseOutcome;
     private boolean allSellOptions = true;
@@ -17,16 +19,16 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     private int buyOptionLegs;
     private int sellStockLegs;
     private int buyStockLegs;
-    private BigDecimal equityInitialMargin = BigDecimal.ZERO;
-    private BigDecimal equityMaintMargin = BigDecimal.ZERO;
     BigDecimal totalInitialMargin = BigDecimal.ZERO;
     BigDecimal totalMaintenanceMargin = BigDecimal.ZERO;
-    private BigDecimal optionInitialMargin = BigDecimal.ZERO;
-    private BigDecimal optionMaintenanceMargin = BigDecimal.ZERO;
+
     
-    protected OrderPairingResultImpl(String orderId, String orderDescription) {
+    protected OrderPairingResultImpl(String orderId, String orderDescription,
+            BigDecimal orderMaintenanceCost, BigDecimal orderInitialCost) {
         this.orderId = orderId;
         this.orderDescription = orderDescription;
+        this.orderMaintenanceCost = orderMaintenanceCost;
+        this.orderInitialCost = orderInitialCost;
     }
     
     public void addOrderLegs(List<AbstractLeg> orderLegs) {
@@ -55,8 +57,6 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
                     allSellOptions = false;
                 }
             }
-            equityMaintMargin = equityMaintMargin.add(leg.getEquityMaintenanceMargin());
-            equityInitialMargin = equityInitialMargin.add(leg.getEquityInitialMargin());
         });
     }
     
@@ -88,8 +88,8 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
             return this.buyOptionLegs - that.buyOptionLegs;
         }
         // cost of order, proceeds or debit
-        if (this.equityInitialMargin.compareTo(that.equityInitialMargin) != 0) {
-            return this.equityInitialMargin.compareTo(that.equityInitialMargin);
+        if (this.orderMaintenanceCost.compareTo(that.orderMaintenanceCost) != 0) {
+            return this.orderMaintenanceCost.compareTo(that.orderMaintenanceCost);
         }
         // orderID (to remove all other ambiguity) 
         return this.orderId.compareTo(that.orderId);
@@ -124,20 +124,6 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
         return orderDescription;
     }
     /* (non-Javadoc)
-     * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getEquityInitialMargin()
-     */
-    @Override
-    public BigDecimal getEquityInitialMargin() {
-        return equityInitialMargin;
-    }
-    /* (non-Javadoc)
-     * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getEquityMaintMargin()
-     */
-    @Override
-    public BigDecimal getEquityMaintMargin() {
-        return equityMaintMargin;
-    }
-    /* (non-Javadoc)
      * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getTotalInitialMargin()
      */
     @Override
@@ -151,20 +137,7 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     public BigDecimal getMaintenanceMargin() {
         return totalMaintenanceMargin;
     }
-    /* (non-Javadoc)
-     * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getOptionInitialMargin()
-     */
-    @Override
-    public BigDecimal getOptionInitialMargin() {
-        return optionInitialMargin;
-    }
-    /* (non-Javadoc)
-     * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getOptionMaintenanceMargin()
-     */
-    @Override
-    public BigDecimal getOptionMaintenanceMargin() {
-        return optionMaintenanceMargin;
-    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof OrderPairingResultImpl == false) {
@@ -200,10 +173,24 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
         builder.append(", orderDescription: '");
         builder.append(orderDescription);
         builder.append("'");
+        builder.append(", orderMaintenanceCost: ");
+        builder.append(orderMaintenanceCost);        
+        builder.append(", orderInitialCost: ");
+        builder.append(orderInitialCost);
         builder.append(", orderLegs: ");
         builder.append(orderLegs);
         builder.append("}");
         return builder.toString();
+    }
+
+    @Override
+    public BigDecimal getOrderInitialCost() {
+        return orderInitialCost;
+    }
+
+    @Override
+    public BigDecimal getOrderMaintenanceCost() {
+        return orderMaintenanceCost;
     }
 
 }

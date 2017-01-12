@@ -22,21 +22,15 @@ abstract class AbstractLeg implements Leg {
     protected BigDecimal legValue;
     protected Integer qty;
     
-    protected BigDecimal equityMaintenanceMargin = BigDecimal.ZERO;
-    protected BigDecimal equityInitialMargin = BigDecimal.ZERO;
-    
     // used only if this is an order
     OpenClose openClose;
     
-    protected AbstractLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price,
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin) {
+    protected AbstractLeg(String symbol, String description, Integer qty, Integer positionResetQty, BigDecimal price) {
         this.symbol = symbol;
         this.description = description;
         this.positionResetQty = positionResetQty;
         this.resetQty = this.remainQty = this.qty = qty;
         this.price = price;
-        this.equityMaintenanceMargin = equityMaintenanceMargin;
-        this.equityInitialMargin = equityInitialMargin;
         this.legValue = null;
     }
     
@@ -57,8 +51,6 @@ abstract class AbstractLeg implements Leg {
         if (openClose != null) {
             basicInfo.append(", ").append("openClose: ").append(openClose);
         }
-        basicInfo.append(", equityMaintenanceMargin: ").append(equityMaintenanceMargin);
-        basicInfo.append(", equityInitialMargin: ").append(equityInitialMargin);
         return basicInfo.toString();
     }
     
@@ -128,12 +120,6 @@ abstract class AbstractLeg implements Leg {
     @Override
     public Collection<? extends Leg> getMultiLegs() {
         return null;
-    }
-    public BigDecimal getEquityMaintenanceMargin() {
-        return equityMaintenanceMargin;
-    }
-    public BigDecimal getEquityInitialMargin() {
-        return equityInitialMargin;
     }
     
 }

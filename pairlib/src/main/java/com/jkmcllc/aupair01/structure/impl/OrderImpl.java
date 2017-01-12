@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.structure.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.jkmcllc.aupair01.structure.Order;
@@ -9,11 +10,16 @@ public class OrderImpl implements Order {
     private final List<OrderLeg> orderLegs;
     private final String orderId;
     private final String orderDescription;
+    private final BigDecimal orderMaintenanceCost;
+    private final BigDecimal orderInitialCost;
     
-    OrderImpl(String orderId, String orderDescription, List<OrderLeg> orderLegs) {
+    OrderImpl(String orderId, String orderDescription, 
+            BigDecimal orderMaintenanceCost, BigDecimal orderInitialCost, List<OrderLeg> orderLegs) {
         this.orderId = orderId;
         this.orderDescription = orderDescription;
         this.orderLegs = orderLegs;
+        this.orderMaintenanceCost = orderMaintenanceCost;
+        this.orderInitialCost = orderInitialCost;
     }
     
     @Override
@@ -44,6 +50,16 @@ public class OrderImpl implements Order {
     @Override
     public String getOrderDescription() {
         return orderDescription;
+    }
+
+    @Override
+    public BigDecimal getOrderMaintenanceCost() {
+        return orderMaintenanceCost;
+    }
+
+    @Override
+    public BigDecimal getOrderInitialCost() {
+        return orderInitialCost;
     }
 
 }

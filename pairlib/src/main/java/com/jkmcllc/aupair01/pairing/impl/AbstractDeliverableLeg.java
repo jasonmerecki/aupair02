@@ -37,7 +37,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
                     .divide(delivQty.setScale(0), RoundingMode.DOWN);
             deliverableLeg = new AbstractDeliverableLeg(stockLeg.symbol, stockLeg.description, 
                     availQty.intValue(), optionRoot.getDeliverables().getDeliverablesValue(), 
-                    BigDecimal.ZERO, BigDecimal.ZERO, optionRoot, deliverableLegsAndQty);
+                    optionRoot, deliverableLegsAndQty);
         } else {
             // multiple stock deliverables
             StringJoiner symbolJoin = new StringJoiner("-");
@@ -63,14 +63,14 @@ class AbstractDeliverableLeg extends AbstractLeg {
             
             deliverableLeg = new AbstractDeliverableLeg(symbolJoin.toString(), descriptionJoin.toString(), 
                     availLegs.intValue(), optionRoot.getDeliverables().getDeliverablesValue(), 
-                    BigDecimal.ZERO, BigDecimal.ZERO, optionRoot, deliverableLegsAndQty);
+                    optionRoot, deliverableLegsAndQty);
         }
         return deliverableLeg;
     }
     
     private AbstractDeliverableLeg(String symbol, String description, Integer origQty, BigDecimal price,
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionRoot optionRoot, Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty) {
-        super(symbol, description, origQty, origQty, price, equityMaintenanceMargin, equityInitialMargin);
+            OptionRoot optionRoot, Map<AbstractStockLeg, BigDecimal> stockLegsAndDeliverableQty) {
+        super(symbol, description, origQty, origQty, price);
         this.optionRoot = optionRoot;
         this.stockLegsAndDeliverableQty = stockLegsAndDeliverableQty;
     }
@@ -89,7 +89,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
         }, v -> v.getValue() ));
         
         AbstractDeliverableLeg deliverableLeg = new AbstractDeliverableLeg(this.symbol, this.description, 
-                used, this.price, BigDecimal.ZERO, BigDecimal.ZERO, this.optionRoot, reducedMap);
+                used, this.price, this.optionRoot, reducedMap);
         return deliverableLeg;
     }
 

@@ -25,8 +25,8 @@ import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 public final class StructureImplFactory {
     public static Position buildPosition(String symbol, String description, Integer qty, BigDecimal price, 
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionConfig optionConfig) {
-        return new PositionImpl(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            OptionConfig optionConfig) {
+        return new PositionImpl(symbol, description, qty, price, optionConfig);
     }
     public static Deliverables buildDeliverables(List<Deliverable> deliverableList) {
         return new DeliverablesImpl(deliverableList);
@@ -57,10 +57,11 @@ public final class StructureImplFactory {
         return new PairingResponseImpl(resultMap);
     }
     public static OrderLeg buildOrderLeg(String symbol, String description, Integer qty, BigDecimal price, 
-            BigDecimal equityMaintenanceMargin, BigDecimal equityInitialMargin, OptionConfig optionConfig) {
-        return new OrderLegImpl(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            OptionConfig optionConfig) {
+        return new OrderLegImpl(symbol, description, qty, price, optionConfig);
     }
-    public static Order buildOrder(String orderId, String orderDescription, List<OrderLeg> orderLegs) {
-        return new OrderImpl(orderId, orderDescription, orderLegs);
+    public static Order buildOrder(String orderId, String orderDescription, 
+            BigDecimal orderMaintenanceCost, BigDecimal orderInitialCost, List<OrderLeg> orderLegs) {
+        return new OrderImpl(orderId, orderDescription, orderMaintenanceCost, orderInitialCost, orderLegs);
     }
 }

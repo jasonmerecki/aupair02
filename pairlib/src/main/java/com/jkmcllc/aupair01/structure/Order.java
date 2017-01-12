@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.structure;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,16 @@ public interface Order {
     List<OrderLeg> getOrderLegs();
     String getOrderId();
     String getOrderDescription();
+    BigDecimal getOrderMaintenanceCost();
+    BigDecimal getOrderInitialCost();
     
     class OrderBuilder {
         private OrderBuilder() {};
         private List<OrderLeg> orderLegs = new ArrayList<>();
         private String orderId;
-        private String orderDescription = Constants.EMPTY_STRING;;
+        private String orderDescription = Constants.EMPTY_STRING;
+        private BigDecimal orderMaintenanceCost;
+        private BigDecimal orderInitialCost;
         
         public OrderBuilder addOrderLeg(OrderLeg orderLeg) {
             orderLegs.add(orderLeg);
@@ -30,6 +35,23 @@ public interface Order {
             this.orderDescription = orderDescription;
             return this;
         }
+        public OrderBuilder setOrderMaintenanceCost(String orderMaintenanceCost) {
+            try {
+                this.orderMaintenanceCost = new BigDecimal(orderMaintenanceCost);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid orderMaintenanceCost price: " + orderMaintenanceCost);
+            }
+            return this;
+        }
+        public OrderBuilder setOrderInitialCost(String orderInitialCost) {
+            try {
+                this.orderInitialCost = new BigDecimal(orderInitialCost);
+            } catch (Exception e) {
+                throw new BuilderException("Invalid orderInitialCost price: " + orderInitialCost);
+            }
+            return this;
+        }
+        
 
         public Order build() {
             if (orderLegs.isEmpty()) {
@@ -39,16 +61,22 @@ public interface Order {
             if (hasDupe != null) {
                 throw new BuilderException("Invalid order, has duplicate leg information: " + hasDupe);
             }
-            if (orderId == null) {
+            if (orderId == null || orderMaintenanceCost == null || orderInitialCost == null) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Order, missing data: ");
                 if (orderId == null) {
                     missing.add("orderId");
                 }
+                if (orderMaintenanceCost == null) {
+                    missing.add("equityMaintenanceMargin");
+                }
+                if (orderInitialCost == null) {
+                    missing.add("equityInitialMargin");
+                }
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            Order order = StructureImplFactory.buildOrder(orderId, orderDescription, orderLegs);
+            Order order = StructureImplFactory.buildOrder(orderId, orderDescription, orderMaintenanceCost, orderInitialCost, orderLegs);
             orderLegs = new ArrayList<>();
             orderId = null;
             orderDescription = Constants.EMPTY_STRING;

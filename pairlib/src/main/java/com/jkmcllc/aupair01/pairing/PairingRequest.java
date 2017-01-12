@@ -62,14 +62,6 @@ public interface PairingRequest extends Request {
             positionBuilder.setPositionPrice(price);
             return this;
         }
-        public PairingRequestBuilder setPositionEquityMaintenanceMargin(String equityMaintenanceMargin) {
-            positionBuilder.setPositionEquityMaintenanceMargin(equityMaintenanceMargin);
-            return this;
-        }
-        public PairingRequestBuilder setPositionEquityInitialMargin(String equityInitialMargin) {
-            positionBuilder.setPositionEquityInitialMargin(equityInitialMargin);
-            return this;
-        }
         public PairingRequestBuilder setPositionOptionRoot(String optionRoot) {
             positionBuilder.setOptionRoot(optionRoot);
             return this;
@@ -132,12 +124,13 @@ public interface PairingRequest extends Request {
             orderLegBuilder.setOptionExpiry(expiry);
             return this;
         }
-        public PairingRequestBuilder setOrderLegEquityMaintenanceMargin(String equityMaintenanceMargin) {
-            orderLegBuilder.setOrderLegEquityMaintenanceMargin(equityMaintenanceMargin);
+        
+        public PairingRequestBuilder setOrderMaintenanceCost(String equityMaintenanceMargin) {
+            orderBuilder.setOrderMaintenanceCost(equityMaintenanceMargin);
             return this;
         }
-        public PairingRequestBuilder setOrderLegEquityInitialMargin(String equityInitialMargin) {
-            orderLegBuilder.setOrderLegEquityInitialMargin(equityInitialMargin);
+        public PairingRequestBuilder setOrderInitialCost(String equityInitialMargin) {
+            orderBuilder.setOrderInitialCost(equityInitialMargin);
             return this;
         }
         public PairingRequestBuilder addOrderLeg() {

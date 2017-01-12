@@ -16,8 +16,6 @@ public interface Position extends CorePosition {
         protected String description;
         protected Integer qty;
         protected BigDecimal price;
-        protected BigDecimal equityMaintenanceMargin;
-        protected BigDecimal equityInitialMargin;
         protected OptionConfig optionConfig;
         protected OptionConfigBuilder optionConfigBuilder;
         public AbstractPositionBuilder setSymbol(String symbol) {
@@ -81,22 +79,6 @@ public interface Position extends CorePosition {
     }
     
     class PositionBuilder extends AbstractPositionBuilder {
-        public PositionBuilder setPositionEquityMaintenanceMargin(String equityMaintenanceMargin) {
-            try {
-                this.equityMaintenanceMargin = new BigDecimal(equityMaintenanceMargin);
-            } catch (Exception e) {
-                throw new BuilderException("Invalid position equityMaintenanceMargin: " + equityMaintenanceMargin);
-            }
-            return this;
-        }
-        public PositionBuilder setPositionEquityInitialMargin(String equityInitialMargin) {
-            try {
-                this.equityInitialMargin = new BigDecimal(equityInitialMargin);
-            } catch (Exception e) {
-                throw new BuilderException("Invalid position equityInitialMargin: " + equityInitialMargin);
-            }
-            return this;
-        }
         public PositionBuilder setPositionPrice(String price) {
             try {
                 this.price = new BigDecimal(price);
@@ -110,17 +92,13 @@ public interface Position extends CorePosition {
             if (optionConfigBuilder != null) {
                 optionConfig = optionConfigBuilder.build();
             }
-            equityMaintenanceMargin = equityMaintenanceMargin != null ? equityMaintenanceMargin : BigDecimal.ZERO;
-            equityInitialMargin = equityInitialMargin != null ? equityInitialMargin : BigDecimal.ZERO;
-            Position position = StructureImplFactory.buildPosition(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            Position position = StructureImplFactory.buildPosition(symbol, description, qty, price, optionConfig);
             symbol = null;
             qty = null;
             optionConfig = null;
             description = null;
             price = null;
             optionConfigBuilder = null;
-            equityMaintenanceMargin = null;
-            equityInitialMargin = null;
             return position;
         }
     }

@@ -88,7 +88,8 @@ class PairingInfo {
         Map<OrderPairingResultImpl, List<AbstractLeg>> orderLegMap = account.getOrders().parallelStream()
                 .collect(Collectors.toConcurrentMap(
                 ord -> {
-                    return new OrderPairingResultImpl(ord.getOrderId(), ord.getOrderDescription());
+                    return new OrderPairingResultImpl(ord.getOrderId(), ord.getOrderDescription(),
+                            ord.getOrderMaintenanceCost(), ord.getOrderInitialCost());
                 }, 
                 ord -> {
                     List<AbstractLeg> legs = ord.getOrderLegs().stream().map(orderLeg -> {
@@ -154,8 +155,6 @@ class PairingInfo {
         String description = position.getDescription();
         BigDecimal price = position.getPrice();
         AbstractLeg newLeg = null;
-        BigDecimal equityMaintenanceMargin = position.getEquityMaintenanceMargin();
-        BigDecimal equityInitialMargin = position.getEquityInitialMargin();
         
         OptionConfig optionConfig = position.getOptionConfig();
         if (optionConfig != null) {
@@ -163,12 +162,11 @@ class PairingInfo {
             OptionRoot optionRoot = optionRootStore.findRootByRootSymbol(optionRootSymbol);
             OptionType optionType = optionConfig.getOptionType();
             OptionLeg leg = new OptionLeg(symbol, description, qty, positionResetQty, price, 
-                    equityMaintenanceMargin, equityInitialMargin, optionType, optionConfig, optionRoot);
+                    optionType, optionConfig, optionRoot);
             newLeg = leg;
         } else if (optionConfig == null) {
             // assume it's a stock
-            StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price,
-                    equityMaintenanceMargin, equityInitialMargin);
+            StockLeg leg = new StockLeg(position.getSymbol(), description, qty, positionResetQty, price);
             newLeg = leg;
         }
         return newLeg;
