@@ -90,15 +90,24 @@ public class PairingService {
             PairingInfo pairingInfo = entry.getValue();
             String optionRoot = entry.getKey();
             
-            LeastMarginOutcome outcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
+            LeastMarginOutcome positionOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
                     strategyListResults, leastMarginConfig);
             if (allStrategyListResultMap != null && strategyListResults != null) {
                 allStrategyListResultMap.put(optionRoot, strategyListResults);
             }
-            strategyGroupByRoot.put(optionRoot, outcome.strategyGroupListName);
-            optionRootResults.put(optionRoot, outcome.leastMarginStrategyList);
+            strategyGroupByRoot.put(optionRoot, positionOutcome.strategyGroupListName);
+            optionRootResults.put(optionRoot, positionOutcome.leastMarginStrategyList);
             
             // now that the leastMarginPairingOutcome is found, the optional orders can be considered
+            BigDecimal basePositionMargin = null;
+            if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
+                basePositionMargin = AccountPairingResponse.getMaintenanceMargin(positionOutcome.leastMarginStrategyList);
+            } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
+                basePositionMargin = AccountPairingResponse.getInitialMargin(positionOutcome.leastMarginStrategyList);
+            }
+            for (OrderPairingResultImpl orderPairings : pairingInfo.orderPairings) {
+                
+            }
         }
 
         AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap);
