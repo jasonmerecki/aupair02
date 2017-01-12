@@ -39,6 +39,9 @@ public interface OrderLeg extends Position {
         }
         public OrderLeg build() {
             super.validate("OrderLeg");
+            if (optionConfigBuilder != null) {
+                optionConfig = optionConfigBuilder.build();
+            }
             if (equityMaintenanceMargin == null || equityInitialMargin == null) {
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build OrderLeg, missing data: ");
@@ -51,7 +54,16 @@ public interface OrderLeg extends Position {
                 err.append(missing);
                 throw new BuilderException(err.toString());
             }
-            return StructureImplFactory.buildOrderLeg(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            OrderLeg orderLeg = StructureImplFactory.buildOrderLeg(symbol, description, qty, price, equityMaintenanceMargin, equityInitialMargin, optionConfig);
+            symbol = null;
+            qty = null;
+            optionConfig = null;
+            description = null;
+            price = null;
+            optionConfigBuilder = null;
+            equityMaintenanceMargin = null;
+            equityInitialMargin = null;
+            return orderLeg;
         }
     }
     

@@ -9,7 +9,7 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     private final String orderId;
     private final String orderDescription;
     
-    private boolean worstCaseOutcome;
+    boolean worstCaseOutcome;
     private boolean allSellOptions = true;
     private int sellToOpenOptionLegs;
     private int sellToCloseOptionLegs;
@@ -19,8 +19,8 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     private int buyStockLegs;
     private BigDecimal equityInitialMargin = BigDecimal.ZERO;
     private BigDecimal equityMaintMargin = BigDecimal.ZERO;
-    private BigDecimal totalInitialMargin = BigDecimal.ZERO;
-    private BigDecimal totalMaintenanceMargin = BigDecimal.ZERO;
+    BigDecimal totalInitialMargin = BigDecimal.ZERO;
+    BigDecimal totalMaintenanceMargin = BigDecimal.ZERO;
     private BigDecimal optionInitialMargin = BigDecimal.ZERO;
     private BigDecimal optionMaintenanceMargin = BigDecimal.ZERO;
     
@@ -185,6 +185,25 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     
     public int getStockLegsCount() {
         return sellStockLegs + buyStockLegs;
+    }
+    
+    public int getSellLegsCount() {
+        return sellStockLegs + sellOptionLegs;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("OrderPairingResultImpl: {");
+        builder.append("orderId: ");
+        builder.append(orderId);
+        builder.append(", orderDescription: '");
+        builder.append(orderDescription);
+        builder.append("'");
+        builder.append(", orderLegs: ");
+        builder.append(orderLegs);
+        builder.append("}");
+        return builder.toString();
     }
 
 }

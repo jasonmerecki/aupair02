@@ -3,9 +3,10 @@ package com.jkmcllc.aupair01.pairing.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public class PairingService {
             boolean isRequestAllStrategies) {
         // initialize some values, including the PairingInfo
         Map<String,List<Strategy>> optionRootResults = new HashMap<>();
+        Map<String,List<Strategy>> worstCaseStrategies = new HashMap<>();
         Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
         Map<String, String> strategyGroupByRoot = new HashMap<>();
         Map<String, Map<String, List<Strategy>>> allStrategyListResultMap = null;
@@ -99,18 +101,19 @@ public class PairingService {
             optionRootResults.put(optionRoot, positionOutcome.leastMarginStrategyList);
             
             // now that the leastMarginPairingOutcome is found, the optional orders can be considered
-            BigDecimal basePositionMargin = null;
-            if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
-                basePositionMargin = AccountPairingResponse.getMaintenanceMargin(positionOutcome.leastMarginStrategyList);
-            } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
-                basePositionMargin = AccountPairingResponse.getInitialMargin(positionOutcome.leastMarginStrategyList);
+            LeastMarginOutcome worstOutcome = findWorstOrderOutcome(strategyGroupListsList, pairingInfo, 
+                    positionOutcome, leastMarginConfig);
+            if (worstOutcome == null && pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
+                // the worst outcome is that no orders fill (they must all be BP releasing)
+                worstOutcome = positionOutcome;
             }
-            for (OrderPairingResultImpl orderPairings : pairingInfo.orderPairings) {
-                
+            if (worstOutcome != null) {
+                worstCaseStrategies.put(optionRoot, worstOutcome.leastMarginStrategyList);
             }
+            
         }
 
-        AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap);
+        AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap, worstCaseStrategies);
         return accountPairingResponse;
 
     }
@@ -128,13 +131,7 @@ public class PairingService {
                 List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyConfigs, strategyMeta).find() ;
                 testFound.addAll(foundForMeta);
             }
-            BigDecimal testMargin = BigDecimal.ZERO;
-
-            if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
-                testMargin = AccountPairingResponse.getMaintenanceMargin(testFound);
-            } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
-                testMargin = AccountPairingResponse.getInitialMargin(testFound);
-            }
+            BigDecimal testMargin = findMarginOutcome(testFound, leastMarginConfig);;
             if (leastMargin == null
                     || leastMargin.compareTo(testMargin) > 0) {
                 leastMargin = testMargin;
@@ -157,6 +154,59 @@ public class PairingService {
             this.leastMarginStrategyList = leastMarginStrategyList;
             this.strategyGroupListName = strategyGroupListName;
         }
+    }
+    
+    private LeastMarginOutcome findWorstOrderOutcome(List<StrategyGroupLists> strategyGroupListsList, 
+            PairingInfo pairingInfo, LeastMarginOutcome positionOutcome,
+            String leastMarginConfig) {
+        LeastMarginOutcome worstOutcome = null;
+        BigDecimal worstPositionMargin = findMarginOutcome(positionOutcome.leastMarginStrategyList, leastMarginConfig);;
+        if (pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
+            Set<OrderPairingResultImpl> worstOrders = new HashSet<>();
+            Set<OrderPairingResultImpl> shortOrders = new HashSet<>();
+            for (OrderPairingResultImpl orderPairResult : pairingInfo.orderPairings) {
+                pairingInfo.applyOrderLegs(orderPairResult);
+                worstOrders.forEach(opr -> pairingInfo.applyOrderLegs(opr));
+                LeastMarginOutcome nextOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
+                        null, leastMarginConfig);
+                BigDecimal nextOutcomeMargin = findMarginOutcome(nextOutcome.leastMarginStrategyList, leastMarginConfig);
+                if (nextOutcomeMargin.compareTo(worstPositionMargin) > 0) {
+                    orderPairResult.worstCaseOutcome = true;
+                    worstOrders.add(orderPairResult);
+                }
+                
+                if (orderPairResult.getSellLegsCount() != 0) {
+                    shortOrders.add(orderPairResult);
+                    if (!orderPairResult.isWorstCaseOutcome()) {
+                        pairingInfo.reset(true);
+                        shortOrders.forEach(opr -> pairingInfo.applyOrderLegs(opr));
+                        // here is the special short leg pairing
+                        LeastMarginOutcome shortOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
+                                null, leastMarginConfig);
+                        nextOutcomeMargin = findMarginOutcome(shortOutcome.leastMarginStrategyList, leastMarginConfig);
+                    }
+                }
+                pairingInfo.reset(true);
+                pairingInfo.applyOrderLegs(orderPairResult);
+                LeastMarginOutcome oneOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
+                        null, leastMarginConfig);
+                BigDecimal oneMaintOutcome = AccountPairingResponse.getMaintenanceMargin(oneOutcome.leastMarginStrategyList);
+                BigDecimal oneInitOutcome = AccountPairingResponse.getInitialMargin(oneOutcome.leastMarginStrategyList);
+                orderPairResult.totalMaintenanceMargin = orderPairResult.totalMaintenanceMargin.add(oneMaintOutcome);
+                orderPairResult.totalInitialMargin = orderPairResult.totalInitialMargin.add(oneInitOutcome);
+            }
+        }
+        return worstOutcome;
+    }
+    
+    private BigDecimal findMarginOutcome(List<Strategy> strategies, String leastMarginConfig) {
+        BigDecimal marginOutcome = BigDecimal.ZERO;
+        if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
+            marginOutcome = AccountPairingResponse.getMaintenanceMargin(strategies);
+        } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
+            marginOutcome = AccountPairingResponse.getInitialMargin(strategies);
+        }
+        return marginOutcome;
     }
     
 }

@@ -12,13 +12,15 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     private final Map<String, List<Strategy>> resultMap ;
     private final Map<String, String> strategyGroupByRoot;
     private final Map<String, Map<String, List<Strategy>>> allStrategyListResultMap ;
+    private final Map<String, List<Strategy>> worstCaseOrderStrategies;
     
     AccountPairingResponseImpl(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot,
-            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap) {
+            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, List<Strategy>> worstCaseStrategies) {
         if (resultMap == null) resultMap = Collections.emptyMap();
         this.resultMap = resultMap;
         this.strategyGroupByRoot = (strategyGroupByRoot != null) ? strategyGroupByRoot : Collections.emptyMap();
         this.allStrategyListResultMap = allStrategyListResultMap;
+        this.worstCaseOrderStrategies = worstCaseStrategies;
     };
     
     @Override
@@ -61,8 +63,17 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
         builder.append(resultMap);
         builder.append(", strategyGroupByRoot: ");
         builder.append(strategyGroupByRoot);
+        if (worstCaseOrderStrategies != null) {
+            builder.append(", worstCaseOrderStrategies: ");
+            builder.append(worstCaseOrderStrategies);
+        }
         builder.append("}");
         return builder.toString();
+    }
+
+    @Override
+    public Map<String, List<Strategy>> getWorstCaseOrderStrategies() {
+        return this.worstCaseOrderStrategies;
     }
     
     

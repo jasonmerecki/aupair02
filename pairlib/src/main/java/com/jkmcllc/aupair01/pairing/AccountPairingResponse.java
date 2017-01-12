@@ -12,6 +12,7 @@ public interface AccountPairingResponse {
     BigDecimal getTotalMaintenanceMargin();
     BigDecimal getTotalInitialMargin();
     Map<String, Map<String, List<Strategy>>> getAllStrategyListResults();
+    Map<String, List<Strategy>> getWorstCaseOrderStrategies();
     
     public static BigDecimal getMaintenanceMargin(List<Strategy> strategies) {
         BigDecimal totalMaintMargin = strategies.parallelStream().map(s1 -> s1.getMaintenanceMargin()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );

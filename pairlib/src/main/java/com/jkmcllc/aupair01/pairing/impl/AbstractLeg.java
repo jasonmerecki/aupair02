@@ -43,16 +43,19 @@ abstract class AbstractLeg implements Leg {
     protected String basicLegInfo() {
         StringBuilder basicInfo = new StringBuilder();
         if (symbol != null) {
-            basicInfo.append("symbol: \"").append(symbol).append("\", ");
+            basicInfo.append("symbol: \"").append(symbol).append("\"");
         }
         if (description != null && Constants.EMPTY_STRING.equals(description) == false) {
-            basicInfo.append("description: \"").append(description).append("\", ");;
+            basicInfo.append(", ").append("description: \"").append(description).append("\"");;
         }
         if (qty != null) {
-            basicInfo.append("qty: ").append(qty).append(", ");
+            basicInfo.append(", ").append("qty: ").append(qty);
         }
         if (price != null) {
-            basicInfo.append("price: ").append(price);
+            basicInfo.append(", ").append("price: ").append(price);
+        }
+        if (openClose != null) {
+            basicInfo.append(", ").append("openClose: ").append(openClose);
         }
         basicInfo.append(", equityMaintenanceMargin: ").append(equityMaintenanceMargin);
         basicInfo.append(", equityInitialMargin: ").append(equityInitialMargin);

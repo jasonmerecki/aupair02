@@ -122,7 +122,7 @@ class PairingInfo {
                     PairingInfo pairingInfo = cpl.findInfo(optionRoot);
                     // PairingInfo might be null, odd deliverables
                     if (pairingInfo != null) {
-                        pairingInfo.orderPairings.add(ordInfo);
+                        pairingInfo.addToOrderPairings(ordInfo);
                     }
                 }
             } else if (ordInfo.getOptionLegsCount() != 0) {
@@ -132,11 +132,11 @@ class PairingInfo {
                         .filter(l -> AbstractLeg.STOCKOPTION.equals(l.getType())).findFirst().get();
                 OptionRoot optionRoot = optionLeg.getOptionRoot();
                 PairingInfo pairingInfo = cpl.findInfo(optionRoot);
-                pairingInfo.orderPairings.add(ordInfo);
+                pairingInfo.addToOrderPairings(ordInfo);
             }
         });
         
-        pairingInfoMap.values().forEach(p -> p.reset(false));
+        pairingInfoMap.values().forEach(p -> {p.reset(false); Collections.sort(p.orderPairings);});
         return pairingInfoMap;
     }
     
@@ -226,6 +226,42 @@ class PairingInfo {
 
     }
     
+    private void addToOrderPairings(OrderPairingResultImpl orderPairResult) {
+        orderPairings.add(orderPairResult);
+        orderPairResult.getOrderLegs().parallelStream().forEach( l -> {
+            // set open or close if it hasn't been set
+            AbstractLeg orderLeg = (AbstractLeg) l;
+            String ordLegSymbol = orderLeg.getSymbol();
+            AbstractLeg existLeg = allLegs.get(ordLegSymbol);
+            Integer ordLegQty = orderLeg.getQty();
+            if (existLeg != null) {
+                int posSignum = Integer.signum(existLeg.positionResetQty);
+                int ordSignum = Integer.signum(ordLegQty);
+                if (posSignum != ordSignum) {
+                    orderLeg.openClose = AbstractLeg.OpenClose.CLOSE;
+                } 
+            }
+            if (orderLeg.openClose == null) {
+                orderLeg.openClose = AbstractLeg.OpenClose.OPEN;
+            }
+        });
+    }
+    
+    void applyOrderLegs(OrderPairingResultImpl orderPairResult) {
+        orderPairResult.getOrderLegs().forEach(l -> {
+            AbstractLeg orderLeg = (AbstractLeg) l;
+            String ordLegSymbol = orderLeg.getSymbol();
+            AbstractLeg existLeg = allLegs.get(ordLegSymbol);
+            Integer ordLegQty = orderLeg.getQty();
+            if (existLeg != null) {
+                existLeg.modifyQty(ordLegQty);
+            } else {
+                AbstractLeg newOrdLeg = (AbstractLeg) orderLeg.newLegWith(ordLegQty);
+                allLegs.put(ordLegSymbol, newOrdLeg);
+            }
+        });
+    }
+    
     private void initDeliverables() {
         if (longDeliverables == null) {
             AbstractDeliverableLeg longDeliverableLeg = AbstractDeliverableLeg.from(longStocks, optionRoot);
@@ -252,7 +288,15 @@ class PairingInfo {
         initDeliverables();
     }
     
+    void resortLegs() {
+        resetLegs(allLegs.values(), false, true);
+    }
+    
     private void resetLegs(Collection<? extends AbstractLeg> legs, boolean hardReset) {
+        resetLegs(legs, hardReset, false);
+    }
+    
+    private void resetLegs(Collection<? extends AbstractLeg> legs, boolean hardReset, boolean avoidReset) {
         longCalls.clear();
         shortCalls.clear();
         longPuts.clear();
@@ -260,7 +304,7 @@ class PairingInfo {
         longStocks.clear();
         shortStocks.clear();
         legs.parallelStream().forEach(leg -> {
-            leg.resetQty(hardReset);
+            if (avoidReset == false) leg.resetQty(hardReset);
             sortingHat(leg);
         });
     }

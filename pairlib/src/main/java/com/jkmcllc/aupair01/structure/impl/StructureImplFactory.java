@@ -49,8 +49,9 @@ public final class StructureImplFactory {
     public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
         return new PairingRequestImpl(accounts, optionRoots, requestAllStrategyLists);
     }
-    public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot, Map<String, Map<String, List<Strategy>>> allStrategyListResultMap) {
-        return new AccountPairingResponseImpl(resultMap, strategyGroupByRoot, allStrategyListResultMap);
+    public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot, 
+            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, List<Strategy>> worstCaseOrderStrategies) {
+        return new AccountPairingResponseImpl(resultMap, strategyGroupByRoot, allStrategyListResultMap, worstCaseOrderStrategies);
     }
     public static PairingResponse buildPairingResponse(Map<String, AccountPairingResponse> resultMap) {
         return new PairingResponseImpl(resultMap);
