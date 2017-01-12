@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.jkmcllc.aupair01.pairing.OrderPairingResult;
+
 class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, OrderPairingResult {
     private final List<AbstractLeg> orderLegs = new CopyOnWriteArrayList<>();
     private final String orderId;
@@ -177,6 +179,12 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
         builder.append(orderMaintenanceCost);        
         builder.append(", orderInitialCost: ");
         builder.append(orderInitialCost);
+        builder.append(", totalMaintenanceMargin: ");
+        builder.append(totalMaintenanceMargin);   
+        builder.append(", totalInitialMargin: ");
+        builder.append(totalInitialMargin);
+        builder.append(", worstCaseOutcome: ");
+        builder.append(worstCaseOutcome);
         builder.append(", orderLegs: ");
         builder.append(orderLegs);
         builder.append("}");

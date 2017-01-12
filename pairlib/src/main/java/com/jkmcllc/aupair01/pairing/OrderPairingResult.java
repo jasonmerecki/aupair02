@@ -1,10 +1,12 @@
-package com.jkmcllc.aupair01.pairing.impl;
+package com.jkmcllc.aupair01.pairing;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
-interface OrderPairingResult {
+import com.jkmcllc.aupair01.pairing.impl.Leg;
+
+public interface OrderPairingResult {
 
     boolean isWorstCaseOutcome();
 

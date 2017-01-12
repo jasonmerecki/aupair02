@@ -14,9 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
+import com.jkmcllc.aupair01.pairing.OrderPairingResult;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
-
+import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
@@ -63,7 +64,7 @@ public class PairingService {
             boolean isRequestAllStrategies) {
         // initialize some values, including the PairingInfo
         Map<String,List<Strategy>> optionRootResults = new HashMap<>();
-        Map<String,List<Strategy>> worstCaseStrategies = new HashMap<>();
+        Map<String, WorstCaseOrderOutcome> worstCaseOutcomes = new HashMap<>();
         Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
         Map<String, String> strategyGroupByRoot = new HashMap<>();
         Map<String, Map<String, List<Strategy>>> allStrategyListResultMap = null;
@@ -101,19 +102,20 @@ public class PairingService {
             optionRootResults.put(optionRoot, positionOutcome.leastMarginStrategyList);
             
             // now that the leastMarginPairingOutcome is found, the optional orders can be considered
-            LeastMarginOutcome worstOutcome = findWorstOrderOutcome(strategyGroupListsList, pairingInfo, 
+            LeastMarginOutcome worstPairingOutcome = findWorstOrderOutcome(strategyGroupListsList, pairingInfo, 
                     positionOutcome, leastMarginConfig);
-            if (worstOutcome == null && pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
+            if (worstPairingOutcome == null && pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
                 // the worst outcome is that no orders fill (they must all be BP releasing)
-                worstOutcome = positionOutcome;
+                worstPairingOutcome = positionOutcome;
             }
-            if (worstOutcome != null) {
-                worstCaseStrategies.put(optionRoot, worstOutcome.leastMarginStrategyList);
+            if (worstPairingOutcome != null) {
+                WorstCaseOrderOutcomeImpl worstOutcome = new WorstCaseOrderOutcomeImpl(optionRoot, worstPairingOutcome.leastMarginStrategyList, pairingInfo.orderPairings);
+                worstCaseOutcomes.put(optionRoot, worstOutcome);
             }
             
         }
 
-        AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap, worstCaseStrategies);
+        AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap, worstCaseOutcomes);
         return accountPairingResponse;
 
     }
@@ -154,6 +156,14 @@ public class PairingService {
             this.leastMarginStrategyList = leastMarginStrategyList;
             this.strategyGroupListName = strategyGroupListName;
         }
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("LeastMarginOutcome: {");
+            builder.append("leastMarginStrategyList: ");
+            builder.append(leastMarginStrategyList);   
+            builder.append("}");
+            return builder.toString();
+        }
     }
     
     private LeastMarginOutcome findWorstOrderOutcome(List<StrategyGroupLists> strategyGroupListsList, 
@@ -175,26 +185,29 @@ public class PairingService {
                 if (nextOutcomeMargin.compareTo(worstPositionMargin) > 0) {
                     orderPairResult.worstCaseOutcome = true;
                     worstOrders.add(orderPairResult);
+                    worstOutcome = nextOutcome;
                 }
                 nextOrders.clear();
                 
                 if (orderPairResult.getSellLegsCount() != 0) {
                     shortOrders.add(orderPairResult);
+                    LeastMarginOutcome shortOutcome = null;
                     if (!orderPairResult.isWorstCaseOutcome()) {
                         pairingInfo.reset(true);
                         shortOrders.forEach(opr -> pairingInfo.applyOrderLegs(opr));
                         // here is the special short leg pairing
-                        LeastMarginOutcome shortOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
+                        shortOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
                                 null, leastMarginConfig);
                         nextOutcomeMargin = findMarginOutcome(shortOutcome.leastMarginStrategyList, leastMarginConfig);
                         nextOutcomeMargin = nextOutcomeMargin.add(findOrderCost (shortOrders, leastMarginConfig));
                     }
-                    if (nextOutcomeMargin.compareTo(worstPositionMargin) > 0) {
+                    if (nextOutcomeMargin.compareTo(worstPositionMargin) > 0 && shortOutcome != null) {
                         // now we clear out all of the current worst orders, the shorts are now the worst
                         worstOrders.forEach(o -> o.worstCaseOutcome = false);
                         worstOrders.clear();
                         worstOrders.addAll(shortOrders);
                         worstOrders.forEach(o -> o.worstCaseOutcome = true);
+                        worstOutcome = shortOutcome;
                     }
                 }
                 

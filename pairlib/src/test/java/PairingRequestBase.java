@@ -4,12 +4,15 @@ import static org.junit.Assert.assertNotNull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
+import com.jkmcllc.aupair01.pairing.OrderPairingResult;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
+import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.impl.PairingService;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
@@ -35,17 +38,48 @@ public class PairingRequestBase {
             BigDecimal totalMaintMargin = accountResponse.getTotalMaintenanceMargin();
             BigDecimal totalInitialMargin = accountResponse.getTotalInitialMargin();
             Map<String, Map<String, List<Strategy>>> allStrategyListResults = accountResponse.getAllStrategyListResults();
-            sb.append("AccountID '").append(accountId).append("' total initial margin=").append(totalInitialMargin).append(" total maintenance margin=").append(totalMaintMargin);
+            sb.append("AccountID '").append(accountId).append("'\nPOSITIONS:\ntotal initial margin=").append(totalInitialMargin).append(" total maintenance margin=").append(totalMaintMargin);
             if (allStrategyListResults == null) {
-                sb.append(", strategies:").append("\n");
+                sb.append("\nposition strategies:").append("\n");
                 if (strategies.entrySet().isEmpty()) {
                     sb.append("(none)\n");
                 }
                 for (Map.Entry<String, List<Strategy>> entry2 : strategies.entrySet()) {
+                    String optionRoot = entry2.getKey();
                     sb.append("Option root '").append(entry2.getKey()).append("'\n");
+                    if (entry2.getValue().isEmpty()) {
+                        sb.append("(no strategies)\n");
+                    }
                     for (Strategy strategy : entry2.getValue()) {
                         sb.append(strategy).append("\n");
                     }
+                    
+                    if (accountResponse.getWorstCaseOrderOutcomes() != null
+                            && accountResponse.getWorstCaseOrderOutcomes().get(optionRoot) != null) {
+                        WorstCaseOrderOutcome worstOrderOutcome = accountResponse.getWorstCaseOrderOutcomes().get(optionRoot);
+                        List<Strategy> worstOrderStrategies = worstOrderOutcome.getStrategies();
+                        totalInitialMargin = AccountPairingResponse.getInitialMargin(worstOrderStrategies);
+                        totalMaintMargin = AccountPairingResponse.getMaintenanceMargin(worstOrderStrategies);
+                        List<OrderPairingResult> worstSelectedOrders = worstOrderOutcome.getOrders().stream().filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
+                        BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderInitialCost(worstSelectedOrders);
+                        BigDecimal costMaintenanceWorstOrders = OrderPairingResult.getOrderMaintenanceCost(worstSelectedOrders);
+                        sb.append("ORDERS:\ntotal *worst* initial margin=").append(totalInitialMargin)
+                            .append(", total *worst* maintenance margin=").append(totalMaintMargin)
+                            .append(", total *worst* initial cost=").append(costInitialWorstOrders)
+                            .append(", total *worst* maintenance cost=").append(costMaintenanceWorstOrders);
+                        sb.append("\nworstOrderStrategies:").append("\n");
+                        if (worstOrderStrategies.isEmpty()) {
+                            sb.append("(none)\n");
+                        }
+                        for (Strategy strategy : worstOrderStrategies) {
+                            sb.append(strategy).append("\n");
+                        }
+                        sb.append("order details:").append("\n");
+                        for (OrderPairingResult order : worstOrderOutcome.getOrders()) {
+                            sb.append(order).append("\n");
+                        }
+                    }
+
                 } 
                 sb.append("all strategy groups by root:").append("\n");
                 sb.append(accountResponse.getStrategyGroupByRoot()).append("\n");
@@ -58,20 +92,6 @@ public class PairingRequestBase {
                         for (Strategy strategy : strategyGroupList.getValue()) {
                             sb.append(strategy).append("\n");
                         }
-                    }
-                } 
-            }
-            
-            Map<String, List<Strategy>> worstOrderStrategies = accountResponse.getWorstCaseOrderStrategies();
-            if (worstOrderStrategies != null) {
-                sb.append(", worstOrderStrategies:").append("\n");
-                if (strategies.entrySet().isEmpty()) {
-                    sb.append("(none)\n");
-                }
-                for (Map.Entry<String, List<Strategy>> entry2 : worstOrderStrategies.entrySet()) {
-                    sb.append("Option root '").append(entry2.getKey()).append("'\n");
-                    for (Strategy strategy : entry2.getValue()) {
-                        sb.append(strategy).append("\n");
                     }
                 } 
             }

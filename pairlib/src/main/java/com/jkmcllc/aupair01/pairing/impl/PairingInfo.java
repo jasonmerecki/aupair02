@@ -258,6 +258,7 @@ class PairingInfo {
                 allLegs.put(ordLegSymbol, newOrdLeg);
             }
         });
+        resortLegs();
     }
     
     private void initDeliverables() {

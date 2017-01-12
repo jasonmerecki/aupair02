@@ -9,6 +9,7 @@ import java.util.Map;
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
+import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.Deliverable;
@@ -50,8 +51,8 @@ public final class StructureImplFactory {
         return new PairingRequestImpl(accounts, optionRoots, requestAllStrategyLists);
     }
     public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot, 
-            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, List<Strategy>> worstCaseOrderStrategies) {
-        return new AccountPairingResponseImpl(resultMap, strategyGroupByRoot, allStrategyListResultMap, worstCaseOrderStrategies);
+            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, WorstCaseOrderOutcome> worstCaseOrderOutcomes) {
+        return new AccountPairingResponseImpl(resultMap, strategyGroupByRoot, allStrategyListResultMap, worstCaseOrderOutcomes);
     }
     public static PairingResponse buildPairingResponse(Map<String, AccountPairingResponse> resultMap) {
         return new PairingResponseImpl(resultMap);

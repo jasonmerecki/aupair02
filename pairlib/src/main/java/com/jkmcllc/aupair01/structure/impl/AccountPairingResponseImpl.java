@@ -6,21 +6,22 @@ import java.util.List;
 import java.util.Map;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
+import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
 class AccountPairingResponseImpl implements AccountPairingResponse {
     private final Map<String, List<Strategy>> resultMap ;
     private final Map<String, String> strategyGroupByRoot;
     private final Map<String, Map<String, List<Strategy>>> allStrategyListResultMap ;
-    private final Map<String, List<Strategy>> worstCaseOrderStrategies;
+    private final Map<String, WorstCaseOrderOutcome> worstCaseOrderOutcomes;
     
     AccountPairingResponseImpl(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot,
-            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, List<Strategy>> worstCaseStrategies) {
+            Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, WorstCaseOrderOutcome> worstCaseOrderOutcomes) {
         if (resultMap == null) resultMap = Collections.emptyMap();
         this.resultMap = resultMap;
         this.strategyGroupByRoot = (strategyGroupByRoot != null) ? strategyGroupByRoot : Collections.emptyMap();
         this.allStrategyListResultMap = allStrategyListResultMap;
-        this.worstCaseOrderStrategies = worstCaseStrategies;
+        this.worstCaseOrderOutcomes = worstCaseOrderOutcomes;
     };
     
     @Override
@@ -63,17 +64,17 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
         builder.append(resultMap);
         builder.append(", strategyGroupByRoot: ");
         builder.append(strategyGroupByRoot);
-        if (worstCaseOrderStrategies != null) {
-            builder.append(", worstCaseOrderStrategies: ");
-            builder.append(worstCaseOrderStrategies);
+        if (worstCaseOrderOutcomes != null) {
+            builder.append(", worstCaseOrderOutcomes: ");
+            builder.append(worstCaseOrderOutcomes);
         }
         builder.append("}");
         return builder.toString();
     }
 
     @Override
-    public Map<String, List<Strategy>> getWorstCaseOrderStrategies() {
-        return this.worstCaseOrderStrategies;
+    public Map<String, WorstCaseOrderOutcome> getWorstCaseOrderOutcomes() {
+        return this.worstCaseOrderOutcomes;
     }
     
     
