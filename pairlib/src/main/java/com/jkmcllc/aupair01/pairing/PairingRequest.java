@@ -159,6 +159,7 @@ public interface PairingRequest extends Request {
             accountBuilder.setAccountOrders(accountOrders);
             accounts.add(accountBuilder.build());
             accountPositions = new ArrayList<>();
+            accountOrders = new ArrayList<>();
             return this;
         }
         
