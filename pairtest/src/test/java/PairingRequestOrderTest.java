@@ -35,4 +35,13 @@ public class PairingRequestOrderTest extends PairingRequestBase {
 
     }
     
+    @Test
+    public void buildAndPair3() {
+        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder3(false);
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+
+    }
+    
 }
