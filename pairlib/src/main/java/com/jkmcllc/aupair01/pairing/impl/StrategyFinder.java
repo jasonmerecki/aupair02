@@ -88,7 +88,7 @@ class StrategyFinder {
                 }
             }
             AbstractLeg abLeg = (AbstractLeg) nextLeg;
-            if (abLeg.remainQty == 0) {
+            if (abLeg.qty == 0) {
                 continue;
             }
             legs[recursiveListIndex] = nextLeg;
@@ -105,7 +105,7 @@ class StrategyFinder {
         Integer[] legsRatio = getLegsRatio();
         for (int i = 0;  i < legs.length; i++) {
             AbstractLeg leg = (AbstractLeg) legs[i];
-            Integer testQty = leg.remainQty / legsRatio[i];
+            Integer testQty = leg.qty / legsRatio[i];
             Integer avail = Math.abs(testQty);
             if (maxQty == null || maxQty > avail) {
                 maxQty = avail;

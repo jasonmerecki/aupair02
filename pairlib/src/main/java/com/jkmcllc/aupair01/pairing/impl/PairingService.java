@@ -172,8 +172,7 @@ public class PairingService {
         LeastMarginOutcome worstOutcome = null;
         BigDecimal worstPositionMargin = findMarginOutcome(positionOutcome.leastMarginStrategyList, leastMarginConfig);;
         if (pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
-            Set<OrderPairingResultImpl> worstOrders = new HashSet<>(), 
-                    shortOrders = new HashSet<>(), nextOrders = new HashSet<>();
+            Set<OrderPairingResultImpl> worstOrders = new HashSet<>(), shortOrders = new HashSet<>(), nextOrders = new HashSet<>();
             for (OrderPairingResultImpl orderPairResult : pairingInfo.orderPairings) {
                 nextOrders.add(orderPairResult);
                 nextOrders.addAll(worstOrders);
@@ -188,18 +187,19 @@ public class PairingService {
                     worstOutcome = nextOutcome;
                 }
                 nextOrders.clear();
+                pairingInfo.reset(true);
                 
                 if (orderPairResult.getSellLegsCount() != 0) {
                     shortOrders.add(orderPairResult);
                     LeastMarginOutcome shortOutcome = null;
                     if (!orderPairResult.isWorstCaseOutcome()) {
-                        pairingInfo.reset(true);
                         shortOrders.forEach(opr -> pairingInfo.applyOrderLegs(opr));
                         // here is the special short leg pairing
                         shortOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
                                 null, leastMarginConfig);
                         nextOutcomeMargin = findMarginOutcome(shortOutcome.leastMarginStrategyList, leastMarginConfig);
                         nextOutcomeMargin = nextOutcomeMargin.add(findOrderCost (shortOrders, leastMarginConfig));
+                        pairingInfo.reset(true);
                     }
                     if (nextOutcomeMargin.compareTo(worstPositionMargin) > 0 && shortOutcome != null) {
                         // now we clear out all of the current worst orders, the shorts are now the worst
@@ -212,7 +212,6 @@ public class PairingService {
                 }
                 
                 // now the single order outcome to determine the 'cost' of one
-                pairingInfo.reset(true);
                 pairingInfo.applyOrderLegs(orderPairResult);
                 LeastMarginOutcome oneOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
                         null, leastMarginConfig);
@@ -220,6 +219,7 @@ public class PairingService {
                 BigDecimal oneInitOutcome = AccountPairingResponse.getInitialMargin(oneOutcome.leastMarginStrategyList);
                 orderPairResult.totalMaintenanceMargin = orderPairResult.totalMaintenanceMargin.add(oneMaintOutcome);
                 orderPairResult.totalInitialMargin = orderPairResult.totalInitialMargin.add(oneInitOutcome);
+                pairingInfo.reset(true);
             }
         }
         return worstOutcome;

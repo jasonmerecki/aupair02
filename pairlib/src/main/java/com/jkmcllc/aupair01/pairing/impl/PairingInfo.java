@@ -70,6 +70,19 @@ class PairingInfo {
         this.optionRoot = optionRoot;
     };
     
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("PairingInfo: {");
+        sb.append("accountId:");
+        sb.append(this.accountInfo.getAccountId());
+        sb.append(", optionRoot:");
+        sb.append(optionRoot.getOptionRootSymbol());
+        sb.append(", allLegs:");
+        sb.append(allLegs);
+        sb.append("}");
+        return sb.toString();
+    }
+    
     static Map<String, PairingInfo> from (Account account, OptionRootStore optionRootStore) {
         Map<String, PairingInfo> pairingInfoMap = loadPositions(account, optionRootStore);
         return pairingInfoMap;

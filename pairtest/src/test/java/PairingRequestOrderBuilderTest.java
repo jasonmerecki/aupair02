@@ -210,6 +210,94 @@ public class PairingRequestOrderBuilderTest {
         return pairingRequest;
         
     }
+    
+    public static PairingRequest buildRequestOrder4() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // MSFT holdings, 2 put option symbols, plus extra puts
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.50").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00052000").setPositionOptionRoot("MSFT").setPositionQty(7)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("52.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.32").addPosition();
+        
+        // order to close only the extra long
+        builder.setOrderLegSymbol("MSFT  160115P00052000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("52.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("1.32")
+            .addOrderLeg();
+        builder.setOrderId("OrderClose-Ga").setOrderDescription("Sell to close 3 MSFT 52 puts @ LM 2.00")
+            .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
+            .addOrder();
+        
+        builder.addAccount("Account-Gallant");
+        
+        
+        // MSFT holdings, 2 put option symbols, plus extra puts
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.50").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00052000").setPositionOptionRoot("MSFT").setPositionQty(7)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("52.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.32").addPosition();
+        
+        // first order to close only the extra long
+        builder.setOrderLegSymbol("MSFT  160115P00052000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("52.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("1.32")
+            .addOrderLeg();
+        builder.setOrderId("OrderExtra-Go").setOrderDescription("Sell to close 3 MSFT 82 puts @ LM 2.00")
+            .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
+            .addOrder();
+        // second order, EXACTLY the same as the first order!
+        builder.setOrderLegSymbol("MSFT  160115P00052000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("52.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("1.32")
+            .addOrderLeg();
+        builder.setOrderId("OrderOver-Go").setOrderDescription("Sell to close 3 MSFT 82 puts @ LM 2.00")
+            .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
+            .addOrder();
+        
+        builder.addAccount("Account-Goofus");
+
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+        
+    }
+    
+    @Test
+    public void buildRequestOrder5Test() {
+        PairingRequest pairingRequest = buildRequestOrder5();
+        System.out.println(pairingRequest);
+        assertNotNull(pairingRequest);
+    }
+    
+    public static PairingRequest buildRequestOrder5() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        builder.setPositionSymbol("MSFT").setPositionQty(10).setPositionPrice("60.40").addPosition();
+
+        // OrderA will close some of the existing position
+        builder.setOrderLegSymbol("MSFT").setOrderLegQty(-4).setOrderLegPrice("60.40").addOrderLeg();
+        builder.setOrderId("OrderA").setOrderDescription("Sell to close 4 MSFT @ LM 66.00")
+            .setOrderMaintenanceCost("-132.00").setOrderInitialCost("-132.00")
+            .addOrder();
+        
+        // OrderB will open more of the existing position
+        builder.setOrderLegSymbol("MSFT").setOrderLegQty(3).setOrderLegPrice("60.40").addOrderLeg();
+        builder.setOrderId("OrderB").setOrderDescription("Buy to open 3 MSFT @ LM 52.00")
+            .setOrderMaintenanceCost("78.00").setOrderInitialCost("78.00")
+            .addOrder();
+        
+        builder.addAccount("accountStockOnly");
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+        
+    }
 
     
 }

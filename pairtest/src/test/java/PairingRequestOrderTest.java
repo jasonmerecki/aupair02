@@ -59,6 +59,8 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         // let's make sure the expected orders are flagged as the 'worst'
         found = findOrderOutcome(accountPairingTHX, "MSFT", "Order_MSFT-1", false);
         assertTrue(found);
+        found = findOrderOutcome(accountPairingTHX, "MSFT", "Order_MSFT-2", true);
+        assertTrue(found);
         found = findOrderOutcome(accountPairingTHX, "BP", "Order_BP-1", true);
         assertTrue(found);
 
@@ -66,6 +68,71 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         AccountPairingResponse accountPairingResponse2 = responseByAccount.get("account2");
         found = findWorstStrategy(accountPairingResponse2, "MSFT", "PutVerticalShort", 4, new BigDecimal("800.00"));
         assertTrue(found);
+    }
+    
+    @Test
+    public void buildAndPair4() {
+        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder4();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 2);
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        
+        // this is really the important one, even if I'm making a bit of a joke about it.
+        // Two account holders, Goofus and Gallant, start with the same positions
+        //    qty 4 long put spread
+        //    qty 3 long unpaired puts
+        // both accounts place a sell-to-close 3 long puts to increase buying power
+        // but Goofus places *the exact same order* again, the sell-to-close 3 long puts
+        // now the worst outcome for Goofus is that both orders fill, for a net decrease in buying power,
+        // because the long legs of the spread will be sold and leave naked short puts. 
+        
+        // There's an interesting user experience choice here, and the pairing library can
+        // support both. When Goofus places the second order, the 'cost' of the order could
+        // be identical to the first, because there is no guarantee which order will fill first
+        // and therefore no guarantee which order will release BP first. The individual order
+        // is returned here with no margin because, if it fills by itself, it will
+        // not add margin and be BP-releasing.  But naturally, the worst-case pairing will
+        // show the net increase in margin because it considers the worst outcome from all
+        // orders. So it's also possible to show Goofus the total change in buying power
+        // as a result of placing the order. 
+        
+        AccountPairingResponse accountPairingGa = responseByAccount.get("Account-Gallant");
+        boolean found = findWorstStrategy(accountPairingGa, "MSFT", "PutVerticalLong", 4, new BigDecimal("0.00"));
+        assertTrue(found);
+        
+        AccountPairingResponse accountPairingGo = responseByAccount.get("Account-Goofus");
+        found = findWorstStrategy(accountPairingGo, "MSFT", "PutUnpairedShort", 3, new BigDecimal("1650.00"));
+        assertTrue(found);
+        found = findWorstStrategy(accountPairingGo, "MSFT", "PutVerticalLong", 1, new BigDecimal("0.00"));
+        assertTrue(found);
+        found = findOrderOutcome(accountPairingGo, "MSFT", "OrderOver-Go", true);
+        assertTrue(found);
+        
+    }
+    
+    @Test
+    public void buildAndPair5() {
+        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder5();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        
+        // the worst-case outcome also works if the account only holds stocks and no options
+        
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        AccountPairingResponse accountPairingResponse = responseByAccount.get("accountStockOnly");
+        Map<String, List<Strategy>> account1result = accountPairingResponse.getStrategies();
+        boolean found = findStrategy(account1result, "MSFT", "StockUnpairedLong", 10, new BigDecimal("0"));
+        assertTrue(found);
+        
+        found = findWorstStrategy(accountPairingResponse, "MSFT", "StockUnpairedLong", 13, new BigDecimal("0.00"));
+        assertTrue(found);
+        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderB", true);
+        assertTrue(found);
+        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderA", false);
+        assertTrue(found);
+        
     }
     
     

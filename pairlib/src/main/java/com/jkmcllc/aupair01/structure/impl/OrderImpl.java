@@ -30,7 +30,12 @@ public class OrderImpl implements Order {
         builder.append(orderId);
         builder.append(", orderDescription: '");
         builder.append(orderDescription);
-        builder.append("', OrderLegs: ");
+        builder.append("'");
+        builder.append(", orderInitialCost: ");
+        builder.append(orderInitialCost);
+        builder.append(", orderMaintenanceCost: ");
+        builder.append(orderMaintenanceCost);
+        builder.append(", OrderLegs: ");
         builder.append(orderLegs);
         builder.append("}");
         return builder.toString();

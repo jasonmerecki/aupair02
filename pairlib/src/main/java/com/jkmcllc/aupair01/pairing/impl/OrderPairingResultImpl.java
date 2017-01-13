@@ -50,7 +50,7 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
                         sellToCloseOptionLegs++;
                     }
                 }
-            } else if (AbstractLeg.STOCKOPTION.equals(legType)) {
+            } else if (AbstractLeg.STOCK.equals(legType)) {
                 if (signum > 0) {
                     buyStockLegs++;
                     allSellOptions = false;

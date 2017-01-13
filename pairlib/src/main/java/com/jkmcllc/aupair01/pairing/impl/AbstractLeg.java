@@ -14,13 +14,12 @@ abstract class AbstractLeg implements Leg {
     
     protected final String symbol;
     protected final String description;
-    protected final Integer resetQty;
+    protected Integer resetQty;
     protected final Integer positionResetQty;
     protected final BigDecimal price;
     
-    protected Integer remainQty;
-    protected BigDecimal legValue;
     protected Integer qty;
+    protected BigDecimal legValue;
     
     // used only if this is an order
     OpenClose openClose;
@@ -29,7 +28,7 @@ abstract class AbstractLeg implements Leg {
         this.symbol = symbol;
         this.description = description;
         this.positionResetQty = positionResetQty;
-        this.resetQty = this.remainQty = this.qty = qty;
+        this.resetQty = this.qty = qty;
         this.price = price;
         this.legValue = null;
     }
@@ -55,50 +54,48 @@ abstract class AbstractLeg implements Leg {
     }
     
     protected Leg reduceBy(Integer used) {
-        int startSign = Integer.signum(remainQty);
+        int startSign = Integer.signum(qty);
         if (startSign == -1) {
-            remainQty = remainQty + used;
+            qty = qty + used;
         } else if (startSign == 1) {
-            remainQty = remainQty - used;
+            qty = qty - used;
         } else {
-            throw new PairingException("Error: using leg with zero remaining quantity, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
+            throw new PairingException("Error: using leg with zero remaining quantity, used=" + used + ", remainQty=" + qty + ", leg=" + this.toString());
         }
-        int endSign = Integer.signum(remainQty);
+        int endSign = Integer.signum(qty);
         if (endSign != 0 && endSign != startSign) {
-            throw new PairingException("Error: sign crossed for leg, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
+            throw new PairingException("Error: sign crossed for leg, used=" + used + ", remainQty=" + qty + ", leg=" + this.toString());
         }
-        this.qty = this.remainQty;
         return newLegWith(used * startSign);
     }
     
     protected void restoreBy(Integer used) {
         int startSign = Integer.signum(resetQty);
         if (startSign == -1) {
-            remainQty = remainQty - used;
+            qty = qty - used;
         } else if (startSign == 1) {
-            remainQty = remainQty + used;
+            qty = qty + used;
         } else {
-            throw new PairingException("Error: restoring leg with resetQty of zero, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
+            throw new PairingException("Error: restoring leg with resetQty of zero, used=" + used + ", remainQty=" + qty + ", leg=" + this.toString());
         }
-        int endSign = Integer.signum(remainQty);
+        int endSign = Integer.signum(qty);
         if (endSign != startSign) {
-            throw new PairingException("Error: restoring a leg crossed tbe sign for leg, used=" + used + ", remainQty=" + remainQty + ", leg=" + this.toString());
+            throw new PairingException("Error: restoring a leg crossed tbe sign for leg, used=" + used + ", remainQty=" + qty + ", leg=" + this.toString());
         }
-        this.qty = this.remainQty;
     }
     
     protected void resetQty(boolean hardReset) {
-        this.remainQty = hardReset ? this.positionResetQty : this.resetQty;
-        this.qty = this.remainQty;
+        this.qty = hardReset ? this.positionResetQty : this.resetQty;
+        this.resetQty = this.qty;
     }
     
     void modifyQty(Integer deltaQty) {
         this.qty += deltaQty;
-        this.remainQty += deltaQty;
+        this.resetQty += deltaQty;
     }
     
     protected Integer getRemainQty() {
-        return remainQty;
+        return qty;
     }
     
     protected abstract Leg newLegWith(Integer used);
