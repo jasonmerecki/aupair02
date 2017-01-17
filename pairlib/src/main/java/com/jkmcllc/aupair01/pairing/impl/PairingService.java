@@ -170,7 +170,9 @@ public class PairingService {
             PairingInfo pairingInfo, LeastMarginOutcome positionOutcome,
             String leastMarginConfig) {
         LeastMarginOutcome worstOutcome = null;
-        BigDecimal worstPositionMargin = findMarginOutcome(positionOutcome.leastMarginStrategyList, leastMarginConfig);;
+        BigDecimal worstPositionMargin = findMarginOutcome(positionOutcome.leastMarginStrategyList, leastMarginConfig);
+        BigDecimal posMaintOutcome = AccountPairingResponse.getMaintenanceMargin(positionOutcome.leastMarginStrategyList);
+        BigDecimal posInitOutcome = AccountPairingResponse.getInitialMargin(positionOutcome.leastMarginStrategyList);
         if (pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
             Set<OrderPairingResultImpl> worstOrders = new HashSet<>(), shortOrders = new HashSet<>(), nextOrders = new HashSet<>();
             for (OrderPairingResultImpl orderPairResult : pairingInfo.orderPairings) {
@@ -217,8 +219,8 @@ public class PairingService {
                         null, leastMarginConfig);
                 BigDecimal oneMaintOutcome = AccountPairingResponse.getMaintenanceMargin(oneOutcome.leastMarginStrategyList);
                 BigDecimal oneInitOutcome = AccountPairingResponse.getInitialMargin(oneOutcome.leastMarginStrategyList);
-                orderPairResult.totalMaintenanceMargin = orderPairResult.totalMaintenanceMargin.add(oneMaintOutcome);
-                orderPairResult.totalInitialMargin = orderPairResult.totalInitialMargin.add(oneInitOutcome);
+                orderPairResult.totalMaintenanceMargin = oneMaintOutcome.subtract(posMaintOutcome);
+                orderPairResult.totalInitialMargin = oneInitOutcome.subtract(posInitOutcome);
                 pairingInfo.reset(true);
             }
         }

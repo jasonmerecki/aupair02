@@ -219,7 +219,7 @@ public class PairingRequestOrderBuilderTest {
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
             .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
-        // MSFT holdings, 2 put option symbols, plus extra puts
+        // MSFT holdings, 2 put option spreads, plus extra puts
         builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.50").addPosition();
         builder.setPositionSymbol("MSFT  160115P00052000").setPositionOptionRoot("MSFT").setPositionQty(7)
@@ -236,7 +236,7 @@ public class PairingRequestOrderBuilderTest {
         builder.addAccount("Account-Gallant");
         
         
-        // MSFT holdings, 2 put option symbols, plus extra puts
+        // MSFT holdings, 2 put option spreads, plus extra puts
         builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.50").addPosition();
         builder.setPositionSymbol("MSFT  160115P00052000").setPositionOptionRoot("MSFT").setPositionQty(7)
@@ -246,14 +246,71 @@ public class PairingRequestOrderBuilderTest {
         builder.setOrderLegSymbol("MSFT  160115P00052000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
             .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("52.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("1.32")
             .addOrderLeg();
-        builder.setOrderId("OrderExtra-Go").setOrderDescription("Sell to close 3 MSFT 82 puts @ LM 2.00")
+        builder.setOrderId("OrderExtra-Go").setOrderDescription("Sell to close 3 MSFT 52 puts @ LM 2.00")
             .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
             .addOrder();
         // second order, EXACTLY the same as the first order!
         builder.setOrderLegSymbol("MSFT  160115P00052000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
             .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("52.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("1.32")
             .addOrderLeg();
-        builder.setOrderId("OrderOver-Go").setOrderDescription("Sell to close 3 MSFT 82 puts @ LM 2.00")
+        builder.setOrderId("OrderOver-Go").setOrderDescription("Sell to close 3 MSFT 52 puts @ LM 2.00")
+            .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
+            .addOrder();
+        
+        builder.addAccount("Account-Goofus");
+
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+        
+    }
+    
+    public static PairingRequest buildRequestOrder4_1() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // MSFT holdings, 2 put spreads, plus extra puts in a different symbol
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.50").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00052000").setPositionOptionRoot("MSFT").setPositionQty(3)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("52.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.32").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00054000").setPositionOptionRoot("MSFT").setPositionQty(4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("54.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("3.30").addPosition();
+    
+        // order to close only the extra long
+        builder.setOrderLegSymbol("MSFT  160115P00054000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("54.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("3.30")
+            .addOrderLeg();
+        builder.setOrderId("OrderClose-Ga").setOrderDescription("Sell to close 3 MSFT 54 puts @ LM 4.00")
+            .setOrderMaintenanceCost("-1200.00").setOrderInitialCost("-1200.00")
+            .addOrder();
+        
+        builder.addAccount("Account-Gallant");
+        
+        
+        // MSFT holdings, 2 put spreads, plus extra puts in a different symbol
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.50").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00052000").setPositionOptionRoot("MSFT").setPositionQty(3)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("52.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.32").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00054000").setPositionOptionRoot("MSFT").setPositionQty(4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("54.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("3.30").addPosition();
+    
+        // first order to close only the extra long
+        builder.setOrderLegSymbol("MSFT  160115P00054000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("54.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("3.30")
+            .addOrderLeg();
+        builder.setOrderId("OrderExtra-Go").setOrderDescription("Sell to close 3 MSFT 54 puts @ LM 2.10")
+            .setOrderMaintenanceCost("-630.00").setOrderInitialCost("-630.00")
+            .addOrder();
+        // second order, only causes a problem in combination with the first order!
+        builder.setOrderLegSymbol("MSFT  160115P00052000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-3)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("52.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("1.32")
+            .addOrderLeg();
+        builder.setOrderId("OrderOver-Go").setOrderDescription("Sell to close 3 MSFT 52 puts @ LM 2.00")
             .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
             .addOrder();
         
@@ -297,6 +354,37 @@ public class PairingRequestOrderBuilderTest {
         PairingRequest pairingRequest = builder.build();
         return pairingRequest;
         
+    }
+    
+    public static PairingRequest buildRequestOrder6() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // MSFT holdings, put spread symbols
+        builder.setPositionSymbol("MSFT  160115P00080000").setPositionOptionRoot("MSFT").setPositionQty(5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("80.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("28.70").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00082000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("82.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("30.19").addPosition();
+        
+        builder.setOrderLegSymbol("MSFT  160115P00080000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-4)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("80.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("28.70")
+            .addOrderLeg();
+        builder.setOrderLegSymbol("MSFT  160115P00082000").setOrderLegOptionRoot("MSFT").setOrderLegQty(4)
+            .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("82.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("30.19")
+            .addOrderLeg();
+        builder.setOrderId("OrderA").setOrderDescription("Buy to close 4 MSFT 80/82 put spread @ LM 0.75")
+            .setOrderMaintenanceCost("300.00").setOrderInitialCost("300.00")
+            .addOrder();
+    
+        builder.addAccount("account1");
+
+        builder.setRequestAllStrategyLists(false);
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
     }
 
     

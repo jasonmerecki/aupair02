@@ -57,11 +57,11 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         assertTrue(found);
         
         // let's make sure the expected orders are flagged as the 'worst'
-        found = findOrderOutcome(accountPairingTHX, "MSFT", "Order_MSFT-1", false);
+        found = findOrderOutcome(accountPairingTHX, "MSFT", "Order_MSFT-1", false, new BigDecimal("0"));
         assertTrue(found);
-        found = findOrderOutcome(accountPairingTHX, "MSFT", "Order_MSFT-2", true);
+        found = findOrderOutcome(accountPairingTHX, "MSFT", "Order_MSFT-2", true, new BigDecimal("400.00"));
         assertTrue(found);
-        found = findOrderOutcome(accountPairingTHX, "BP", "Order_BP-1", true);
+        found = findOrderOutcome(accountPairingTHX, "BP", "Order_BP-1", true, new BigDecimal("0"));
         assertTrue(found);
 
         
@@ -106,7 +106,42 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         assertTrue(found);
         found = findWorstStrategy(accountPairingGo, "MSFT", "PutVerticalLong", 1, new BigDecimal("0.00"));
         assertTrue(found);
-        found = findOrderOutcome(accountPairingGo, "MSFT", "OrderOver-Go", true);
+        found = findOrderOutcome(accountPairingGo, "MSFT", "OrderOver-Go", true, new BigDecimal("0"));
+        assertTrue(found);
+        
+    }
+    
+    @Test
+    public void buildAndPair4_1() {
+        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder4_1();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 2);
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        
+        // this is a variation on the Goofus/Gallant example above, except for having
+        // extra of the long put leg of a spread, the accounts hold extra long puts in a
+        // different symbol. If the long spread leg is closed by itself, then the spread
+        // will be re-paired using the extra long leg of the different symbol. But if 
+        // the long spread leg and the long extra leg are closed, then the net impact is
+        // BP-consuming. 
+        // Again this is an interesting user experience question for the order preview
+        // and reported impact. Each order by itself will release BP, and there is no
+        // guarantee about which order will fill first, or if the orders will fill
+        // at all. My opinion is that the best thing to do is show what the order impact
+        // will be if it executes by itself, but calculate buying power based on
+        // the worst-case outcome, which is that both orders execute in this case. 
+        
+        AccountPairingResponse accountPairingGa = responseByAccount.get("Account-Gallant");
+        boolean found = findWorstStrategy(accountPairingGa, "MSFT", "PutVerticalLong", 4, new BigDecimal("0.00"));
+        assertTrue(found);
+        
+        AccountPairingResponse accountPairingGo = responseByAccount.get("Account-Goofus");
+        found = findWorstStrategy(accountPairingGo, "MSFT", "PutUnpairedShort", 3, new BigDecimal("1650.00"));
+        assertTrue(found);
+        found = findWorstStrategy(accountPairingGo, "MSFT", "PutVerticalLong", 1, new BigDecimal("0.00"));
+        assertTrue(found);
+        found = findOrderOutcome(accountPairingGo, "MSFT", "OrderOver-Go", true, new BigDecimal("0"));
         assertTrue(found);
         
     }
@@ -128,11 +163,33 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         
         found = findWorstStrategy(accountPairingResponse, "MSFT", "StockUnpairedLong", 13, new BigDecimal("0.00"));
         assertTrue(found);
-        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderB", true);
+        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderB", true, new BigDecimal("0"));
         assertTrue(found);
-        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderA", false);
+        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderA", false, new BigDecimal("0"));
         assertTrue(found);
         
+    }
+    
+    @Test
+    public void buildAndPair6() {
+        
+        // this one confirms that when an order is BP-releasing due to option strategy changes,
+        // that 
+        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder6();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+
+        // the order is buy-to-close a short put spread
+        // the order is releasing because closing the short spread releases 800 of requirement
+        // but only costs 300 to buy out
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        AccountPairingResponse accountPairingResponse = responseByAccount.get("account1");
+        Map<String, List<Strategy>> account1result = accountPairingResponse.getStrategies();
+        boolean found = findStrategy(account1result, "MSFT", "PutVerticalShort", 4, new BigDecimal("800.00"));
+        assertTrue(found);
+        found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderA", false, new BigDecimal("-800.00"));
+        assertTrue(found);
     }
     
     

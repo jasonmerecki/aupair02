@@ -156,7 +156,7 @@ public class PairingRequestBase {
         return found;
     }
     
-    protected boolean findOrderOutcome(AccountPairingResponse accountPairingResponse, String optionRoot, String orderId, boolean isWorstCase) {
+    protected boolean findOrderOutcome(AccountPairingResponse accountPairingResponse, String optionRoot, String orderId, boolean isWorstCase, BigDecimal totalMaintenanceMargin) {
         boolean found = false;
         if (accountPairingResponse.getWorstCaseOrderOutcomes() != null) {
            Map<String, WorstCaseOrderOutcome> worstOutMap = accountPairingResponse.getWorstCaseOrderOutcomes();
@@ -164,8 +164,13 @@ public class PairingRequestBase {
                WorstCaseOrderOutcome worstOut = worstOutMap.get(optionRoot);
                Optional<? extends OrderPairingResult> order = worstOut.getOrders().stream().filter( o -> o.getOrderId().equals(orderId)).findFirst();
                found = (order.isPresent() && order.get().isWorstCaseOutcome() == isWorstCase);
+               if (found) {
+                   OrderPairingResult orderResult = order.get();
+                   found = orderResult.getMaintenanceMargin().compareTo(totalMaintenanceMargin) == 0;
+               }
            }
         }
+
         return found;
     }
     
