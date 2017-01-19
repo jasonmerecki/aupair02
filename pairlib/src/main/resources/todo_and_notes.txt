@@ -1,0 +1,18 @@
+
+***********
+Universal Margin
+***********
+
+find the unique set of strike prices
+separate short puts, short calls, long puts, long calls, short deliverables, long deliverables (same as reg-t)
+Sort options by date then by strike 
+at each strike price
+- walk through the SHORT options
+- ignore out of the money options (both short and long)
+- pair in the money short options with in the money long options to create long spread pairs
+-- favor pairing with like-dates
+- pair in the money short calls with long deliverables and in the money short puts with short deliverables
+-- favor near-dated options paired with the deliverables
+- pair all remaining in the money short options with in the money long options to create short spread pairs
+- any in the money short options not paired will be considered 'naked'
+
