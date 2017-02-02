@@ -224,7 +224,7 @@ public class PairingRequestTest extends PairingRequestBase {
         found = findStrategy(allShortIbResult, "RUTW", "IronButterflyShort", 2, new BigDecimal("24000.00"));
         assertTrue(found);
         
-        BigDecimal totalMargin = responseByAccount.get("accountAllShortIronButterfly").getTotalMaintenanceMargin();
+        BigDecimal totalMargin = responseByAccount.get("accountAllShortIronButterfly").getTotalMaintenanceRequirement(false);
         assertEquals(totalMargin, new BigDecimal("79000.0000"));
     }
     

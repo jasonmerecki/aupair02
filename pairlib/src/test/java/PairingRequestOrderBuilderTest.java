@@ -2,6 +2,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingRequest;
+import com.jkmcllc.aupair01.pairing.AccountPairingRequest.AccountPairingRequestBuilder;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingRequest.PairingRequestBuilder;
 import com.jkmcllc.aupair01.structure.DeliverableType;
@@ -24,7 +26,7 @@ public class PairingRequestOrderBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // MSFT holdings, 2 put option symbols
         builder.setPositionSymbol("MSFT  160115P00080000").setPositionOptionRoot("MSFT").setPositionQty(-4)
@@ -71,7 +73,7 @@ public class PairingRequestOrderBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // Account 1 OrderB is buy to-open a spread
         // buying a spread will consume cash, same as an increase in margin
@@ -117,17 +119,17 @@ public class PairingRequestOrderBuilderTest {
         // Build MSFT root
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // Build BP root
         builder.setDeliverableSymbol("BP").setDeliverableQty("100").setDeliverablePrice("134.03").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("BP").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // Build CSCO root
         builder.setDeliverableSymbol("CSCO").setDeliverableQty("100").setDeliverablePrice("84.30").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("CSCO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         
         // Account THX-1138 has two MSFT positions
@@ -217,7 +219,7 @@ public class PairingRequestOrderBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // MSFT holdings, 2 put option spreads, plus extra puts
         builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
@@ -270,7 +272,7 @@ public class PairingRequestOrderBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // MSFT holdings, 2 put spreads, plus extra puts in a different symbol
         builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-4)
@@ -334,7 +336,7 @@ public class PairingRequestOrderBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         builder.setPositionSymbol("MSFT").setPositionQty(10).setPositionPrice("60.40").addPosition();
 
@@ -356,13 +358,13 @@ public class PairingRequestOrderBuilderTest {
         
     }
     
-    public static PairingRequest buildRequestOrder6() {
-        PairingRequestBuilder builder = PairingRequest.newBuilder();
+    public static AccountPairingRequest buildRequestOrder6() {
+        AccountPairingRequestBuilder builder = AccountPairingRequest.newBuilder();
         
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // MSFT holdings, put spread symbols
         builder.setPositionSymbol("MSFT  160115P00080000").setPositionOptionRoot("MSFT").setPositionQty(5)
@@ -380,10 +382,7 @@ public class PairingRequestOrderBuilderTest {
             .setOrderMaintenanceCost("300.00").setOrderInitialCost("300.00")
             .addOrder();
     
-        builder.addAccount("account1");
-
-        builder.setRequestAllStrategyLists(false);
-        PairingRequest pairingRequest = builder.build();
+        AccountPairingRequest pairingRequest = builder.build("account1");
         return pairingRequest;
     }
 

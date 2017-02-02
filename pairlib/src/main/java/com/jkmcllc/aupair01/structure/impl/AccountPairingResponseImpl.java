@@ -4,25 +4,35 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
+import com.jkmcllc.aupair01.pairing.OrderPairingResult;
 import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
+import com.jkmcllc.aupair01.structure.Account;
 
 class AccountPairingResponseImpl implements AccountPairingResponse {
+    private final Account account;
     private final Map<String, List<Strategy>> resultMap ;
     private final Map<String, String> strategyGroupByRoot;
     private final Map<String, Map<String, List<Strategy>>> allStrategyListResultMap ;
     private final Map<String, WorstCaseOrderOutcome> worstCaseOrderOutcomes;
     
-    AccountPairingResponseImpl(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot,
+    AccountPairingResponseImpl(Account account, Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot,
             Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, WorstCaseOrderOutcome> worstCaseOrderOutcomes) {
+        this.account = account;
         if (resultMap == null) resultMap = Collections.emptyMap();
         this.resultMap = resultMap;
         this.strategyGroupByRoot = (strategyGroupByRoot != null) ? strategyGroupByRoot : Collections.emptyMap();
         this.allStrategyListResultMap = allStrategyListResultMap;
         this.worstCaseOrderOutcomes = worstCaseOrderOutcomes;
     };
+    
+    @Override
+    public Account getAccount() {
+        return account;
+    }
     
     @Override
     public Map<String, List<Strategy>> getStrategies() {
@@ -36,19 +46,47 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
 
     @Override
     public BigDecimal getTotalMaintenanceMargin() {
-        BigDecimal totalMaintMargin = resultMap.values().stream().map((e) -> {
-            BigDecimal totalRootMargin = AccountPairingResponse.getMaintenanceMargin(e);
-            return totalRootMargin;
-        }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
-        return totalMaintMargin;
+        return getTotalMaintenanceRequirement(false);
     }
     
     @Override
+    public BigDecimal getTotalMaintenanceRequirement(boolean includeOrders) {
+        BigDecimal totalMaintMargin = BigDecimal.ZERO;
+        if (!includeOrders) {
+            totalMaintMargin = resultMap.values().stream().map((e) -> {
+                BigDecimal totalRootMargin = AccountPairingResponse.getMaintenanceRequirement(e);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        } else {
+            totalMaintMargin = worstCaseOrderOutcomes.values().stream().map( (e) -> {
+                List<Strategy> worstOrderStrategies = e.getStrategies();
+                BigDecimal totalRootMargin = AccountPairingResponse.getMaintenanceRequirement(worstOrderStrategies);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        }
+        return totalMaintMargin;
+    }
+
+    @Override
     public BigDecimal getTotalInitialMargin() {
-        BigDecimal totalMaintMargin = resultMap.values().stream().map((e) -> {
-            BigDecimal totalRootMargin = AccountPairingResponse.getInitialMargin(e);
-            return totalRootMargin;
-        }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        return getTotalInitialRequirement(false);
+    }
+    
+    @Override
+    public BigDecimal getTotalInitialRequirement(boolean includeOrders) {
+        BigDecimal totalMaintMargin = BigDecimal.ZERO;
+        if (!includeOrders) {
+            totalMaintMargin = resultMap.values().stream().map((e) -> {
+                BigDecimal totalRootMargin = AccountPairingResponse.getInitialRequirement(e);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        } else {
+            totalMaintMargin = worstCaseOrderOutcomes.values().stream().map((e) -> {
+                List<Strategy> worstOrderStrategies = e.getStrategies();
+                BigDecimal totalRootMargin = AccountPairingResponse.getInitialRequirement(worstOrderStrategies);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        }
         return totalMaintMargin;
     }
     
@@ -76,7 +114,36 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     public Map<String, WorstCaseOrderOutcome> getWorstCaseOrderOutcomes() {
         return this.worstCaseOrderOutcomes;
     }
-    
-    
+
+    @Override
+    public BigDecimal getInitialValueChange(boolean includeOrderCost) {
+        BigDecimal positionReq = getTotalInitialRequirement(false);
+        BigDecimal orderReq = getTotalInitialRequirement(true);
+        BigDecimal change = positionReq.subtract(orderReq);
+        if (includeOrderCost) {
+            List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
+                    .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
+                    .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
+            BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderInitialCost(worstSelectedOrders);
+            change = change.subtract(costInitialWorstOrders);
+        }
+        return change;
+    }
+
+    @Override
+    public BigDecimal getMaintenanceValueChange(boolean includeOrderCost) {
+        BigDecimal positionReq = getTotalMaintenanceRequirement(false);
+        BigDecimal orderReq = getTotalMaintenanceRequirement(true);
+        BigDecimal change = positionReq.subtract(orderReq);
+        if (includeOrderCost) {
+            List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
+                    .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
+                    .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
+            BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderMaintenanceCost(worstSelectedOrders);
+            change = change.subtract(costInitialWorstOrders);
+        }
+        return change;
+    }
+ 
 
 }

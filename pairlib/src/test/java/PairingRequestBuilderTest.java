@@ -40,7 +40,7 @@ public class PairingRequestBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // MSFT holdings, 3 call options symbols, 2 put option symbols, using OSI standard (https://en.wikipedia.org/wiki/Option_symbol)
         builder.setPositionSymbol("MSFT  160115C00047500").setPositionOptionRoot("MSFT").setPositionQty(6)
@@ -57,7 +57,7 @@ public class PairingRequestBuilderTest {
         // Build CSCO root
         builder.setDeliverableSymbol("CSCO").setDeliverableQty("100").setDeliverablePrice("84.30").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("CSCO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // the description can be any String,
         builder.setPositionSymbol("CSCO  160115C00060000").setPositionDescription("CSCO Jan-16 60 Call").setPositionOptionRoot("CSCO").setPositionQty(-2)
@@ -76,7 +76,7 @@ public class PairingRequestBuilderTest {
         // Build BP root
         builder.setDeliverableSymbol("BP").setDeliverableQty("100").setDeliverablePrice("134.03").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("BP").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         builder.setPositionSymbol("BP    160115C00075000").setPositionOptionRoot("BP").setPositionQty(6)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("75.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("59.20").addPosition();
@@ -110,7 +110,7 @@ public class PairingRequestBuilderTest {
         builder.setDeliverableSymbol("NKE").setDeliverableQty("100").setDeliverablePrice("65.20").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setDeliverableSymbol("LULU").setDeliverableQty("45").setDeliverablePrice("40.93").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("NKE1").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // add some non-standard options
         builder.setPositionSymbol("NKE1  160115C00055000").setPositionOptionRoot("NKE1").setPositionQty(7)
@@ -132,7 +132,7 @@ public class PairingRequestBuilderTest {
         // Build MSFT root, first deliverables then root information
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         builder.setPositionSymbol("MSFT  160115C00047500").setPositionOptionRoot("MSFT").setPositionQty(6)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("47.50").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("12.68").addPosition();
@@ -153,7 +153,7 @@ public class PairingRequestBuilderTest {
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
 
         builder.setPositionSymbol("GPRO  160115P00045000").setPositionOptionRoot("GPRO").setPositionQty(5)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.03").addPosition();
@@ -187,7 +187,7 @@ public class PairingRequestBuilderTest {
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // margin = max(((4600.00 * 0.2 + -600.0000) * 10) + 1030.0000, (40.00 * 100.00 * 0.01) + 1030.0000)
         builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(-10)
@@ -222,7 +222,7 @@ public class PairingRequestBuilderTest {
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // let's see... how about if we have stock to cover some but not all short calls, with the remainder paired with some long calls
         builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(-10)
@@ -266,7 +266,7 @@ public class PairingRequestBuilderTest {
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // iron condors
         builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(10)
@@ -303,7 +303,7 @@ public class PairingRequestBuilderTest {
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // iron calendar condors
         builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(10)
@@ -340,7 +340,7 @@ public class PairingRequestBuilderTest {
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // broken condor and butterfly
         builder.setPositionSymbol("GPRO  160115P00040000").setPositionOptionRoot("GPRO").setPositionQty(10)
@@ -399,7 +399,7 @@ public class PairingRequestBuilderTest {
         // the short iron butterfly strategies are more optimal
         builder.setDeliverableSymbol("RUT").setDeliverableQty("100").setDeliverablePrice("1359.30").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("RUTW").setOptionRootExerciseStyle(ExerciseStyle.E)
-            .setOptionRootnderlyerType(UnderlyerType.I).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.I).setOptionRootMultiplier("100.00").addOptionRoot();
 
         builder.setPositionSymbol("RUTW  161209P01300000").setPositionOptionRoot("RUTW").setPositionQty(2)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("1300.00")

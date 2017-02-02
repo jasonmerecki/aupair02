@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingRequest;
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
@@ -50,9 +51,12 @@ public final class StructureImplFactory {
     public static PairingRequest buildPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
         return new PairingRequestImpl(accounts, optionRoots, requestAllStrategyLists);
     }
-    public static AccountPairingResponse buildAccountPairingResponse(Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot, 
+    public static AccountPairingRequest buildAccountPairingRequest(List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
+        return new AccountPairingRequestImpl(accounts, optionRoots, requestAllStrategyLists);
+    }
+    public static AccountPairingResponse buildAccountPairingResponse(Account account, Map<String, List<Strategy>> resultMap, Map<String, String> strategyGroupByRoot, 
             Map<String, Map<String, List<Strategy>>> allStrategyListResultMap, Map<String, WorstCaseOrderOutcome> worstCaseOrderOutcomes) {
-        return new AccountPairingResponseImpl(resultMap, strategyGroupByRoot, allStrategyListResultMap, worstCaseOrderOutcomes);
+        return new AccountPairingResponseImpl(account, resultMap, strategyGroupByRoot, allStrategyListResultMap, worstCaseOrderOutcomes);
     }
     public static PairingResponse buildPairingResponse(Map<String, AccountPairingResponse> resultMap) {
         return new PairingResponseImpl(resultMap);

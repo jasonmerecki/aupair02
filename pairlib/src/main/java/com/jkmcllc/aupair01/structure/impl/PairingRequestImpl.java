@@ -8,9 +8,9 @@ import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.OptionRoot;
 
 class PairingRequestImpl implements PairingRequest {
-    private final List<Account> accounts;
-    private final Map<String, OptionRoot> optionRoots;
-    private final boolean requestAllStrategyLists ;
+    protected final List<Account> accounts;
+    protected final Map<String, OptionRoot> optionRoots;
+    protected final boolean requestAllStrategyLists ;
     
     PairingRequestImpl (List<Account> accounts, Map<String, OptionRoot> optionRoots, boolean requestAllStrategyLists) {
         this.accounts = accounts;

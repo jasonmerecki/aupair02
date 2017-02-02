@@ -32,19 +32,19 @@ public interface PairingRequest extends Request {
     boolean isRequestAllStrategyLists();
 
     public class PairingRequestBuilder {
-        private List<Account> accounts = new ArrayList<>();
-        private List<Position> accountPositions = new ArrayList<>();
-        private List<Order> accountOrders = new ArrayList<>();
-        private Map<String, OptionRoot> optionRoots = new HashMap<>();
-        private PositionBuilder positionBuilder = Position.newBuilder();
-        private OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
-        private AccountBuilder accountBuilder = Account.newBuilder();
-        private OrderLegBuilder orderLegBuilder = OrderLeg.newBuilder();
-        private OrderBuilder orderBuilder = Order.newBuilder();
+        protected List<Account> accounts = new ArrayList<>();
+        protected List<Position> accountPositions = new ArrayList<>();
+        protected List<Order> accountOrders = new ArrayList<>();
+        protected Map<String, OptionRoot> optionRoots = new HashMap<>();
+        protected PositionBuilder positionBuilder = Position.newBuilder();
+        protected OptionRootBuilder optionRootBuilder = OptionRoot.newBuilder();
+        protected AccountBuilder accountBuilder = Account.newBuilder();
+        protected OrderLegBuilder orderLegBuilder = OrderLeg.newBuilder();
+        protected OrderBuilder orderBuilder = Order.newBuilder();
         
-        private boolean requestAllStrategyLists = false;
+        protected boolean requestAllStrategyLists = false;
         
-        private PairingRequestBuilder() {}
+        protected PairingRequestBuilder() {}
         
         public PairingRequestBuilder setPositionSymbol(String symbol) {
             positionBuilder.setSymbol(symbol);
@@ -152,8 +152,11 @@ public interface PairingRequest extends Request {
             return this;
         }
         
-        
         public PairingRequestBuilder addAccount(String accountId) {
+            return addAccountInternal(accountId);
+        }
+        
+        protected PairingRequestBuilder addAccountInternal(String accountId) {
             accountBuilder.setAccountId(accountId);
             accountBuilder.setAccountPositions(accountPositions);
             accountBuilder.setAccountOrders(accountOrders);
@@ -176,6 +179,13 @@ public interface PairingRequest extends Request {
             optionRootBuilder.setExerciseStyle(exerciseStyle);
             return this;
         }
+        public PairingRequestBuilder setOptionRootUnderlyerType(UnderlyerType underlyerType) {
+            optionRootBuilder.setUnderlyerType(underlyerType);
+            return this;
+        }
+        /**
+         * @deprecated use {@link setOptionRootUnderlyerType}
+         */
         public PairingRequestBuilder setOptionRootnderlyerType(UnderlyerType underlyerType) {
             optionRootBuilder.setUnderlyerType(underlyerType);
             return this;

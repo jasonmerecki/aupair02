@@ -125,18 +125,24 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     public String getOrderDescription() {
         return orderDescription;
     }
-    /* (non-Javadoc)
-     * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getTotalInitialMargin()
-     */
+    
     @Override
     public BigDecimal getInitialMargin() {
         return totalInitialMargin;
     }
-    /* (non-Javadoc)
-     * @see com.jkmcllc.aupair01.pairing.impl.OrderPairingResult#getTotalMaintenanceMargin()
-     */
+    
     @Override
     public BigDecimal getMaintenanceMargin() {
+        return totalMaintenanceMargin;
+    }
+    
+    @Override
+    public BigDecimal getInitialRequirement() {
+        return totalInitialMargin;
+    }
+    
+    @Override
+    public BigDecimal getMaintenanceRequirement() {
         return totalMaintenanceMargin;
     }
 

@@ -201,9 +201,9 @@ class StrategyFinder {
                     String leastMarginConfig = strategyConfigs.getGlobalConfig(GlobalConfigType.TEST_LEAST_MARGIN);
                     BigDecimal testMargin = BigDecimal.ZERO;
                     if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
-                        testMargin = strategy.getMaintenanceMargin();
+                        testMargin = strategy.getMaintenanceRequirement();
                     } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
-                        testMargin = strategy.getInitialMargin();
+                        testMargin = strategy.getInitialRequirement();
                     }
                     BigDecimal pureNakedMargin = strategy.getPureNakedMargin();
                     if (pureNakedMargin.compareTo(testMargin) >= 0) {

@@ -16,9 +16,19 @@ public interface OrderPairingResult {
 
     String getOrderDescription();
 
+    /**
+     * @deprecated use {@link getInitialRequirement}
+     */
     BigDecimal getInitialMargin();
 
+    /**
+     * @deprecated use {@link getMaintenanceRequirement}
+     */
     BigDecimal getMaintenanceMargin();
+    
+    BigDecimal getInitialRequirement();
+
+    BigDecimal getMaintenanceRequirement();
 
     BigDecimal getOrderInitialCost();
 

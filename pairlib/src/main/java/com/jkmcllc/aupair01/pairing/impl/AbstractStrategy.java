@@ -115,6 +115,17 @@ class AbstractStrategy implements Strategy {
         return initialMargin;
     }
     
+    
+    @Override
+    public BigDecimal getMaintenanceRequirement() {
+        return maintenanceMargin;
+    }
+    
+    @Override
+    public BigDecimal getInitialRequirement() {
+        return initialMargin;
+    }
+    
     @Override
     public boolean isProhibitedStrategy() {
         return prohibitedStrategy;
@@ -154,13 +165,13 @@ class AbstractStrategy implements Strategy {
         }
         builder.append(", quantity: ");
         builder.append(quantity);
-        builder.append(", maintenanceMargin: ");
+        builder.append(", maintenanceRequirement: ");
         builder.append(maintenanceMargin);
         if (marginDebug != null) {
             builder.append(", marginDebug: ");
             builder.append(marginDebug);
         }
-        builder.append(", initialMargin: ");
+        builder.append(", initialRequirement: ");
         builder.append(initialMargin);
         builder.append(", pureNakedMargin: ");
         builder.append(pureNakedMargin);

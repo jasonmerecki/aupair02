@@ -97,6 +97,11 @@ public class StrategyConfigs {
     
     private StrategyConfigs() {};
     
+    public static String getFileConfig()  {
+        String fileNames = System.getProperty(CONFIG_FILE, "");
+        return fileNames;
+    }
+    
     public static StrategyConfigs getInstance() {
         if (strategyConfigsInstance == null) {
             synchronized (StrategyConfigs.class) {
@@ -108,7 +113,7 @@ public class StrategyConfigs {
                     .getResourceAsStream("paircore.ini"));
             strategyConfigsInstance.loadConfigs(reader, true);
             
-            String fileNames = System.getProperty(CONFIG_FILE, "");
+            String fileNames = getFileConfig();
             if (fileNames != null && fileNames.isEmpty() == false) {
                 String[] fileNamesArray = fileNames.split(",");
                 for (String fileName : fileNamesArray) {

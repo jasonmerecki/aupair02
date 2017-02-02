@@ -19,7 +19,7 @@ public class PairingRequestBuilderCustomConfig {
         // MSFT root used for this example
         builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
-            .setOptionRootnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // cash secured put, prohibited short call
         builder.setPositionSymbol("MSFT  160115C00070000").setPositionOptionRoot("MSFT").setPositionQty(-5)

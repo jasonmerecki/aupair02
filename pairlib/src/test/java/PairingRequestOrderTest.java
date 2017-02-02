@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.jkmcllc.aupair01.pairing.AccountPairingRequest;
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
@@ -174,17 +175,15 @@ public class PairingRequestOrderTest extends PairingRequestBase {
     public void buildAndPair6() {
         
         // this one confirms that when an order is BP-releasing due to option strategy changes,
-        // that 
-        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder6();
+        // that the order is not part of order reserves
+        AccountPairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder6();
         commonPrintInput(pairingRequest);
-        PairingResponse pairingResponse = pairingService.service(pairingRequest);
-        commonTestAndPrintOutput(pairingResponse, 1);
+        AccountPairingResponse accountPairingResponse = pairingService.processAccountRequest(pairingRequest);
+        commonTestAndPrintOutput(accountPairingResponse);
 
         // the order is buy-to-close a short put spread
         // the order is releasing because closing the short spread releases 800 of requirement
         // but only costs 300 to buy out
-        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
-        AccountPairingResponse accountPairingResponse = responseByAccount.get("account1");
         Map<String, List<Strategy>> account1result = accountPairingResponse.getStrategies();
         boolean found = findStrategy(account1result, "MSFT", "PutVerticalShort", 4, new BigDecimal("800.00"));
         assertTrue(found);

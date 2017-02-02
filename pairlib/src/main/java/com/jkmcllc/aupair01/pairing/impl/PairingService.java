@@ -13,8 +13,12 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jkmcllc.aupair01.exception.ConfigurationException;
+import com.jkmcllc.aupair01.exception.PairingException;
+import com.jkmcllc.aupair01.pairing.AccountPairingRequest;
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.OrderPairingResult;
+import com.jkmcllc.aupair01.pairing.PairingProcessor;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
@@ -23,7 +27,7 @@ import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
-public class PairingService {
+public class PairingService implements PairingProcessor {
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
     private static PairingService pairingServiceInstance;
     
@@ -37,14 +41,44 @@ public class PairingService {
                 if (pairingServiceInstance == null) {
                     pairingServiceInstance = new PairingService();
                 }
-                // TODO: the config may throw an exception, should catch and throw meaningful one
-                pairingServiceInstance.strategyConfigs = StrategyConfigs.getInstance();
+                try {
+                    pairingServiceInstance.strategyConfigs = StrategyConfigs.getInstance();
+                } catch (Throwable t) {
+                    StringBuilder error = new StringBuilder("Could not initialize PairingService, please check that the ");
+                    error.append("configuration files exist and are correctly formatted ");
+                    error.append("(i.e. '-Dpairconfig=/opt/pair/pairconfig.ini,/opt/pair/apexdefault.ini') ");
+                    String fileNames = StrategyConfigs.getFileConfig();
+                    error.append("the passed value is: '").append(fileNames).append("'");
+                    throw new ConfigurationException(error.toString(), t);
+                }
             }
         }
         return pairingServiceInstance;
     }
     
+
+    @Override
+    public PairingResponse processRequest(PairingRequest request) {
+        return service(request);
+    }
+
+    @Override
+    public AccountPairingResponse processAccountRequest(AccountPairingRequest request) {
+        Map<String, AccountPairingResponse> resultMap = serviceInternal(request);
+        // expects only one result
+        if (resultMap.size() != 1) {
+            throw new PairingException("More than one account in request, cannot return single account response, reqeust: " + request);
+        }
+        return resultMap.entrySet().stream().findFirst().get().getValue();
+    }
+    
     public PairingResponse service(PairingRequest pairingRequest) {
+        Map<String, AccountPairingResponse> resultMap = serviceInternal(pairingRequest);
+        PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);
+        return response;
+    }
+    
+    private Map<String, AccountPairingResponse> serviceInternal(PairingRequest pairingRequest) {
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
         optionRootStore.addRoots(pairingRequest.getOptionRoots());
         
@@ -55,8 +89,7 @@ public class PairingService {
                 account -> { return pairAccount(account, optionRootStore, isRequestAllStrategyLists); }
                 ));
         
-        PairingResponse response = StructureImplFactory.buildPairingResponse(resultMap);
-        return response;
+        return resultMap;
     }
     
 
@@ -104,7 +137,7 @@ public class PairingService {
             // now that the leastMarginPairingOutcome is found, the optional orders can be considered
             LeastMarginOutcome worstPairingOutcome = findWorstOrderOutcome(strategyGroupListsList, pairingInfo, 
                     positionOutcome, leastMarginConfig);
-            if (worstPairingOutcome == null && pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
+            if (worstPairingOutcome == null /* && pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty() */) {
                 // the worst outcome is that no orders fill (they must all be BP releasing)
                 worstPairingOutcome = positionOutcome;
             }
@@ -115,7 +148,7 @@ public class PairingService {
             
         }
 
-        AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(optionRootResults, strategyGroupByRoot, allStrategyListResultMap, worstCaseOutcomes);
+        AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(account, optionRootResults, strategyGroupByRoot, allStrategyListResultMap, worstCaseOutcomes);
         return accountPairingResponse;
 
     }
@@ -171,8 +204,8 @@ public class PairingService {
             String leastMarginConfig) {
         LeastMarginOutcome worstOutcome = null;
         BigDecimal worstPositionMargin = findMarginOutcome(positionOutcome.leastMarginStrategyList, leastMarginConfig);
-        BigDecimal posMaintOutcome = AccountPairingResponse.getMaintenanceMargin(positionOutcome.leastMarginStrategyList);
-        BigDecimal posInitOutcome = AccountPairingResponse.getInitialMargin(positionOutcome.leastMarginStrategyList);
+        BigDecimal posMaintOutcome = AccountPairingResponse.getMaintenanceRequirement(positionOutcome.leastMarginStrategyList);
+        BigDecimal posInitOutcome = AccountPairingResponse.getInitialRequirement(positionOutcome.leastMarginStrategyList);
         if (pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty()) {
             Set<OrderPairingResultImpl> worstOrders = new HashSet<>(), shortOrders = new HashSet<>(), nextOrders = new HashSet<>();
             for (OrderPairingResultImpl orderPairResult : pairingInfo.orderPairings) {
@@ -217,8 +250,8 @@ public class PairingService {
                 pairingInfo.applyOrderLegs(orderPairResult);
                 LeastMarginOutcome oneOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
                         null, leastMarginConfig);
-                BigDecimal oneMaintOutcome = AccountPairingResponse.getMaintenanceMargin(oneOutcome.leastMarginStrategyList);
-                BigDecimal oneInitOutcome = AccountPairingResponse.getInitialMargin(oneOutcome.leastMarginStrategyList);
+                BigDecimal oneMaintOutcome = AccountPairingResponse.getMaintenanceRequirement(oneOutcome.leastMarginStrategyList);
+                BigDecimal oneInitOutcome = AccountPairingResponse.getInitialRequirement(oneOutcome.leastMarginStrategyList);
                 orderPairResult.totalMaintenanceMargin = oneMaintOutcome.subtract(posMaintOutcome);
                 orderPairResult.totalInitialMargin = oneInitOutcome.subtract(posInitOutcome);
                 pairingInfo.reset(true);
@@ -230,9 +263,9 @@ public class PairingService {
     private BigDecimal findMarginOutcome(List<Strategy> strategies, String leastMarginConfig) {
         BigDecimal marginOutcome = BigDecimal.ZERO;
         if (StrategyConfigs.MAINTENANCE.equals(leastMarginConfig)) {
-            marginOutcome = AccountPairingResponse.getMaintenanceMargin(strategies);
+            marginOutcome = AccountPairingResponse.getMaintenanceRequirement(strategies);
         } else if (StrategyConfigs.INITIAL.equals(leastMarginConfig)) {
-            marginOutcome = AccountPairingResponse.getInitialMargin(strategies);
+            marginOutcome = AccountPairingResponse.getInitialRequirement(strategies);
         }
         return marginOutcome;
     }
