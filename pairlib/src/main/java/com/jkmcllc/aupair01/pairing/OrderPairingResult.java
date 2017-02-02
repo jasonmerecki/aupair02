@@ -6,6 +6,14 @@ import java.util.List;
 
 import com.jkmcllc.aupair01.pairing.impl.Leg;
 
+/**
+ * Returns the result of an order passed in a request, with useful information
+ * about the order after it has been tested for the option strategy pairing
+ * outcome. 
+ * 
+ * @author Jason Merecki
+ *
+ */
 public interface OrderPairingResult {
 
     boolean isWorstCaseOutcome();
@@ -26,12 +34,54 @@ public interface OrderPairingResult {
      */
     BigDecimal getMaintenanceMargin();
     
+    /**
+     * The initial requirement change only for this order, 
+     * as a result of pairing this order with current positions
+     * into the optimal strategy outcome. This is useful for
+     * populating an order confirmation screen, to show the user
+     * what the impact will be to option requirement as a result
+     * of executing only this order.
+     * <p>
+     * This calculation does not include the requirement for non-option positions
+     * (i.e. does not include the requirement for marginable securities).
+     * 
+     * @return the initial requirement for this order only
+     */
     BigDecimal getInitialRequirement();
 
+    /**
+     * The maintenance requirement change only for this order, 
+     * as a result of pairing this order with current positions
+     * into the optimal strategy outcome. This is useful for
+     * populating an order confirmation screen, to show the user
+     * what the impact will be to option requirement as a result
+     * of executing only this order.
+     * <p>
+     * This calculation does not include the requirement for non-option positions
+     * (i.e. does not include the requirement for marginable securities).
+     * 
+     * @return the initial requirement for this order only
+     */
     BigDecimal getMaintenanceRequirement();
 
+    /**
+     * Echo's the initial cost which was passed into the request. This should
+     * be the cost impact to buying power for <b>marginable</b> orders. 
+     * 
+     * @see Order#getOrderInitialCost()
+     * @see OrderBuilder#setOrderInitialCost(String orderInitialCost)
+     * @return the initial cost passed into the request
+     */
     BigDecimal getOrderInitialCost();
 
+    /**
+     * Echo's the maintenance cost which was passed into the request. This should
+     * be the cost impact to buying power for <b>marginable</b> orders. 
+     * 
+     * @see Order#getOrderMaintenanceCost()
+     * @see OrderBuilder#setOrderMaintenanceCost(String orderMaintenanceCost)
+     * @return the maintenance cost passed into the request
+     */
     BigDecimal getOrderMaintenanceCost();
     
     public static BigDecimal getOrderMaintenanceCost(Collection<? extends OrderPairingResult> orderPairingResults) {

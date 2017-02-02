@@ -116,7 +116,7 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     }
 
     @Override
-    public BigDecimal getInitialValueChange(boolean includeOrderCost) {
+    public BigDecimal getInitialChange(boolean includeOrderCost) {
         BigDecimal positionReq = getTotalInitialRequirement(false);
         BigDecimal orderReq = getTotalInitialRequirement(true);
         BigDecimal change = positionReq.subtract(orderReq);
@@ -131,7 +131,7 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     }
 
     @Override
-    public BigDecimal getMaintenanceValueChange(boolean includeOrderCost) {
+    public BigDecimal getMaintenanceChange(boolean includeOrderCost) {
         BigDecimal positionReq = getTotalMaintenanceRequirement(false);
         BigDecimal orderReq = getTotalMaintenanceRequirement(true);
         BigDecimal change = positionReq.subtract(orderReq);

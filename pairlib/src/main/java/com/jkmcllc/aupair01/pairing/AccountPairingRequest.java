@@ -2,7 +2,6 @@ package com.jkmcllc.aupair01.pairing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.jkmcllc.aupair01.exception.BuilderException;
 import com.jkmcllc.aupair01.structure.Account;
@@ -14,11 +13,13 @@ import com.jkmcllc.aupair01.structure.Position;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public interface AccountPairingRequest extends PairingRequest {
-    public static final String NAME = "AccountPairingRequest";
-    default String requestType() {return NAME;}
+    final String NAME = "AccountPairingRequest";
+    /**
+     * Returns the single Account associated with this request
+     * 
+     * @return the Account
+     */
     Account getAccount();
-    Map<String, OptionRoot> getOptionRoots();
-    boolean isRequestAllStrategyLists();
     
     public class AccountPairingRequestBuilder extends PairingRequestBuilder {
         protected AccountPairingRequestBuilder() {}

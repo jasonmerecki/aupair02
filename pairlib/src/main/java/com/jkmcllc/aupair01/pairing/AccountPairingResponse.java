@@ -7,6 +7,14 @@ import java.util.Map;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.Account;
 
+/**
+ * AccountPairingResponse contains the details for the option strategy pairing
+ * result for a single account, including the result of pairing positions,
+ * and the optional orders into the worst-case outcome.
+ * 
+ * @author Jason Merecki
+ *
+ */
 public interface AccountPairingResponse {
     
     /**
@@ -117,7 +125,7 @@ public interface AccountPairingResponse {
      * @param includeOrderCost true, to include the order cost passed in the request
      * @return the change in initial requirement
      */
-    BigDecimal getInitialValueChange(boolean includeOrderCost);
+    BigDecimal getInitialChange(boolean includeOrderCost);
     
     /**
      * The change in the maintenance option requirement, including the change due
@@ -135,7 +143,7 @@ public interface AccountPairingResponse {
      * @param includeOrderCost true, to include the order cost passed in the request
      * @return the change in initial requirement
      */
-    BigDecimal getMaintenanceValueChange(boolean includeOrderCost);
+    BigDecimal getMaintenanceChange(boolean includeOrderCost);
     
     
     /**

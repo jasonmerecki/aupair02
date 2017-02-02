@@ -25,10 +25,32 @@ import com.jkmcllc.aupair01.structure.OptionRoot.OptionRootBuilder;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public interface PairingRequest extends Request {
-    public static final String NAME = "PairingRequest";
+    final String NAME = "PairingRequest";
     default String requestType() {return NAME;}
+    
+    /**
+     * Returns the List<Account> associated with this request. 
+     * 
+     * @returnthe List<Account> associated with this request. 
+     */
     List<Account> getAccounts();
+    
+    /**
+     * Returns a Map of option roots, where the key is the option root
+     * String and the value is the OptionRoot object, for those option
+     * root objects built as part of this request.
+     * @return a Map of option roots
+     */
     Map<String, OptionRoot> getOptionRoots();
+    
+    /**
+     * Returns the sate of the request all strategy lists flag. This would
+     * typically be set to true during debugging or testing a new strategy
+     * list added to a strategy group, to ensure the new list prodcues
+     * a more optimal pairing outcome. 
+     * 
+     * @return sate of the request all strategy lists flag
+     */
     boolean isRequestAllStrategyLists();
 
     public class PairingRequestBuilder {
