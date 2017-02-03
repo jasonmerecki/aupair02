@@ -168,7 +168,7 @@ class AbstractStrategy implements Strategy {
         builder.append(", maintenanceRequirement: ");
         builder.append(maintenanceMargin);
         if (marginDebug != null) {
-            builder.append(", marginDebug: ");
+            builder.append(", nakedDebug: ");
             builder.append(marginDebug);
         }
         builder.append(", initialRequirement: ");

@@ -181,13 +181,17 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
         builder.append(", orderDescription: '");
         builder.append(orderDescription);
         builder.append("'");
+        builder.append(", orderMaintenanceChange(for order preview): ");
+        builder.append(getMaintenanceChange());        
+        builder.append(", orderInitialChange(for order preview): ");
+        builder.append(getInitialChange());
         builder.append(", orderMaintenanceCost: ");
         builder.append(orderMaintenanceCost);        
         builder.append(", orderInitialCost: ");
         builder.append(orderInitialCost);
-        builder.append(", totalMaintenanceMargin: ");
+        builder.append(", totalMaintenanceRequirement: ");
         builder.append(totalMaintenanceMargin);   
-        builder.append(", totalInitialMargin: ");
+        builder.append(", totalInitialRequirement: ");
         builder.append(totalInitialMargin);
         builder.append(", worstCaseOutcome: ");
         builder.append(worstCaseOutcome);
@@ -205,6 +209,16 @@ class OrderPairingResultImpl implements Comparable<OrderPairingResultImpl>, Orde
     @Override
     public BigDecimal getOrderMaintenanceCost() {
         return orderMaintenanceCost;
+    }
+
+    @Override
+    public BigDecimal getInitialChange() {
+        return totalInitialMargin.add(orderInitialCost).negate();
+    }
+
+    @Override
+    public BigDecimal getMaintenanceChange() {
+        return totalMaintenanceMargin.add(orderMaintenanceCost).negate();
     }
 
 }

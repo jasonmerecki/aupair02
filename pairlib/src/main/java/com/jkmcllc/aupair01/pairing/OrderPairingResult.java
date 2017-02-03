@@ -84,6 +84,32 @@ public interface OrderPairingResult {
      */
     BigDecimal getOrderMaintenanceCost();
     
+    /**
+     * Returns the change in initial value for this order, only if
+     * this order executes on its own, <i>without considering the impact of
+     * any other orders.</i> This value could be used to show on an order
+     * preview screen, to show the user how their buying power will change
+     * if this order fills.  It might be useful to include an explanation for
+     * the user that this amount assumes no other current orders will fill, because
+     * other orders could change the outcome of the order in the preview screen.
+     * 
+     * @return the change in initial value for this order
+     */
+    BigDecimal getInitialChange();
+    
+    /**
+     * Returns the change in maintenance value for this order, only if
+     * this order executes on its own, <i>without considering the impact of
+     * any other orders.</i> This value could be used to show on an order
+     * preview screen, to show the user how their maintenance excess will change
+     * if this order fills.  It might be useful to include an explanation for
+     * the user that this amount assumes no other current orders will fill, because
+     * other orders could change the outcome of the order in the preview screen.
+     * 
+     * @return the change in maintenance value for this order
+     */
+    BigDecimal getMaintenanceChange();
+    
     public static BigDecimal getOrderMaintenanceCost(Collection<? extends OrderPairingResult> orderPairingResults) {
         BigDecimal totalMaintMargin = orderPairingResults.parallelStream().map(s1 -> s1.getOrderMaintenanceCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return totalMaintMargin;
