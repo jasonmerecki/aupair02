@@ -339,7 +339,7 @@ public class PairingRequestBuilderTest {
         PairingRequestBuilder builder = PairingRequest.newBuilder();
 
         builder.setDeliverableSymbol("GPRO").setDeliverableQty("100").setDeliverablePrice("46.00").setDeliverableType(DeliverableType.S).addDeliverable();
-        builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.A)
+        builder.setOptionRootSymbol("GPRO").setOptionRootExerciseStyle(ExerciseStyle.AMERICAN)
             .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
         // broken condor and butterfly
@@ -398,7 +398,7 @@ public class PairingRequestBuilderTest {
         // even though it's possible to also create a LongPutButterfly and spreads with the same options
         // the short iron butterfly strategies are more optimal
         builder.setDeliverableSymbol("RUT").setDeliverableQty("100").setDeliverablePrice("1359.30").setDeliverableType(DeliverableType.S).addDeliverable();
-        builder.setOptionRootSymbol("RUTW").setOptionRootExerciseStyle(ExerciseStyle.E)
+        builder.setOptionRootSymbol("RUTW").setOptionRootExerciseStyle(ExerciseStyle.EUROPEAN)
             .setOptionRootUnderlyerType(UnderlyerType.I).setOptionRootMultiplier("100.00").addOptionRoot();
 
         builder.setPositionSymbol("RUTW  161209P01300000").setPositionOptionRoot("RUTW").setPositionQty(2)

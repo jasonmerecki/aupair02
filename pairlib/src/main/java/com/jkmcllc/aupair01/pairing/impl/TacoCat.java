@@ -67,8 +67,8 @@ class TacoCat {
         context.set("zero",BigDecimal.ZERO);
         context.set("true",Boolean.TRUE);
         context.set("false",Boolean.FALSE);
-        context.set("exerciseEuropean", ExerciseStyle.E);
-        context.set("exerciseAmerican", ExerciseStyle.A);
+        context.set("exerciseEuropean", ExerciseStyle.StyleType.E);
+        context.set("exerciseAmerican", ExerciseStyle.StyleType.A);
         // context-specific stuff
         context.set("legs", legs);
         context.set("accountInfo", accountInfo);
