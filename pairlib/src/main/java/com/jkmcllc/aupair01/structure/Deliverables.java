@@ -55,7 +55,8 @@ public interface Deliverables {
         }
         public DeliverablesBuilder add() {
             if (deliverableType == null || 
-                    (DeliverableType.S.equals(deliverableType) && (symbol == null || qty == null || price == null) )
+                    (DeliverableType.S.equals(deliverableType) && (symbol == null || qty == null || price == null)) 
+                        || (DeliverableType.C.equals(deliverableType) && (symbol == null || price == null))
                     ){
                 List<String> missing = new ArrayList<>();
                 StringBuilder err = new StringBuilder("Cannot build Deliverable, missing data: ");

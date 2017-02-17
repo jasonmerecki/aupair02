@@ -15,6 +15,10 @@ repositories {
         name "testlib"
         dirs "../pairtest/lib"
     }
+        flatDir {
+        name "testlib"
+        dirs "../pairtest2/lib"
+    }
 }
 
 
@@ -58,5 +62,6 @@ uploadArchives {
     repositories {
         add project.repositories.pairlibout
         add project.repositories.testlib
+        add project.repositories.testlib2
     }
 }

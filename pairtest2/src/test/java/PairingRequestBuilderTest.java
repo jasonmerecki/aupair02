@@ -109,7 +109,6 @@ public class PairingRequestBuilderTest {
         // Build NKE root (non-standard deliverables, maybe an acquisition)
         builder.setDeliverableSymbol("NKE").setDeliverableQty("100").setDeliverablePrice("65.20").setDeliverableType(DeliverableType.S).addDeliverable();
         builder.setDeliverableSymbol("LULU").setDeliverableQty("45").setDeliverablePrice("40.93").setDeliverableType(DeliverableType.S).addDeliverable();
-        builder.setDeliverableSymbol("USD").setDeliverablePrice("40.93").setDeliverableType(DeliverableType.C).addDeliverable();
         builder.setOptionRootSymbol("NKE1").setOptionRootExerciseStyle(ExerciseStyle.A)
             .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
         
