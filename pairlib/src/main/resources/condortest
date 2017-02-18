@@ -1,0 +1,232 @@
+after the order  BUY 7.00 SPXWD0717B235000 SELL 7.00 SPXWD0717B234500
+
+
+
+
+act=5QE17977 5.00 SPXWN2417B204500 Option price $0.1500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWN2417B205000 Option price $0.1750 x100.00 initReq $0 maintReq $0
+
+
+
+act=5QE17977 -5.00 SPXWB2417B236500 Option price $3.5000 x100.00 initReq $0 maintReq $0
+
+
+
+act=5QE17977 5.00 SPXWB2417B237000 Option price $2.6250 x100.00 initReq $0 maintReq $0
+
+
+
+act=5QE17977 -10.00 SPXWB2417B230500 Option price $41.4000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 10.00 SPXWB2417B231500 Option price $32.4500 x100.00 initReq $0 maintReq $0
+
+
+
+
+act=5QE17977 5.00 SPXWN2817B217500 Option price $0.7000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWN2817B218000 Option price $0.7000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWB2817B240000 Option price $1.0500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWB2817B240500 Option price $0.8500 x100.00 initReq $0 maintReq $0
+
+stop here
+
+act=5QE17977 5.00 SPXWN2117B211000 Option price $0.1000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWN2117B211500 Option price $0.1000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWB2117B234000 Option price $10.3500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWB2117B234500 Option price $7.4000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWN2417B210500 Option price $0.2500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWN2417B211000 Option price $0.3000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWB2417B235000 Option price $8.2500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWB2417B235500 Option price $6.3000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWN2817B211000 Option price $0.4000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWN2817B211500 Option price $0.4250 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWB2817B237000 Option price $4.6000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWB2817B237500 Option price $3.6000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWO0317B211000 Option price $0.7000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWO0317B211500 Option price $0.7500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWC0317B237500 Option price $4.9000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWN2817B212500 Option price $0.4500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWN2817B213000 Option price $0.5000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWB2817B236000 Option price $7.2500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWB2817B236500 Option price $5.8000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWO1017B213500 Option price $1.4750 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWO1017B214000 Option price $1.5250 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWC1017B237500 Option price $6.9000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWC1017B238000 Option price $5.7000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWO0317B218500 Option price $1.1750 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWO0317B219000 Option price $1.2250 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWO0317B219500 Option price $1.3000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 5.00 SPXWO0317B217000 Option price $1.0500 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -5.00 SPXWC0317B236500 Option price $7.5000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 -6.00 SPXWB2717B233500 Option price $18.0000 x100.00 initReq $0 maintReq $0
+
+
+act=5QE17977 6.00 SPXWB2717B234000 Option price $14.8000 x100.00 initReq $0 maintReq $0
+
+
+
+
+
+
+
+
+
+
+
+
+bad
+
+
+
+
+
+
+
+(RegTCallSpread: shortCall SPXWB2417B230500 10 Short, longCall SPXWB2417B231500 10 Long; req:strikeDiff=$10000.0000,cash=$0.0000,final=$10000.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2117B234000 5 Short, longCall SPXWB2117B234500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2417B235000 5 Short, longCall SPXWB2417B235500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2817B236000 5 Short, longCall SPXWB2817B236500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWC0317B236500 5 Short, longCall SPXWC0317B237500 5 Long; req:strikeDiff=$5000.0000,cash=$0.0000,final=$5000.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2417B236500 5 Short, longCall SPXWB2417B237000 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2817B237000 5 Short, longCall SPXWB2817B237500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWC1017B237500 5 Short, longCall SPXWC1017B238000 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2817B240000 5 Short, longCall SPXWB2817B240500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTCallSpread: shortCall SPXWB2717B233500 6 Short, longCall SPXWB2717B234000 6 Long; req:strikeDiff=$3000.0000,cash=$0.0000,final=$3000.0000)
+
+
+(RegTCallSpread: shortCall SPXWD0717B234500 7 Short, longCall SPXWD0717B235000 7 Long; req:strikeDiff=$3500.0000,cash=$0.0000,final=$3500.0000)
+
+
+(RegTPutSpread: shortPut SPXWO0317B219500 5 Short, longPut SPXWO0317B219000 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWO0317B218500 5 Short, longPut SPXWO0317B217000 5 Long; req:strikeDiff=$7500.0000,cash=$0.0000,final=$7500.0000)
+
+
+(RegTPutSpread: shortPut SPXWN2817B218000 5 Short, longPut SPXWN2817B217500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWO1017B214000 5 Short, longPut SPXWO1017B213500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWN2817B213000 5 Short, longPut SPXWN2817B212500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWO0317B211500 5 Short, longPut SPXWO0317B211000 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWN2817B211500 5 Short, longPut SPXWN2817B211000 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWN2117B211500 5 Short, longPut SPXWN2117B211000 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWN2417B211000 5 Short, longPut SPXWN2417B210500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)
+
+
+(RegTPutSpread: shortPut SPXWN2417B205000 5 Short, longPut SPXWN2417B204500 5 Long; req:strikeDiff=$2500.0000,cash=$0.0000,final=$2500.0000)],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
