@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +13,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import org.apache.commons.jexl3.JexlContext;
 
 import com.jkmcllc.aupair01.store.Constants;
 import com.jkmcllc.aupair01.store.OptionRootStore;
@@ -64,10 +67,13 @@ class PairingInfo {
     final ConcurrentMap<String, AbstractLeg> allLegs = new ConcurrentHashMap<>();
     final List<OrderPairingResultImpl> orderPairings = new CopyOnWriteArrayList<>();
     final AccountInfo accountInfo;
+    final List<Leg> contextLegs = new ArrayList<>(4);
+    final JexlContext legContext;
     
     private PairingInfo(OptionRoot optionRoot, Account account) {
         this.accountInfo = new AccountInfo(account.getAccountId());
         this.optionRoot = optionRoot;
+        this.legContext = TacoCat.buildPairingContext(contextLegs, this.accountInfo, this);
     };
     
     public String toString() {

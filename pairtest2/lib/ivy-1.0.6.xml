@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="" module="aupair01" revision="1.0.6" status="integration" publication="20170221083921">
+  <info organisation="" module="aupair01" revision="1.0.6" status="integration" publication="20170223143012">
     <description/>
   </info>
   <configurations>

@@ -49,6 +49,8 @@ class StrategyFinder {
     protected final PairingInfo pairingInfo;
     protected final StrategyMeta strategyMeta;
     protected final List<Strategy> foundStrategies = new ArrayList<>();
+    protected final List<Leg> contextLegs = new ArrayList<>(4);
+    protected JexlContext context;
     
     public static StrategyFinder newInstance(PairingInfo pairingInfo, StrategyConfigs strategyConfigs, StrategyMeta strategyMeta) {
         return new StrategyFinder(pairingInfo, strategyConfigs, strategyMeta);
@@ -58,6 +60,7 @@ class StrategyFinder {
         this.pairingInfo = pairingInfo;
         this.strategyMeta = strategyMeta;
         this.strategyConfigs = strategyConfigs;
+        this.context = TacoCat.buildPairingContext(contextLegs, this.pairingInfo.accountInfo, this.pairingInfo);
     }
     
     List<? extends Strategy> find() {
@@ -135,7 +138,9 @@ class StrategyFinder {
         if (logger.isTraceEnabled()) {
             logger.trace("testLegs, legs=" + Arrays.asList(legs));
         }
-        JexlContext context = TacoCat.buildPairingContext(legList, this.pairingInfo.accountInfo, this.pairingInfo);
+        contextLegs.clear();
+        Arrays.stream(legs).forEach(l -> contextLegs.add(l));
+        
         Boolean valid = true;
         
         List<JexlExpression> strikesPatterns = strategyMeta.strikesPatterns;

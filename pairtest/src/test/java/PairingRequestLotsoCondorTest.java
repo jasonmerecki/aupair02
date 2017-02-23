@@ -36,7 +36,7 @@ public class PairingRequestLotsoCondorTest extends PairingRequestBase  {
         commonTestAndPrintOutput(pairingResponse, 1);
         // test outcomes
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
-        AccountPairingResponse accountPairingResponse = responseByAccount.get("LotsoCondor");
+        AccountPairingResponse accountPairingResponse = responseByAccount.get("LotsoCondorSmall");
         Map<String, List<Strategy>> account1result = accountPairingResponse.getStrategies();
         boolean found = findStrategy(account1result, "SPXW", "IronBrokenCondorShort", 5, new BigDecimal("12500.00"));
         assertTrue(found);

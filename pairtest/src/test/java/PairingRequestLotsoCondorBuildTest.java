@@ -221,7 +221,7 @@ public class PairingRequestLotsoCondorBuildTest {
             
         
         builder.setAccountStrategyGroupName("brokenIronPairing");
-        builder.addAccount("LotsoCondor");
+        builder.addAccount("LotsoCondorSmall");
         
         builder.setRequestAllStrategyLists(false);
         PairingRequest pairingRequest = builder.build();

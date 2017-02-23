@@ -166,9 +166,11 @@ public class PairingService implements PairingProcessor {
                 List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyConfigs, strategyMeta).find() ;
                 testFound.addAll(foundForMeta);
             }
-            BigDecimal testMargin = findMarginOutcome(testFound, leastMarginConfig);;
+            BigDecimal testMargin = findMarginOutcome(testFound, leastMarginConfig);
+            int compare = leastMargin != null ? leastMargin.compareTo(testMargin) : 0;
             if (leastMargin == null
-                    || leastMargin.compareTo(testMargin) > 0) {
+                    || compare > 0
+                    || (compare == 0 && leastMarginStrategyList.size() > testFound.size())) {
                 leastMargin = testMargin;
                 leastMarginStrategyList = testFound;
                 strategyGroupListName = testStrategyGroupListName;
