@@ -105,13 +105,7 @@ class StrategyFinder {
             }
             pairingInfo.contextLegs.set(recursiveListIndex, nextLeg);
             if (nextRecursiveListIndex == recursiveLists.size()) {
-                if (PairingService.PERFWATCH != null) {
-                    PairingService.PERFWATCH.start("testlegs");
-                }
                 testLegs();
-                if (PairingService.PERFWATCH != null) {
-                    PairingService.PERFWATCH.stop("testlegs");
-                }
             }  else {
                 recurseList(recursiveLists, nextRecursiveListIndex);
             }
