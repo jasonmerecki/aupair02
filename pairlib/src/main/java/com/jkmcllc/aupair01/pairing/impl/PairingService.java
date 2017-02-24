@@ -105,7 +105,7 @@ public class PairingService implements PairingProcessor {
         Map<String, WorstCaseOrderOutcome> worstCaseOutcomes = new HashMap<>();
         Map<String, PairingInfo> pairingInfos = PairingInfo.from(account, optionRootStore);
         Map<String, String> strategyGroupByRoot = new HashMap<>();
-        Map<String, Map<String, List<Strategy>>> allStrategyListResultMap = null;
+        Map<String, Map<String, List<Strategy>>> allStrategyListResultMap = isRequestAllStrategies ? new HashMap<>() : null;
         
         // find the strategy group name from the account, and also find the leastMarginConfig 
         // from the selected strategy group, or from the global
@@ -119,9 +119,6 @@ public class PairingService implements PairingProcessor {
         // get the strategy group lists from the strategy group selected
         List<StrategyGroupLists> strategyGroupListsList = strategyGroup.strategyGroupLists;
         
-        if (isRequestAllStrategies) {
-            allStrategyListResultMap = new HashMap<>();
-        }
         for (Map.Entry<String, PairingInfo> entry : pairingInfos.entrySet()) {
             Map<String, List<Strategy>> strategyListResults = null;
             if (isRequestAllStrategies) {

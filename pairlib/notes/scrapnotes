@@ -47,4 +47,20 @@ less object creation
 cumeMap: {testlegs=508, account=546}} { countMap: {testlegs=140777, account=1}}
 
 
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=493, account=521}} { countMap: {testlegs=140777, account=1}}
+
+
+
+
+
+overall getting 2.255, 2.148
+
+
+
+
+
+
+
+
 

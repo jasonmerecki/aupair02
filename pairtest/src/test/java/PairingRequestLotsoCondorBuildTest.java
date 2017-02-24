@@ -13,11 +13,11 @@ public class PairingRequestLotsoCondorBuildTest {
     
     @Test
     public void buildRequest3Test() {
-        PairingRequest request = buildRequest3();
+        PairingRequest request = buildRequest2();
         assertNotNull(request);
     }
 
-    public static PairingRequest buildRequest3() {
+    public static PairingRequest buildRequest2() {
         PairingRequestBuilder builder = PairingRequest.newBuilder();
 
         builder.setDeliverableSymbol("SPXW").setDeliverableQty("100").setDeliverablePrice("2344.76").setDeliverableType(DeliverableType.S).addDeliverable();
@@ -177,7 +177,7 @@ public class PairingRequestLotsoCondorBuildTest {
     }
     
     
-    public static PairingRequest buildRequest4() {
+    public static PairingRequest buildRequest1() {
         PairingRequestBuilder builder = PairingRequest.newBuilder();
 
         builder.setDeliverableSymbol("SPXW").setDeliverableQty("100").setDeliverablePrice("2344.76").setDeliverableType(DeliverableType.S).addDeliverable();
