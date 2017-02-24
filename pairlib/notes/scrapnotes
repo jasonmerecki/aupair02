@@ -8,34 +8,39 @@ run at 0.681 seconds before any optimization
 
 
 
-loop measure and counts before for lotso condors (the big one)
+trying again
+starting point
 
-[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - Perfwatch: { 
-cumeMap: {GETRECURSIVELISTS:SPXW=1, TESTWIDTH:SPXW=116, INIT=17, SORT:SPXW=1, TESTSTRIKES:SPXW=1672, 
-FIND:SPXW=2230, TESTLEGS:SPXW=2110, ACCT=2288, BUILDCONTEXT:SPXW=0}} { 
-countMap: {GETRECURSIVELISTS:SPXW=106, TESTWIDTH:SPXW=40244, INIT=1, SORT:SPXW=9, TESTSTRIKES:SPXW=779642, 
-FIND:SPXW=2, TESTLEGS:SPXW=468056, ACCT=1, BUILDCONTEXT:SPXW=1}}
-
-[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - Perfwatch: { 
-cumeMap: {GETRECURSIVELISTS:SPXW=0, TESTWIDTH:SPXW=49, INIT=15, SORT:SPXW=0, TESTSTRIKES:SPXW=664, 
-FIND:SPXW=897, TESTLEGS:SPXW=839, ACCT=916, BUILDCONTEXT:SPXW=0}} { 
-countMap: {GETRECURSIVELISTS:SPXW=106, TESTWIDTH:SPXW=7028, INIT=1, SORT:SPXW=9, TESTSTRIKES:SPXW=225923, 
-FIND:SPXW=2, TESTLEGS:SPXW=145306, ACCT=1, BUILDCONTEXT:SPXW=1}}
-
-reduced to 30% of iterations, 40% of execution time
-
-then, taking out just the measurement overhead (i.e. going out to system clock)
-   that took off another 916 seconds
-[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - Perfwatch: { 
-cumeMap: {ACCT=636}} { countMap: {ACCT=1}}
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=614, account=675}} { countMap: {testlegs=142677, account=2}}
 
 
-in pairtest, the lotsocondortest took 0.824 seconds, then 0.687 seconds
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=620, account=690}} { countMap: {testlegs=140935, account=2}}
 
-in pairlib, after optimizations, took 0.643 seconds
 
-in pairtest, after optimizations, took 0.657 seconds (huh?)
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=594, account=639}} { countMap: {testlegs=140935, account=2}}
 
-just junit with the large pairing and pre-init, took 0.568 seconds
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=681, account=737}} { countMap: {testlegs=140935, account=2}}
+
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=595, account=663}} { countMap: {testlegs=140935, account=2}}
+
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=569, account=619}} { countMap: {testlegs=140935, account=2}}
+
+
+
+
+
+isolated to just the 40 position account
+
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=511, account=551}} { countMap: {testlegs=140777, account=1}}
+
+
+
 
 

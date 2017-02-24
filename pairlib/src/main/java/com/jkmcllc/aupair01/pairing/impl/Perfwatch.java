@@ -9,6 +9,12 @@ public class Perfwatch {
     private ConcurrentMap<String, Long> startMap = new ConcurrentHashMap<>();
     private ConcurrentMap<String, Integer> countMap = new ConcurrentHashMap<>();
     
+    public void reset() {
+        cumeMap.clear();
+        startMap.clear();
+        countMap.clear();
+    }
+    
     public void start(String group) {
         Long now = (new Date()).getTime();
         startMap.put(group, now);

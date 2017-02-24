@@ -28,6 +28,7 @@ import com.jkmcllc.aupair01.structure.Account;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public class PairingService implements PairingProcessor {
+    public static Perfwatch PERFWATCH = new Perfwatch();
     private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
     private static PairingService pairingServiceInstance;
     
@@ -95,6 +96,10 @@ public class PairingService implements PairingProcessor {
 
     private AccountPairingResponse pairAccount(Account account, OptionRootStore optionRootStore,
             boolean isRequestAllStrategies) {
+        if (PairingService.PERFWATCH != null) {
+            PairingService.PERFWATCH.reset();
+            PairingService.PERFWATCH.start("account");
+        }
         // initialize some values, including the PairingInfo
         Map<String,List<Strategy>> optionRootResults = new HashMap<>();
         Map<String, WorstCaseOrderOutcome> worstCaseOutcomes = new HashMap<>();
@@ -146,6 +151,11 @@ public class PairingService implements PairingProcessor {
                 worstCaseOutcomes.put(optionRoot, worstOutcome);
             }
             
+        }
+        
+        if (PairingService.PERFWATCH != null) {
+            PairingService.PERFWATCH.stop("account");
+            logger.info("PERFWATCH : " + PERFWATCH.toString());
         }
 
         AccountPairingResponse accountPairingResponse = StructureImplFactory.buildAccountPairingResponse(account, optionRootResults, strategyGroupByRoot, allStrategyListResultMap, worstCaseOutcomes);

@@ -284,7 +284,8 @@ class PairingInfo {
         if (longDeliverables == null) {
             AbstractDeliverableLeg longDeliverableLeg = AbstractDeliverableLeg.from(longStocks, optionRoot);
             if (longDeliverableLeg != null) {
-                longDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(longStocks, optionRoot));
+                longDeliverables = new CopyOnWriteArrayList<>();
+                longDeliverables.add(AbstractDeliverableLeg.from(longStocks, optionRoot));
             } else {
                 longDeliverables = Collections.emptyList();
             }
@@ -292,7 +293,8 @@ class PairingInfo {
         if (shortDeliverables == null) {
             AbstractDeliverableLeg shortDeliverableLeg = AbstractDeliverableLeg.from(shortStocks, optionRoot);
             if (shortDeliverableLeg != null) {
-                shortDeliverables = Collections.singletonList(AbstractDeliverableLeg.from(shortStocks, optionRoot));
+                shortDeliverables = new CopyOnWriteArrayList<>();
+                shortDeliverables.add(AbstractDeliverableLeg.from(shortStocks, optionRoot));
             } else {
                 shortDeliverables = Collections.emptyList();
             }
@@ -337,13 +339,13 @@ class PairingInfo {
             if (OptionType.C.equals(newOptionLeg.getOptionType())) {
                 if (sign == 1) {
                     this.longCalls.add(newOptionLeg);
-                } else {
+                } else if (sign == -1) {
                     this.shortCalls.add(newOptionLeg);
                 }
             } else if (OptionType.P.equals(newOptionLeg.getOptionType())) {
                 if (sign == 1) {
                     this.longPuts.add(newOptionLeg);
-                 } else {
+                 } else if (sign == -1) {
                      this.shortPuts.add(newOptionLeg);
                 }
             } else {
@@ -353,7 +355,7 @@ class PairingInfo {
             StockLeg newStockLeg = (StockLeg) newLeg;
             if (sign == 1) {
                 this.longStocks.add(newStockLeg);
-            } else {
+            } else if (sign == -1) {
                 this.shortStocks.add(newStockLeg);
             }
         }
@@ -420,5 +422,12 @@ class PairingInfo {
         }
         // TODO: throw a meaningful exception here
         return null;
+    }
+    
+    void clearAndSizeContextLegs(int newsize) {
+        contextLegs.clear();
+        for (int i = 0; i < newsize; i++) {
+            contextLegs.add(null);
+        }
     }
 }
