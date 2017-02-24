@@ -35,12 +35,16 @@ cumeMap: {testlegs=569, account=619}} { countMap: {testlegs=140935, account=2}}
 
 
 
+
 isolated to just the 40 position account
 
 [main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
 cumeMap: {testlegs=511, account=551}} { countMap: {testlegs=140777, account=1}}
 
 
+less object creation
+[main] INFO com.jkmcllc.aupair01.pairing.impl.PairingService - PERFWATCH : Perfwatch: { 
+cumeMap: {testlegs=508, account=546}} { countMap: {testlegs=140777, account=1}}
 
 
 

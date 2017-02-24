@@ -49,14 +49,19 @@ class StrategyFinder {
     private StrategyMeta strategyMeta;
     private final List<Strategy> foundStrategies = new ArrayList<>();
     
-    static StrategyFinder newInstance(PairingInfo pairingInfo, StrategyConfigs strategyConfigs, StrategyMeta strategyMeta) {
-        return new StrategyFinder(pairingInfo, strategyConfigs, strategyMeta);
+    static StrategyFinder newInstance(PairingInfo pairingInfo, StrategyConfigs strategyConfigs) {
+        return new StrategyFinder(pairingInfo, strategyConfigs);
     }
     
-    private StrategyFinder(PairingInfo pairingInfo, StrategyConfigs strategyConfigs, StrategyMeta strategyMeta) {
+    private StrategyFinder(PairingInfo pairingInfo, StrategyConfigs strategyConfigs) {
         this.pairingInfo = pairingInfo;
-        this.strategyMeta = strategyMeta;
         this.strategyConfigs = strategyConfigs;
+    }
+    
+    StrategyFinder resetWithMeta(StrategyMeta strategyMeta) {
+        this.strategyMeta = strategyMeta;
+        this.foundStrategies.clear();
+        return this;
     }
     
     List<? extends Strategy> find() {
@@ -250,7 +255,8 @@ class StrategyFinder {
             for (int i = 0; i < strategyMeta.childStrategies.size(); i++) {
                 Leg[] childLegs = (Leg[]) legObjectArray[i];
                 StrategyMeta childStrategy = strategyMeta.childStrategies.get(i);
-                StrategyFinder childFinder = StrategyFinder.newInstance(pairingInfo, strategyConfigs, childStrategy);
+                StrategyFinder childFinder = StrategyFinder.newInstance(pairingInfo, strategyConfigs);
+                childFinder.resetWithMeta(childStrategy);
                 pairingInfo.contextLegs.clear();
                 Arrays.stream(childLegs).forEach(l -> pairingInfo.contextLegs.add(l));
                 childFinder.testLegs();

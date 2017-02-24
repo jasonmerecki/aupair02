@@ -131,8 +131,10 @@ public class PairingService implements PairingProcessor {
             PairingInfo pairingInfo = entry.getValue();
             String optionRoot = entry.getKey();
             
+            StrategyFinder strategyFinder = StrategyFinder.newInstance(pairingInfo, strategyConfigs);
+            
             LeastMarginOutcome positionOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
-                    strategyListResults, leastMarginConfig);
+                    strategyFinder, strategyListResults, leastMarginConfig);
             if (allStrategyListResultMap != null && strategyListResults != null) {
                 allStrategyListResultMap.put(optionRoot, strategyListResults);
             }
@@ -140,7 +142,7 @@ public class PairingService implements PairingProcessor {
             optionRootResults.put(optionRoot, positionOutcome.leastMarginStrategyList);
             
             // now that the leastMarginPairingOutcome is found, the optional orders can be considered
-            LeastMarginOutcome worstPairingOutcome = findWorstOrderOutcome(strategyGroupListsList, pairingInfo, 
+            LeastMarginOutcome worstPairingOutcome = findWorstOrderOutcome(strategyGroupListsList, strategyFinder, pairingInfo, 
                     positionOutcome, leastMarginConfig);
             if (worstPairingOutcome == null /* && pairingInfo.orderPairings != null && !pairingInfo.orderPairings.isEmpty() */) {
                 // the worst outcome is that no orders fill (they must all be BP releasing)
@@ -164,7 +166,7 @@ public class PairingService implements PairingProcessor {
     }
     
     private LeastMarginOutcome findLeastMarginOutcome(List<StrategyGroupLists> strategyGroupListsList, PairingInfo pairingInfo,
-            Map<String, List<Strategy>> strategyListResults, String leastMarginConfig) {
+            StrategyFinder strategyFinder, Map<String, List<Strategy>> strategyListResults, String leastMarginConfig) {
         List<Strategy> leastMarginStrategyList = null;
         String strategyGroupListName = null;
         BigDecimal leastMargin = null;
@@ -173,7 +175,7 @@ public class PairingService implements PairingProcessor {
             List<StrategyMeta> strategyMetas = strategyGroupLists.getStrategyMetas();
             List<Strategy> testFound = new ArrayList<>();
             for (StrategyMeta strategyMeta : strategyMetas) {
-                List<? extends Strategy> foundForMeta = StrategyFinder.newInstance(pairingInfo, strategyConfigs, strategyMeta).find() ;
+                List<? extends Strategy> foundForMeta = strategyFinder.resetWithMeta(strategyMeta).find() ;
                 testFound.addAll(foundForMeta);
             }
             BigDecimal testMargin = findMarginOutcome(testFound, leastMarginConfig);
@@ -212,7 +214,7 @@ public class PairingService implements PairingProcessor {
     }
     
     private LeastMarginOutcome findWorstOrderOutcome(List<StrategyGroupLists> strategyGroupListsList, 
-            PairingInfo pairingInfo, LeastMarginOutcome positionOutcome,
+            StrategyFinder strategyFinder, PairingInfo pairingInfo, LeastMarginOutcome positionOutcome,
             String leastMarginConfig) {
         LeastMarginOutcome worstOutcome = null;
         BigDecimal worstPositionMargin = findMarginOutcome(positionOutcome.leastMarginStrategyList, leastMarginConfig);
@@ -225,7 +227,7 @@ public class PairingService implements PairingProcessor {
                 nextOrders.addAll(worstOrders);
                 nextOrders.forEach(opr -> pairingInfo.applyOrderLegs(opr));
                 LeastMarginOutcome nextOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
-                        null, leastMarginConfig);
+                        strategyFinder, null, leastMarginConfig);
                 BigDecimal nextOutcomeMargin = findMarginOutcome(nextOutcome.leastMarginStrategyList, leastMarginConfig);
                 nextOutcomeMargin = nextOutcomeMargin.add(findOrderCost (nextOrders, leastMarginConfig));
                 if (nextOutcomeMargin.compareTo(worstPositionMargin) > 0) {
@@ -243,7 +245,7 @@ public class PairingService implements PairingProcessor {
                         shortOrders.forEach(opr -> pairingInfo.applyOrderLegs(opr));
                         // here is the special short leg pairing
                         shortOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
-                                null, leastMarginConfig);
+                                strategyFinder, null, leastMarginConfig);
                         nextOutcomeMargin = findMarginOutcome(shortOutcome.leastMarginStrategyList, leastMarginConfig);
                         nextOutcomeMargin = nextOutcomeMargin.add(findOrderCost (shortOrders, leastMarginConfig));
                         pairingInfo.reset(true);
@@ -261,7 +263,7 @@ public class PairingService implements PairingProcessor {
                 // now the single order outcome to determine the 'cost' of one
                 pairingInfo.applyOrderLegs(orderPairResult);
                 LeastMarginOutcome oneOutcome = findLeastMarginOutcome(strategyGroupListsList, pairingInfo, 
-                        null, leastMarginConfig);
+                        strategyFinder, null, leastMarginConfig);
                 BigDecimal oneMaintOutcome = AccountPairingResponse.getMaintenanceRequirement(oneOutcome.leastMarginStrategyList);
                 BigDecimal oneInitOutcome = AccountPairingResponse.getInitialRequirement(oneOutcome.leastMarginStrategyList);
                 orderPairResult.totalMaintenanceMargin = oneMaintOutcome.subtract(posMaintOutcome);
