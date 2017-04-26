@@ -15,6 +15,8 @@ public interface Account {
     public String getAccountId();
     public Map<String, String> getCustomProperties();
     public String getStrategyGroupName();
+    public void addOrder(Order order);
+    public Order removeOrder(String orderId);
     
     public class AccountBuilder {
         private List<Position> legs;

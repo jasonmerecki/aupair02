@@ -72,5 +72,34 @@ class PositionImpl implements Position {
     public CorePositionType getCorePositionType() {
         return CorePosition.CorePositionType.POSITION;
     }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((qty == null) ? 0 : qty.hashCode());
+        result = prime * result + ((symbol == null) ? 0 : symbol.hashCode());
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PositionImpl other = (PositionImpl) obj;
+        if (qty == null) {
+            if (other.qty != null)
+                return false;
+        } else if (!qty.equals(other.qty))
+            return false;
+        if (symbol == null) {
+            if (other.symbol != null)
+                return false;
+        } else if (!symbol.equals(other.symbol))
+            return false;
+        return true;
+    }
 
 }

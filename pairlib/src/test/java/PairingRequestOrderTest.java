@@ -11,6 +11,7 @@ import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
 import com.jkmcllc.aupair01.pairing.PairingRequest;
 import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
+import com.jkmcllc.aupair01.structure.Order;
 
 public class PairingRequestOrderTest extends PairingRequestBase {
     
@@ -189,6 +190,17 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         assertTrue(found);
         found = findOrderOutcome(accountPairingResponse, "MSFT", "OrderA", false, new BigDecimal("-800.00"));
         assertTrue(found);
+        
+        // now we are going to add only one new order to the request
+        Order newOrder = PairingRequestOrderBuilderTest.buildOrder6();
+        pairingRequest.getAccount().addOrder(newOrder);
+        commonPrintInput(pairingRequest);
+        AccountPairingResponse accountPairingResponseWithOrder = pairingService.processAccountRequest(pairingRequest);
+        commonTestAndPrintOutput(accountPairingResponseWithOrder);
+        
+        found = findOrderOutcome(accountPairingResponseWithOrder, "MSFT", "OrderB", true, new BigDecimal("800.00"));
+        assertTrue(found);
+        
     }
     
     

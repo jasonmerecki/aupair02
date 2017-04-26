@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.structure.impl;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import com.jkmcllc.aupair01.structure.Order;
@@ -17,7 +18,7 @@ public class OrderImpl implements Order {
             BigDecimal orderMaintenanceCost, BigDecimal orderInitialCost, List<OrderLeg> orderLegs) {
         this.orderId = orderId;
         this.orderDescription = orderDescription;
-        this.orderLegs = orderLegs;
+        this.orderLegs = Collections.unmodifiableList(orderLegs);
         this.orderMaintenanceCost = orderMaintenanceCost;
         this.orderInitialCost = orderInitialCost;
     }
@@ -65,6 +66,37 @@ public class OrderImpl implements Order {
     @Override
     public BigDecimal getOrderInitialCost() {
         return orderInitialCost;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
+        result = prime * result + ((orderLegs == null) ? 0 : orderLegs.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        OrderImpl other = (OrderImpl) obj;
+        if (orderId == null) {
+            if (other.orderId != null)
+                return false;
+        } else if (!orderId.equals(other.orderId))
+            return false;
+        if (orderLegs == null) {
+            if (other.orderLegs != null)
+                return false;
+        } else if (!orderLegs.equals(other.orderLegs))
+            return false;
+        return true;
     }
 
 }

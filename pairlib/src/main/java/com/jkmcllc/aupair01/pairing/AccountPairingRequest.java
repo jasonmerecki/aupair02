@@ -30,6 +30,15 @@ public interface AccountPairingRequest extends PairingRequest {
             throw new BuilderException("Must build with a single account ID for AccountPairingRequestBuilder ");
         }
         public AccountPairingRequest build(String accountId) {
+            return buildInternal(accountId, null, false);
+        }
+        public AccountPairingRequest build(String accountId, String strategyGroupName) {
+            return buildInternal(accountId, strategyGroupName, false);
+        }
+        private AccountPairingRequest buildInternal(String accountId, String strategyGroupName, boolean setgroup) {
+            if (setgroup) {
+                accountBuilder.setStrategyGroupName(strategyGroupName);
+            }
             super.addAccountInternal(accountId);
             for (Account account : accounts) {
                 for (CorePosition position : account.getPositions()) {

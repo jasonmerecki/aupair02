@@ -11,12 +11,47 @@ public interface OrderLeg extends Position {
         private OrderLegBuilder() {
             super();
         };
-        public AbstractPositionBuilder setOrderLegPrice(String price) {
+        public OrderLegBuilder setOrderLegPrice(String price) {
             try {
                 this.price = new BigDecimal(price);
             } catch (Exception e) {
                 throw new BuilderException("Invalid OrderLeg price: " + price);
             }
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setSymbol(String symbol) {
+            super.setSymbol(symbol);
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setDescription(String description) {
+            super.setDescription(description);
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setQty(Integer qty) {
+            super.setQty(qty);
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setOptionRoot(String optionRoot) {
+            super.setOptionRoot(optionRoot);
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setOptionType(OptionType optionType) {
+            super.setOptionType(optionType);
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setOptionStrike(String strike) {
+            super.setOptionStrike(strike);
+            return this;
+        }
+        @Override
+        public OrderLegBuilder setOptionExpiry(String expiry) {
+            super.setOptionExpiry(expiry);
             return this;
         }
         public OrderLeg build() {

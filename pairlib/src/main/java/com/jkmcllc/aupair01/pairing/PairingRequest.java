@@ -177,6 +177,10 @@ public interface PairingRequest extends Request {
         public PairingRequestBuilder addAccount(String accountId) {
             return addAccountInternal(accountId);
         }
+        public PairingRequestBuilder addAccount(String accountId, String strategyGroupName) {
+            accountBuilder.setStrategyGroupName(strategyGroupName);
+            return addAccountInternal(accountId);
+        }
         
         protected PairingRequestBuilder addAccountInternal(String accountId) {
             accountBuilder.setAccountId(accountId);

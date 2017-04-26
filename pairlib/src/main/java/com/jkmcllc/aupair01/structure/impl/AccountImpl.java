@@ -1,5 +1,7 @@
 package com.jkmcllc.aupair01.structure.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -12,16 +14,16 @@ import com.jkmcllc.aupair01.structure.Position;
 
 class AccountImpl implements Account {
     private final List<Position> positions;
-    private final List<Order> orders;
+    private List<Order> orders;
     private final String accountId;
     private final Map<String, String> customProperties;
     private final String strategyGroupName;
     
     AccountImpl(String accountId, List<Position> legs, List<Order> orders, String strategyGroupName, Map<String, String> customProperties) {
         this.accountId = accountId;
-        this.positions = legs;
-        this.orders = orders != null ? orders : Collections.emptyList();
-        this.customProperties = customProperties;
+        this.positions = Collections.unmodifiableList(legs);
+        this.orders = orders != null ? Collections.unmodifiableList(orders) : Collections.emptyList();
+        this.customProperties = Collections.unmodifiableMap(customProperties);
         if (strategyGroupName == null) {
             strategyGroupName = StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.DEFAULT_STRATEGY_GROUP);
         }
@@ -71,6 +73,30 @@ class AccountImpl implements Account {
         builder.append(customProperties);
         builder.append("}");
         return builder.toString();
+    }
+
+    @Override
+    public void addOrder(Order order) {
+        int end = this.orders.size();
+        Order[] orderArray = orders.toArray(new Order[end + 1]);
+        orderArray[end] = order;
+        this.orders = Collections.unmodifiableList(Arrays.asList(orderArray));
+    }
+
+    @Override
+    public Order removeOrder(String orderId) {
+        if (orderId == null) return null;
+        Order found = null;
+        List<Order> newlist = new ArrayList<>();
+        for (Order order : this.orders) {
+            if (orderId.equals(order.getOrderId())) {
+                found = order;
+            } else {
+                newlist.add(order);
+            }
+        }
+        this.orders = newlist;
+        return found;
     }
 
 
