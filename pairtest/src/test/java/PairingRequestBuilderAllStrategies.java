@@ -109,6 +109,18 @@ public class PairingRequestBuilderAllStrategies {
         builder.setAccountStrategyGroupName("pairEach");
         builder.addAccount("ShortStraddle2");
     
+        // naked short put
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.03").addPosition();
+        builder.setAccountStrategyGroupName("pairEach");
+        builder.addAccount("NakedShortPut");
+        
+        // naked short call
+        builder.setPositionSymbol("MSFT  160115C00060000").setPositionOptionRoot("MSFT").setPositionQty(-5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.01").addPosition();
+        builder.setAccountStrategyGroupName("pairEach");
+        builder.addAccount("NakedShortCall");
+        
         
         PairingRequest pairingRequest = builder.build();
         return pairingRequest;

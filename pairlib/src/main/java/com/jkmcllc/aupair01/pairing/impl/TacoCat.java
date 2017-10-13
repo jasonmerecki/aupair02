@@ -13,6 +13,7 @@ import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.OptionConfig;
 import com.jkmcllc.aupair01.structure.OptionRoot;
+import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 class TacoCat {
     public static final String NAKED_LEG = "nakedLeg";
@@ -69,6 +70,8 @@ class TacoCat {
         context.set("false",Boolean.FALSE);
         context.set("exerciseEuropean", ExerciseStyle.StyleType.E);
         context.set("exerciseAmerican", ExerciseStyle.StyleType.A);
+        context.set("underlyerIndex", UnderlyerType.I);
+        context.set("underlyerStock", UnderlyerType.S);
         // context-specific stuff
         context.set("legs", legs);
         context.set("accountInfo", accountInfo);
