@@ -79,11 +79,11 @@ public class PairingRequestAllStrategiesTest extends PairingRequestBase {
         assertTrue(found);
         
         singleAccountResult = responseByAccount.get("PutUnpairedShort-SPY").getStrategies();
-        found = findStrategy(singleAccountResult, "SPY", "PutUnpairedShort", 5, new BigDecimal("274980.00"));
+        found = findStrategy(singleAccountResult, "SPY", "PutUnpairedShort", 5, new BigDecimal("212480.00"));
         assertTrue(found);
         
         singleAccountResult = responseByAccount.get("CallUnpairedShort-SPY").getStrategies();
-        found = findStrategy(singleAccountResult, "SPY", "CallUnpairedShort", 5, new BigDecimal("264890.00"));
+        found = findStrategy(singleAccountResult, "SPY", "CallUnpairedShort", 5, new BigDecimal("202390.00"));
         assertTrue(found);
     }
     

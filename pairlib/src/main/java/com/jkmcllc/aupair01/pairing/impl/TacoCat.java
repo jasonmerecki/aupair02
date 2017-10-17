@@ -80,6 +80,8 @@ class TacoCat {
         context.set("pairingInfo", i);
         context.set(GlobalConfigType.NAKED_DELIVERABLE_PCT.getTypeName(), StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.NAKED_DELIVERABLE_PCT));
         context.set(GlobalConfigType.NAKED_CASH_PCT.getTypeName(), StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.NAKED_CASH_PCT));
+        context.set(GlobalConfigType.NAKED_DELIVERABLE_PCT_IDX.getTypeName(), StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.NAKED_DELIVERABLE_PCT_IDX));
+        context.set(GlobalConfigType.NAKED_CASH_PCT_IDX.getTypeName(), StrategyConfigs.getInstance().getGlobalConfig(GlobalConfigType.NAKED_CASH_PCT_IDX));
         return context;
     }
     public static class PublicPairingInfo {

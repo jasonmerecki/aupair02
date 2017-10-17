@@ -40,6 +40,8 @@ public class StrategyConfigs {
     public static final String MAINTENANCE_PCT = "maintenancePct";
     public static final String NAKED_DELIVERABLE_PCT = "nakedDeliverablePct";
     public static final String NAKED_CASH_PCT = "nakedCashPct";
+    public static final String NAKED_DELIVERABLE_PCT_IDX = "nakedDeliverablePctIdx";
+    public static final String NAKED_CASH_PCT_IDX = "nakedCashPctIdx";
 
     private static final String NAKED_MARGINS = "nakedMargins";
     private static final String NAKED_CALL_MARGIN = "nakedCallMargin";
@@ -479,6 +481,30 @@ public class StrategyConfigs {
                 throw new ConfigurationException("Invalid naked cash percent defined: " + nakedCashPctString);
             }
             globalConfiMap.put(NAKED_CASH_PCT, nakedCashPct);
+        }
+        String nakedDeliverablePctIdxString = globals.get(NAKED_DELIVERABLE_PCT_IDX);
+        if ( (nakedDeliverablePctIdxString == null && globalConfiMap.get(NAKED_DELIVERABLE_PCT_IDX) == null) ) {
+            throw new ConfigurationException("No naked deliverable percent idx defined");
+        } else if (nakedDeliverablePctIdxString != null) {
+            BigDecimal nakedDeliverablePctIdx = null;
+            try {
+            	nakedDeliverablePctIdx = new BigDecimal(nakedDeliverablePctIdxString);
+            } catch (Exception e) {
+                throw new ConfigurationException("Invalid naked deliverable percent defined: " + nakedDeliverablePctIdxString);
+            }
+            globalConfiMap.put(NAKED_DELIVERABLE_PCT_IDX, nakedDeliverablePctIdx);
+        }
+        String nakedCashPctIdxString = globals.get(NAKED_CASH_PCT_IDX);
+        if ( (nakedCashPctIdxString == null && globalConfiMap.get(NAKED_CASH_PCT_IDX) == null) ) {
+            throw new ConfigurationException("No naked cash percent idx defined");
+        } else if (nakedCashPctIdxString != null) {
+            BigDecimal nakedCashPctIdx = null;
+            try {
+            	nakedCashPctIdx = new BigDecimal(nakedCashPctIdxString);
+            } catch (Exception e) {
+                throw new ConfigurationException("Invalid naked cash percent defined: " + nakedCashPctIdxString);
+            }
+            globalConfiMap.put(NAKED_CASH_PCT_IDX, nakedCashPctIdx);
         }
     }
     

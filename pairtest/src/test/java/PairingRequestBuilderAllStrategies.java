@@ -109,18 +109,35 @@ public class PairingRequestBuilderAllStrategies {
         builder.setAccountStrategyGroupName("pairEach");
         builder.addAccount("ShortStraddle2");
     
-        // naked short put
+        // unpaired short put
         builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(-5)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("0.03").addPosition();
         builder.setAccountStrategyGroupName("pairEach");
-        builder.addAccount("NakedShortPut");
+        builder.addAccount("PutUnpairedShort");
         
-        // naked short call
+        // unpaired short call
         builder.setPositionSymbol("MSFT  160115C00060000").setPositionOptionRoot("MSFT").setPositionQty(-5)
             .setPositionOptionType(OptionType.C).setPositionOptionStrike("60.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("1.01").addPosition();
         builder.setAccountStrategyGroupName("pairEach");
-        builder.addAccount("NakedShortCall");
+        builder.addAccount("CallUnpairedShort");
         
+
+        // SPY root used for index options
+        builder.setDeliverableSymbol("SPY").setDeliverableQty("100").setDeliverablePrice("2500.00").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("SPY").setOptionRootExerciseStyle(ExerciseStyle.E)
+            .setOptionRootUnderlyerType(UnderlyerType.I).setOptionRootMultiplier("100.00").addOptionRoot();
+
+        // unpaired short put index
+        builder.setPositionSymbol("SPY   160115P02550000").setPositionOptionRoot("SPY").setPositionQty(-5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("2550.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("49.96").addPosition();
+        builder.setAccountStrategyGroupName("pairEach");
+        builder.addAccount("PutUnpairedShort-SPY");
+
+        // unpaired short call
+        builder.setPositionSymbol("SPY   160115C02470000").setPositionOptionRoot("SPY").setPositionQty(-5)
+            .setPositionOptionType(OptionType.C).setPositionOptionStrike("2470.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("29.78").addPosition();
+        builder.setAccountStrategyGroupName("pairEach");
+        builder.addAccount("CallUnpairedShort-SPY");
         
         PairingRequest pairingRequest = builder.build();
         return pairingRequest;

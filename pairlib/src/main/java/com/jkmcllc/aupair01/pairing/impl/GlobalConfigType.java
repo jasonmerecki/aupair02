@@ -13,4 +13,6 @@ public class GlobalConfigType<T> {
     public static GlobalConfigType<BigDecimal> MAINTENANCE_PCT = new GlobalConfigType<>(StrategyConfigs.MAINTENANCE_PCT);
     public static GlobalConfigType<BigDecimal> NAKED_DELIVERABLE_PCT = new GlobalConfigType<>(StrategyConfigs.NAKED_DELIVERABLE_PCT);
     public static GlobalConfigType<BigDecimal> NAKED_CASH_PCT = new GlobalConfigType<>(StrategyConfigs.NAKED_CASH_PCT);
+    public static GlobalConfigType<BigDecimal> NAKED_DELIVERABLE_PCT_IDX = new GlobalConfigType<>(StrategyConfigs.NAKED_DELIVERABLE_PCT_IDX);
+    public static GlobalConfigType<BigDecimal> NAKED_CASH_PCT_IDX = new GlobalConfigType<>(StrategyConfigs.NAKED_CASH_PCT_IDX);
 }
