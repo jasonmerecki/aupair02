@@ -203,5 +203,14 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         
     }
     
-    
+    @Test
+    public void buildAndPairPFE() {
+        
+        // this one confirms that when an order is BP-releasing due to option strategy changes,
+        // that the order is not part of order reserves
+        PairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrderPFE();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.processRequest(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+    }
 }

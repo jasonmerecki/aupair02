@@ -20,6 +20,7 @@ class AbstractStrategy implements Strategy {
     private final List<? extends Leg> legs;
     BigDecimal maintenanceMargin = BigDecimal.ZERO;
     BigDecimal initialMargin = BigDecimal.ZERO;
+    BigDecimal nonOptionPriceMargin = BigDecimal.ZERO;
     BigDecimal pureNakedCallMargin = BigDecimal.ZERO;
     BigDecimal pureNakedPutMargin = BigDecimal.ZERO;
     BigDecimal pureNakedMargin = BigDecimal.ZERO;
@@ -63,6 +64,19 @@ class AbstractStrategy implements Strategy {
                     break;
                 }
                 this.pureNakedLastResult = BigDecimal.ZERO;
+                
+                List<JexlExpression> nonOptionPriceMarginExpressions = StrategyConfigs.getInstance().nonOptionPriceMarginMap.get(optionType);
+                if (nonOptionPriceMarginExpressions == null || nonOptionPriceMarginExpressions.isEmpty()) {
+                    logger.warn("No non option price margin expression found for type: " + optionType);
+                    return;
+                }
+                
+                for (JexlExpression expression : shortMarginExpressions) {
+                    pureNakedLastResult = (BigDecimal) expression.evaluate(context);
+                }
+                nonOptionPriceMargin = pureNakedLastResult;
+
+                this.pureNakedLastResult = BigDecimal.ZERO;
             } 
         }
 
@@ -77,6 +91,7 @@ class AbstractStrategy implements Strategy {
         for (JexlExpression marginExpression : initialMarginExpressions) {
             this.initialMargin = (BigDecimal) marginExpression.evaluate(context);
         }
+        
         if (strategyMeta.marginDebugPatterns != null) {
             StringBuilder sb = new StringBuilder("{\"");
             Iterator<JexlExpression> iter = strategyMeta.marginDebugPatterns.iterator();
@@ -124,6 +139,11 @@ class AbstractStrategy implements Strategy {
     @Override
     public BigDecimal getInitialRequirement() {
         return initialMargin;
+    }
+    
+    @Override
+    public BigDecimal getNonOptionPriceRequirement() {
+    	return nonOptionPriceMargin;
     }
     
     @Override

@@ -41,7 +41,8 @@ class StrategyMeta implements Cloneable {
             List<JexlExpression> expirationPatterns, List<String> expirationPatternStrings,
             List<JexlExpression> otherPatterns, List<String> otherPatternStrings,
             List<JexlExpression> maintenanceMarginPatterns, List<String> maintenanceMarginPatternStrings,
-            List<JexlExpression> initialMarginPatterns, List<String> initialMarginPatternStrings, List<JexlExpression> marginDebugPatterns, List<String> marginDebugPatternStrings) {
+            List<JexlExpression> initialMarginPatterns, List<String> initialMarginPatternStrings, 
+            List<JexlExpression> marginDebugPatterns, List<String> marginDebugPatternStrings) {
         this.strategyName = strategyName;
         this.legs = legs;
         this.legsRatio = legsRatio;
@@ -180,7 +181,6 @@ class StrategyMeta implements Cloneable {
         return this;
     }
     
-    
     StrategyMeta copy(String strategyName) {
         // must be a deep copy 
         StrategyMeta copy = new StrategyMeta(strategyName, legs, legsRatio, sort, childStrategies, 
@@ -190,7 +190,8 @@ class StrategyMeta implements Cloneable {
                 expirationPatterns, expirationPatternStrings, 
                 otherPatterns, otherPatternStrings, 
                 maintenanceMarginPatterns, maintenanceMarginPatternStrings, 
-                initialMarginPatterns, initialMarginPatternStrings, marginDebugPatterns, marginDebugPatternStrings);
+                initialMarginPatterns, initialMarginPatternStrings, 
+                marginDebugPatterns, marginDebugPatternStrings);
         copy.prohibitedStrategy = this.prohibitedStrategy;
         return copy;
     }

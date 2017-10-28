@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +47,8 @@ public class StrategyConfigs {
     private static final String NAKED_MARGINS = "nakedMargins";
     private static final String NAKED_CALL_MARGIN = "nakedCallMargin";
     private static final String NAKED_PUT_MARGIN = "nakedPutMargin";
+    private static final String NON_OPTION_PRICE_CALL_MARGIN = "nonOptionPriceCallMargin";
+    private static final String NON_OPTION_PRICE_PUT_MARGIN = "nonOptionPricePutMargin";
     private static final String STRATEGY_GROUP = "strategyGroup";
     private static final String STRATEGY_LISTS = "strategyLists";
     private static final String STRATEGY_CONFIG_PREFIX = "strategy/";
@@ -60,9 +63,9 @@ public class StrategyConfigs {
     private static final String STRATEGY_EXPIRATION_PATTERN = "expirationPattern";
     private static final String STRATEGY_EXERCISE_PATTERN = "exercisePattern";
     private static final String STRATEGY_OTHER_PATTERN = "otherPattern";
-    private static final String STRATETY_MAINTENANCE_MARGIN = "maintenanceMargin";
-    private static final String STRATETY_MARGIN_DEBUG = "marginDebug";
-    private static final String STRATETY_INITIAL_MARGIN = "initialMargin";
+    private static final String STRATEGY_MAINTENANCE_MARGIN = "maintenanceMargin";
+    private static final String STRATEGY_MARGIN_DEBUG = "marginDebug";
+    private static final String STRATEGY_INITIAL_MARGIN = "initialMargin";
     private static final String LOWER_NAKED_TEST = "allowLowerNaked";
     
     private final ConcurrentMap<String, Object> globalConfiMap = new ConcurrentHashMap<>();
@@ -71,6 +74,7 @@ public class StrategyConfigs {
     private final ConcurrentMap<String, StrategyMeta> masterStrategyMap = new ConcurrentHashMap<>();
     
     final ConcurrentMap<OptionType, List<JexlExpression>> nakedMarginMap = new ConcurrentHashMap<>();
+    final ConcurrentMap<OptionType, List<JexlExpression>> nonOptionPriceMarginMap = new ConcurrentHashMap<>();
     
     public static final String SHORT_DELIVERABLES = "shortDeliverables";
     public static final String LONG_DELIVERABLES = "longDeliverables";
@@ -337,7 +341,7 @@ public class StrategyConfigs {
             }
         } 
 
-        String tempMarginKey = STRATETY_MAINTENANCE_MARGIN;
+        String tempMarginKey = STRATEGY_MAINTENANCE_MARGIN;
         nonEvalValues = strategySection.getAll(tempMarginKey);
         if ( nonEvalValues != null && nonEvalValues.size() > 0) {
             if (parentStrategyName != null) {
@@ -350,7 +354,7 @@ public class StrategyConfigs {
         } else if (parentStrategyName == null) {
             throw new ConfigurationException("Configuration for strategy has no maintenance margin, strategyName=" + strategyName );
         }
-        String tempMarginDebugKey = STRATETY_MARGIN_DEBUG;
+        String tempMarginDebugKey = STRATEGY_MARGIN_DEBUG;
         nonEvalValues = strategySection.getAll(tempMarginDebugKey);
         if (nonEvalValues != null && nonEvalValues.size() > 0) {
             if (parentStrategyName != null) {
@@ -361,7 +365,7 @@ public class StrategyConfigs {
                 strategyMeta.addMarginDebugPattern(marginVal);
             }
         }
-        tempMarginKey = STRATETY_INITIAL_MARGIN;
+        tempMarginKey = STRATEGY_INITIAL_MARGIN;
         nonEvalValues = strategySection.getAll(tempMarginKey);
         if ( nonEvalValues != null && nonEvalValues.size() > 0) {
             if (parentStrategyName != null) {
@@ -408,23 +412,54 @@ public class StrategyConfigs {
         List<String> nonEvalValues = nakeds.getAll(NAKED_CALL_MARGIN);
         if (nonEvalValues != null && nonEvalValues.size() > 0) {
             List<JexlExpression> nakedExpressions = new ArrayList<>(nonEvalValues.size());
-            for (int i = 0; i < nakeds.size(); i++) {
+            for (int i = 0; i < nonEvalValues.size(); i++) {
                 String pattern = nakeds.fetch(NAKED_CALL_MARGIN, i);
                 JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
                 nakedExpressions.add(p);
             }
             nakedMarginMap.putIfAbsent(OptionType.C, nakedExpressions);
+        } else {
+        	nakedMarginMap.putIfAbsent(OptionType.C, Collections.emptyList());
         }
         nonEvalValues = nakeds.getAll(NAKED_PUT_MARGIN);
         if (nonEvalValues != null && nonEvalValues.size() > 0) {
             List<JexlExpression> nakedExpressions = new ArrayList<>(nonEvalValues.size());
-            for (int i = 0; i < nakeds.size(); i++) {
+            for (int i = 0; i < nonEvalValues.size(); i++) {
                 String pattern = nakeds.fetch(NAKED_PUT_MARGIN, i);
                 JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
                 nakedExpressions.add(p);
             }
             nakedMarginMap.put(OptionType.P, nakedExpressions);
+        } else {
+        	nakedMarginMap.putIfAbsent(OptionType.P, Collections.emptyList());
         }
+        
+        nonEvalValues = nakeds.getAll(NON_OPTION_PRICE_CALL_MARGIN);
+        if (nonEvalValues != null && nonEvalValues.size() > 0) {
+            List<JexlExpression> nakedExpressions = new ArrayList<>(nonEvalValues.size());
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String pattern = nakeds.fetch(NON_OPTION_PRICE_CALL_MARGIN, i);
+                JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+                nakedExpressions.add(p);
+            }
+            nonOptionPriceMarginMap.putIfAbsent(OptionType.C, nakedExpressions);
+        } else {
+        	nonOptionPriceMarginMap.putIfAbsent(OptionType.C, Collections.emptyList());
+        }
+        
+        nonEvalValues = nakeds.getAll(NON_OPTION_PRICE_PUT_MARGIN);
+        if (nonEvalValues != null && nonEvalValues.size() > 0) {
+            List<JexlExpression> nakedExpressions = new ArrayList<>(nonEvalValues.size());
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String pattern = nakeds.fetch(NON_OPTION_PRICE_PUT_MARGIN, i);
+                JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+                nakedExpressions.add(p);
+            }
+            nonOptionPriceMarginMap.putIfAbsent(OptionType.C, nakedExpressions);
+        } else {
+        	nonOptionPriceMarginMap.putIfAbsent(OptionType.P, Collections.emptyList());
+        }
+        
     }
     
     private void findGlobalConfigs(Ini iniFile) {

@@ -415,5 +415,25 @@ public class PairingRequestOrderBuilderTest {
         return order;
     }
 
-    
+    public static PairingRequest buildRequestOrderPFE() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // PFE root used for other order tests
+        builder.setDeliverableSymbol("PFE").setDeliverableQty("100").setDeliverablePrice("36.14").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("PFE").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+
+        // order sell to open
+        builder.setOrderLegSymbol("CPFEK17173600").setOrderLegOptionRoot("PFE").setOrderLegQty(-1)
+            .setOrderLegOptionType(OptionType.C).setOrderLegOptionStrike("36.00").setOrderLegOptionExpiry("2017-11-17 16:00").setOrderLegPrice("0.73")
+            .addOrderLeg();
+        builder.setOrderId("OrderStoItmCallPfe").setOrderDescription("Sell to close 3 MSFT 52 puts @ LM 0.73")
+            .setOrderMaintenanceCost("-73.00").setOrderInitialCost("-73.00")
+            .addOrder();
+        builder.addAccount("AccountStoItmCallPfe");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+        
+    }
 }

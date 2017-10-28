@@ -10,6 +10,7 @@ public interface Strategy {
     List<? extends Leg> getLegs();
     BigDecimal getMaintenanceRequirement();
     BigDecimal getInitialRequirement();
+    BigDecimal getNonOptionPriceRequirement();
     /**
      * @deprecated use {@link getMaintenanceRequirement}
      */
