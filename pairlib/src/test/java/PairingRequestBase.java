@@ -96,10 +96,17 @@ public class PairingRequestBase {
         
         if (accountResponse.getWorstCaseOrderOutcomes() != null) {
             sb.append("- Orders -\n");
-            BigDecimal totalInitChange = accountResponse.getInitialChange(true);
-            BigDecimal totalMaintChange = accountResponse.getMaintenanceChange(true);
+            BigDecimal totalInitChange = accountResponse.getInitialChange(false);
+            BigDecimal totalMaintChange = accountResponse.getMaintenanceChange(false);
             
             sb.append("typical amounts used to change buying power: ");
+            sb.append("total initial value change=").append(totalInitChange);
+            sb.append(", total maintenance value change=").append(totalMaintChange);
+            sb.append("\n");
+            
+            totalInitChange = accountResponse.getInitialChange(true);
+            totalMaintChange = accountResponse.getMaintenanceChange(true);
+            sb.append("typical display amounts for the margin requirement changes: ");
             sb.append("total initial value change=").append(totalInitChange);
             sb.append(", total maintenance value change=").append(totalMaintChange);
             sb.append("\n");
