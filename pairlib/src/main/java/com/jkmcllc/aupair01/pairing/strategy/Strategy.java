@@ -10,7 +10,8 @@ public interface Strategy {
     List<? extends Leg> getLegs();
     BigDecimal getMaintenanceRequirement();
     BigDecimal getInitialRequirement();
-    BigDecimal getNonOptionPriceRequirement();
+    BigDecimal getNonOptionPriceMaintenanceRequirement();
+    BigDecimal getNonOptionPriceInitialRequirement();
     /**
      * @deprecated use {@link getMaintenanceRequirement}
      */
@@ -23,6 +24,8 @@ public interface Strategy {
     BigDecimal getPureNakedPutMargin();
     BigDecimal getPureNakedMargin();
     BigDecimal getPureNakedLastResult();
+    BigDecimal getNonOptionPriceCallMargin();
+    BigDecimal getNonOptionPricePutMargin();
     Integer getQuantity();
     boolean isProhibitedStrategy();
 }

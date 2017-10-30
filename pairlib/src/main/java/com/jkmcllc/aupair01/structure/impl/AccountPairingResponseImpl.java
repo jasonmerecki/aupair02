@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
-import com.jkmcllc.aupair01.pairing.OrderPairingResult;
 import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.Account;
@@ -90,6 +88,40 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
         return totalMaintMargin;
     }
     
+    private BigDecimal getTotalInitialNonOptionPriceRequirement(boolean includeOrders) {
+        BigDecimal totalMaintMargin = BigDecimal.ZERO;
+        if (!includeOrders) {
+            totalMaintMargin = resultMap.values().stream().map((e) -> {
+                BigDecimal totalRootMargin = AccountPairingResponse.getNonOptionPriceInitialRequirement(e);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        } else {
+            totalMaintMargin = worstCaseOrderOutcomes.values().stream().map((e) -> {
+                List<Strategy> worstOrderStrategies = e.getStrategies();
+                BigDecimal totalRootMargin = AccountPairingResponse.getNonOptionPriceInitialRequirement(worstOrderStrategies);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        }
+        return totalMaintMargin;
+    }
+    
+    private BigDecimal getTotalMaintenanceNonOptionPriceRequirement(boolean includeOrders) {
+        BigDecimal totalMaintMargin = BigDecimal.ZERO;
+        if (!includeOrders) {
+            totalMaintMargin = resultMap.values().stream().map((e) -> {
+                BigDecimal totalRootMargin = AccountPairingResponse.getNonOptionPriceMaintenanceRequirement(e);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        } else {
+            totalMaintMargin = worstCaseOrderOutcomes.values().stream().map((e) -> {
+                List<Strategy> worstOrderStrategies = e.getStrategies();
+                BigDecimal totalRootMargin = AccountPairingResponse.getNonOptionPriceMaintenanceRequirement(worstOrderStrategies);
+                return totalRootMargin;
+            }).reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+        }
+        return totalMaintMargin;
+    }
+    
     @Override
     public Map<String, Map<String, List<Strategy>>> getAllStrategyListResults() {
         return this.allStrategyListResultMap;
@@ -117,30 +149,48 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
 
     @Override
     public BigDecimal getInitialChange(boolean includeOrderCost) {
-        BigDecimal positionReq = getTotalInitialRequirement(false);
-        BigDecimal orderReq = getTotalInitialRequirement(true);
-        BigDecimal change = positionReq.subtract(orderReq);
-        if (includeOrderCost) {
+    	BigDecimal change = BigDecimal.ZERO;
+    	if (!includeOrderCost) {
+	        BigDecimal positionReq = getTotalInitialRequirement(false);
+	        BigDecimal orderReq = getTotalInitialRequirement(true);
+	        change = positionReq.subtract(orderReq);
+    	} else  {
+    		/*
             List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
                     .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
                     .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
             BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderInitialCost(worstSelectedOrders);
             change = change.subtract(costInitialWorstOrders);
+            */
+    		/* do not subtract the order cost because limit price on short unpaired
+    		 * may not equal the market price and that throws off the math */
+	        BigDecimal positionReq = getTotalInitialNonOptionPriceRequirement(false);
+	        BigDecimal orderReq = getTotalInitialNonOptionPriceRequirement(true);
+	        change = positionReq.subtract(orderReq);
         }
         return change;
     }
 
     @Override
     public BigDecimal getMaintenanceChange(boolean includeOrderCost) {
-        BigDecimal positionReq = getTotalMaintenanceRequirement(false);
-        BigDecimal orderReq = getTotalMaintenanceRequirement(true);
-        BigDecimal change = positionReq.subtract(orderReq);
-        if (includeOrderCost) {
+    	BigDecimal change = BigDecimal.ZERO;
+    	if (includeOrderCost) {
+	        BigDecimal positionReq = getTotalMaintenanceRequirement(false);
+	        BigDecimal orderReq = getTotalMaintenanceRequirement(true);
+	        change = positionReq.subtract(orderReq);
+    	} else {
+    		/*
             List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
                     .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
                     .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
             BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderMaintenanceCost(worstSelectedOrders);
             change = change.subtract(costInitialWorstOrders);
+            */
+            /* do not subtract the order cost because limit price on short unpaired
+    		 * may not equal the market price and that throws off the math */
+	        BigDecimal positionReq = getTotalMaintenanceNonOptionPriceRequirement(false);
+	        BigDecimal orderReq = getTotalMaintenanceNonOptionPriceRequirement(true);
+	        change = positionReq.subtract(orderReq);
         }
         return change;
     }

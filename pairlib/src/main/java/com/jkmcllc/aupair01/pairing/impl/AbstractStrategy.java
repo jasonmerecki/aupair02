@@ -20,8 +20,11 @@ class AbstractStrategy implements Strategy {
     private final List<? extends Leg> legs;
     BigDecimal maintenanceMargin = BigDecimal.ZERO;
     BigDecimal initialMargin = BigDecimal.ZERO;
-    BigDecimal nonOptionPriceMargin = BigDecimal.ZERO;
-    BigDecimal pureNakedCallMargin = BigDecimal.ZERO;
+    BigDecimal nonOptionPriceMaintenanceMargin = BigDecimal.ZERO;
+    BigDecimal nonOptionPriceInitialMargin = BigDecimal.ZERO;
+    BigDecimal nonOptionPriceCallMargin = BigDecimal.ZERO;
+    BigDecimal nonOptionPricePutMargin = BigDecimal.ZERO;
+	BigDecimal pureNakedCallMargin = BigDecimal.ZERO;
     BigDecimal pureNakedPutMargin = BigDecimal.ZERO;
     BigDecimal pureNakedMargin = BigDecimal.ZERO;
     BigDecimal pureNakedLastResult = BigDecimal.ZERO;
@@ -63,18 +66,24 @@ class AbstractStrategy implements Strategy {
                     pureNakedPutMargin = pureNakedPutMargin.add(pureNakedLastResult);
                     break;
                 }
-                this.pureNakedLastResult = BigDecimal.ZERO;
                 
+                this.pureNakedLastResult = BigDecimal.ZERO;
                 List<JexlExpression> nonOptionPriceMarginExpressions = StrategyConfigs.getInstance().nonOptionPriceMarginMap.get(optionType);
                 if (nonOptionPriceMarginExpressions == null || nonOptionPriceMarginExpressions.isEmpty()) {
                     logger.warn("No non option price margin expression found for type: " + optionType);
                     return;
                 }
-                
                 for (JexlExpression expression : shortMarginExpressions) {
                     pureNakedLastResult = (BigDecimal) expression.evaluate(context);
                 }
-                nonOptionPriceMargin = pureNakedLastResult;
+                switch (optionType) {
+                case C:
+                	nonOptionPriceCallMargin = nonOptionPriceCallMargin.add(pureNakedLastResult);
+                    break;
+                case P:
+                	nonOptionPricePutMargin = nonOptionPricePutMargin.add(pureNakedLastResult);
+                    break;
+                }
 
                 this.pureNakedLastResult = BigDecimal.ZERO;
             } 
@@ -90,6 +99,22 @@ class AbstractStrategy implements Strategy {
         } 
         for (JexlExpression marginExpression : initialMarginExpressions) {
             this.initialMargin = (BigDecimal) marginExpression.evaluate(context);
+        }
+        
+        if (strategyMeta.nonOptionPriceInitialMarginPatterns != null && !strategyMeta.nonOptionPriceInitialMarginPatterns.isEmpty() ) {
+	        for (JexlExpression marginExpression : strategyMeta.nonOptionPriceInitialMarginPatterns) {
+	            this.nonOptionPriceInitialMargin = (BigDecimal) marginExpression.evaluate(context);
+	        }
+        } else {
+        	this.nonOptionPriceInitialMargin = this.initialMargin;
+        }
+        
+        if (strategyMeta.nonOptionPriceInitialMarginPatterns != null && !strategyMeta.nonOptionPriceInitialMarginPatterns.isEmpty() ) { 
+	        for (JexlExpression marginExpression : strategyMeta.nonOptionPriceMaintenanceMarginPatterns) {
+	            this.nonOptionPriceMaintenanceMargin = (BigDecimal) marginExpression.evaluate(context);
+	        }
+        } else {
+        	this.nonOptionPriceMaintenanceMargin = this.maintenanceMargin;
         }
         
         if (strategyMeta.marginDebugPatterns != null) {
@@ -142,8 +167,13 @@ class AbstractStrategy implements Strategy {
     }
     
     @Override
-    public BigDecimal getNonOptionPriceRequirement() {
-    	return nonOptionPriceMargin;
+    public BigDecimal getNonOptionPriceMaintenanceRequirement() {
+    	return nonOptionPriceMaintenanceMargin;
+    }
+    
+    @Override
+    public BigDecimal getNonOptionPriceInitialRequirement() {
+    	return nonOptionPriceInitialMargin;
     }
     
     @Override
@@ -174,6 +204,17 @@ class AbstractStrategy implements Strategy {
     public BigDecimal getPureNakedLastResult() {
         return pureNakedLastResult;
     }
+    
+    @Override
+    public BigDecimal getNonOptionPriceCallMargin() {
+		return nonOptionPriceCallMargin;
+	}
+
+    @Override
+	public BigDecimal getNonOptionPricePutMargin() {
+		return nonOptionPricePutMargin;
+	}
+
 
     @Override
     public String toString() {

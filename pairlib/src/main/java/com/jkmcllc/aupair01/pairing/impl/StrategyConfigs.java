@@ -49,6 +49,8 @@ public class StrategyConfigs {
     private static final String NAKED_PUT_MARGIN = "nakedPutMargin";
     private static final String NON_OPTION_PRICE_CALL_MARGIN = "nonOptionPriceCallMargin";
     private static final String NON_OPTION_PRICE_PUT_MARGIN = "nonOptionPricePutMargin";
+    private static final String NON_OPTION_PRICE_INITIAL_MARGIN = "nonOptionPriceInitialMargin";
+    private static final String NON_OPTION_PRICE_MAINTENANCE_MARGIN = "nonOptionPriceMaintenanceMargin";
     private static final String STRATEGY_GROUP = "strategyGroup";
     private static final String STRATEGY_LISTS = "strategyLists";
     private static final String STRATEGY_CONFIG_PREFIX = "strategy/";
@@ -376,6 +378,29 @@ public class StrategyConfigs {
                 strategyMeta.addInitialMarginPattern(marginVal);
             }
         } 
+        
+        tempMarginKey = NON_OPTION_PRICE_MAINTENANCE_MARGIN;
+        nonEvalValues = strategySection.getAll(tempMarginKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.nonOptionPriceMaintenanceMarginPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String marginVal = strategySection.fetch(tempMarginKey, i);
+                strategyMeta.addNonOptionPriceMaintenanceMarginPattern(marginVal);
+            }
+        } 
+        tempMarginKey = NON_OPTION_PRICE_INITIAL_MARGIN;
+        nonEvalValues = strategySection.getAll(tempMarginKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.nonOptionPriceInitialMarginPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String marginVal = strategySection.fetch(tempMarginKey, i);
+                strategyMeta.addNonOptionPriceInitialMarginPattern(marginVal);
+            }
+        } 
 
         boolean prohibitedStrategy = false;
         String prohibitedString = strategySection.get(PROHIBITED_STRATEGY);
@@ -455,7 +480,7 @@ public class StrategyConfigs {
                 JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
                 nakedExpressions.add(p);
             }
-            nonOptionPriceMarginMap.putIfAbsent(OptionType.C, nakedExpressions);
+            nonOptionPriceMarginMap.putIfAbsent(OptionType.P, nakedExpressions);
         } else {
         	nonOptionPriceMarginMap.putIfAbsent(OptionType.P, Collections.emptyList());
         }

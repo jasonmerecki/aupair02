@@ -118,14 +118,14 @@ public interface AccountPairingResponse {
      * the change in requirement for marginable securities, then this method
      * will return the total change to apply to an initial excess calculation.
      * <p>
-     * Typically this method would be called, with includeOrderCost equal to true,
+     * Typically this method would be called, with excludeOrderCost equal to false,
      * to find the total change to apply to buying power, for open orders.
      * It would also be used to show "open order reserves" for buying power.
      * 
-     * @param includeOrderCost true, to include the order cost passed in the request
+     * @param excludeOrderCost true, to exclude the order cost passed in the request
      * @return the change in initial requirement
      */
-    BigDecimal getInitialChange(boolean includeOrderCost);
+    BigDecimal getInitialChange(boolean excludeOrderCost);
     
     /**
      * The change in the maintenance option requirement, including the change due
@@ -136,14 +136,14 @@ public interface AccountPairingResponse {
      * the change in requirement for marginable securities, then this method
      * will return the total change to apply to a maintenance excess calculation.
      * <p>
-     * Typically this method would be called, with includeOrderCost equal to true,
+     * Typically this method would be called, with excludeOrderCost equal to false,
      * to find the total change to apply to buying power, for open orders.
      * It would also be used to show "open order reserves" for buying power.
      * 
-     * @param includeOrderCost true, to include the order cost passed in the request
+     * @param excludeOrderCost true, to exclude the order cost passed in the request
      * @return the change in initial requirement
      */
-    BigDecimal getMaintenanceChange(boolean includeOrderCost);
+    BigDecimal getMaintenanceChange(boolean excludeOrderCost);
     
     
     /**
@@ -183,4 +183,27 @@ public interface AccountPairingResponse {
         BigDecimal totalMaintMargin = strategies.parallelStream().map(s1 -> s1.getInitialRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return totalMaintMargin;
     }
+    
+    /**
+     * Helper method for summarizing the non option price requirement
+     * 
+     * @param strategies for the summarization
+     * @return the total non option price requirement for the given strategies
+     */
+    public static BigDecimal getNonOptionPriceInitialRequirement(List<Strategy> strategies) {
+        BigDecimal total = strategies.parallelStream().map(s1 -> s1.getNonOptionPriceInitialRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        return total;
+    }
+    
+    /**
+     * Helper method for summarizing the non option price requirement
+     * 
+     * @param strategies for the summarization
+     * @return the total non option price requirement for the given strategies
+     */
+    public static BigDecimal getNonOptionPriceMaintenanceRequirement(List<Strategy> strategies) {
+        BigDecimal total = strategies.parallelStream().map(s1 -> s1.getNonOptionPriceMaintenanceRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        return total;
+    }
+    
 }

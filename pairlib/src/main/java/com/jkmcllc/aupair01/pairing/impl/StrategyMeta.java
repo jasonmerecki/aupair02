@@ -33,6 +33,10 @@ class StrategyMeta implements Cloneable {
     final List<String> initialMarginPatternStrings = new ArrayList<>();
     final List<JexlExpression> marginDebugPatterns = new ArrayList<>();
     final List<String> marginDebugPatternStrings = new ArrayList<>();
+    final List<JexlExpression> nonOptionPriceMaintenanceMarginPatterns = new ArrayList<>();
+    final List<String> nonOptionPriceMaintenancePatternStrings = new ArrayList<>();
+    final List<JexlExpression> nonOptionPriceInitialMarginPatterns = new ArrayList<>();
+    final List<String> nonOptionPriceInitialPatternStrings = new ArrayList<>();
     
     private StrategyMeta(String strategyName, String[] legs, Integer[] legsRatio, String sort, List<StrategyMeta> childStrategies,
             JexlExpression childStrategiesLegs, List<String> childStrategiesString, 
@@ -180,6 +184,22 @@ class StrategyMeta implements Cloneable {
         }
         return this;
     }
+    StrategyMeta addNonOptionPriceInitialMarginPattern(String pattern) {
+        if (pattern != null) {
+            JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+            nonOptionPriceInitialMarginPatterns.add(p);
+            nonOptionPriceInitialPatternStrings.add(pattern);
+        }
+        return this;
+    }
+    StrategyMeta addNonOptionPriceMaintenanceMarginPattern(String pattern) {
+        if (pattern != null) {
+            JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+            nonOptionPriceMaintenanceMarginPatterns.add(p);
+            nonOptionPriceMaintenancePatternStrings.add(pattern);
+        }
+        return this;
+    }
     
     StrategyMeta copy(String strategyName) {
         // must be a deep copy 
@@ -193,6 +213,7 @@ class StrategyMeta implements Cloneable {
                 initialMarginPatterns, initialMarginPatternStrings, 
                 marginDebugPatterns, marginDebugPatternStrings);
         copy.prohibitedStrategy = this.prohibitedStrategy;
+        copy.allowLowerNaked = this.allowLowerNaked;
         return copy;
     }
     @Override
