@@ -45,6 +45,17 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         AccountPairingResponse accountPairingResponse2 = responseByAccount.get("account2");
         found = findWorstStrategy(accountPairingResponse2, "MSFT", "PutVerticalShort", 4, new BigDecimal("800.00"));
         assertTrue(found);
+        
+        BigDecimal noOrderCostChange = new BigDecimal("-800.00");
+        BigDecimal orderCostChange = new BigDecimal("-200.00");
+        BigDecimal initialChangeNoOrderCost = accountPairingResponse2.getInitialChange(true);
+        assertTrue(initialChangeNoOrderCost.compareTo(noOrderCostChange) == 0);
+        BigDecimal initialChangeWithOrderCost = accountPairingResponse2.getInitialChange(false);
+        assertTrue(initialChangeWithOrderCost.compareTo(orderCostChange) == 0);
+        BigDecimal maintenanceChangeNoOrderCost = accountPairingResponse2.getMaintenanceChange(true);
+        assertTrue(maintenanceChangeNoOrderCost.compareTo(noOrderCostChange) == 0);
+        BigDecimal maintenanceChangeWithOrderCost = accountPairingResponse2.getMaintenanceChange(false);
+        assertTrue(maintenanceChangeWithOrderCost.compareTo(orderCostChange) == 0);
     }
     
     @Test
@@ -111,6 +122,17 @@ public class PairingRequestOrderTest extends PairingRequestBase {
         found = findOrderOutcome(accountPairingGo, "MSFT", "OrderOver-Go", true, new BigDecimal("0"));
         assertTrue(found);
         
+        // added to test the change in req for orders
+        BigDecimal noOrderCostChange = new BigDecimal("-1500.00");
+        BigDecimal orderCostChange = new BigDecimal("-450.00");
+        BigDecimal initialChangeNoOrderCost = accountPairingGo.getInitialChange(true);
+        assertTrue(initialChangeNoOrderCost.compareTo(noOrderCostChange) == 0);
+        BigDecimal initialChangeWithOrderCost = accountPairingGo.getInitialChange(false);
+        assertTrue(initialChangeWithOrderCost.compareTo(orderCostChange) == 0);
+        BigDecimal maintenanceChangeNoOrderCost = accountPairingGo.getMaintenanceChange(true);
+        assertTrue(maintenanceChangeNoOrderCost.compareTo(noOrderCostChange) == 0);
+        BigDecimal maintenanceChangeWithOrderCost = accountPairingGo.getMaintenanceChange(false);
+        assertTrue(maintenanceChangeWithOrderCost.compareTo(orderCostChange) == 0);
     }
     
     @Test

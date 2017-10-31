@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
+import com.jkmcllc.aupair01.pairing.OrderPairingResult;
 import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.structure.Account;
@@ -154,14 +156,12 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
 	        BigDecimal positionReq = getTotalInitialRequirement(false);
 	        BigDecimal orderReq = getTotalInitialRequirement(true);
 	        change = positionReq.subtract(orderReq);
-    	} else  {
-    		/*
             List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
                     .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
                     .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
             BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderInitialCost(worstSelectedOrders);
-            change = change.subtract(costInitialWorstOrders);
-            */
+            change = change.subtract(costInitialWorstOrders);	        
+    	} else  {
     		/* do not subtract the order cost because limit price on short unpaired
     		 * may not equal the market price and that throws off the math */
 	        BigDecimal positionReq = getTotalInitialNonOptionPriceRequirement(false);
@@ -174,18 +174,16 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
     @Override
     public BigDecimal getMaintenanceChange(boolean excludeOrderCost) {
     	BigDecimal change = BigDecimal.ZERO;
-    	if (excludeOrderCost) {
+    	if (!excludeOrderCost) {
 	        BigDecimal positionReq = getTotalMaintenanceRequirement(false);
 	        BigDecimal orderReq = getTotalMaintenanceRequirement(true);
 	        change = positionReq.subtract(orderReq);
-    	} else {
-    		/*
             List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
                     .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
                     .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
-            BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderMaintenanceCost(worstSelectedOrders);
-            change = change.subtract(costInitialWorstOrders);
-            */
+            BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderInitialCost(worstSelectedOrders);
+            change = change.subtract(costInitialWorstOrders);	   
+    	} else {
             /* do not subtract the order cost because limit price on short unpaired
     		 * may not equal the market price and that throws off the math */
 	        BigDecimal positionReq = getTotalMaintenanceNonOptionPriceRequirement(false);

@@ -144,6 +144,10 @@ public class PairingRequestBase {
 
     protected void commonPrintInput(PairingRequest pairingRequest) {
         StringBuilder sb = new StringBuilder();
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        sb.append("----- Executing from: ");
+        sb.append(elements[2].getClassName() + "." + elements[2].getMethodName());
+        sb.append("\n");
         sb.append("--- Input for PairingRequest\n");
         pairingRequest.getOptionRoots().values().forEach( root -> {
             sb.append(root.toString()).append("\n");

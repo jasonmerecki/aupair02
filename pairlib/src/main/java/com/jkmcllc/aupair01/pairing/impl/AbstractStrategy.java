@@ -73,7 +73,7 @@ class AbstractStrategy implements Strategy {
                     logger.warn("No non option price margin expression found for type: " + optionType);
                     return;
                 }
-                for (JexlExpression expression : shortMarginExpressions) {
+                for (JexlExpression expression : nonOptionPriceMarginExpressions) {
                     pureNakedLastResult = (BigDecimal) expression.evaluate(context);
                 }
                 switch (optionType) {
