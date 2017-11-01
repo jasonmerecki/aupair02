@@ -9,6 +9,10 @@ import com.jkmcllc.aupair01.pairing.PairingRequest.PairingRequestBuilder;
 import com.jkmcllc.aupair01.structure.DeliverableType;
 import com.jkmcllc.aupair01.structure.ExerciseStyle;
 import com.jkmcllc.aupair01.structure.OptionType;
+import com.jkmcllc.aupair01.structure.Order;
+import com.jkmcllc.aupair01.structure.Order.OrderBuilder;
+import com.jkmcllc.aupair01.structure.OrderLeg;
+import com.jkmcllc.aupair01.structure.OrderLeg.OrderLegBuilder;
 import com.jkmcllc.aupair01.structure.UnderlyerType;
 
 public class PairingRequestOrderBuilderTest {
@@ -371,6 +375,12 @@ public class PairingRequestOrderBuilderTest {
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("80.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("28.70").addPosition();
         builder.setPositionSymbol("MSFT  160115P00082000").setPositionOptionRoot("MSFT").setPositionQty(-4)
             .setPositionOptionType(OptionType.P).setPositionOptionStrike("82.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("30.19").addPosition();
+        /*
+        builder.setPositionSymbol("MSFT  160115P00090000").setPositionOptionRoot("MSFT").setPositionQty(5)
+        .setPositionOptionType(OptionType.P).setPositionOptionStrike("90.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("28.70").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00092000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("92.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("30.19").addPosition();
+        */
         
         builder.setOrderLegSymbol("MSFT  160115P00080000").setOrderLegOptionRoot("MSFT").setOrderLegQty(-4)
             .setOrderLegOptionType(OptionType.P).setOrderLegOptionStrike("80.00").setOrderLegOptionExpiry("2016-01-15 16:00").setOrderLegPrice("28.70")
@@ -382,9 +392,48 @@ public class PairingRequestOrderBuilderTest {
             .setOrderMaintenanceCost("300.00").setOrderInitialCost("300.00")
             .addOrder();
     
-        AccountPairingRequest pairingRequest = builder.build("account1");
+        AccountPairingRequest pairingRequest = builder.build("account1"); // "apexMargin"
         return pairingRequest;
     }
-
     
+    public static Order buildOrder6() {
+        OrderBuilder orderbuilder = Order.newBuilder();
+        OrderLegBuilder builder = OrderLeg.newBuilder();
+
+        OrderLeg orderleg1 = builder.setSymbol("MSFT  160115P00090000").setOptionRoot("MSFT").setQty(4)
+            .setOptionType(OptionType.P).setOptionStrike("90.00").setOptionExpiry("2016-01-15 16:00").setOrderLegPrice ("38.65")
+            .build();
+        OrderLeg orderleg2 = builder.setSymbol("MSFT  160115P00092000").setOptionRoot("MSFT").setQty(-4)
+            .setOptionType(OptionType.P).setOptionStrike("92.00").setOptionExpiry("2016-01-15 16:00").setOrderLegPrice("40.75")
+            .build();
+        Order order = orderbuilder.setOrderId("OrderB").setOrderDescription("Sell to open 4 MSFT 90/92 put spread @ LM 1.50")
+            .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
+            .addOrderLeg(orderleg1)
+            .addOrderLeg(orderleg2)
+            .build();
+    
+        return order;
+    }
+
+    public static PairingRequest buildRequestOrderPFE() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // PFE root used for other order tests
+        builder.setDeliverableSymbol("PFE").setDeliverableQty("100").setDeliverablePrice("36.14").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("PFE").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+
+        // order sell to open
+        builder.setOrderLegSymbol("CPFEK17173600").setOrderLegOptionRoot("PFE").setOrderLegQty(-1)
+            .setOrderLegOptionType(OptionType.C).setOrderLegOptionStrike("36.00").setOrderLegOptionExpiry("2017-11-17 16:00").setOrderLegPrice("0.73")
+            .addOrderLeg();
+        builder.setOrderId("OrderStoItmCallPfe").setOrderDescription("Sell to close 3 MSFT 52 puts @ LM 0.73")
+            .setOrderMaintenanceCost("-73.00").setOrderInitialCost("-73.00")
+            .addOrder();
+        builder.addAccount("AccountStoItmCallPfe");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+        
+    }
 }
