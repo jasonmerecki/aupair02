@@ -118,14 +118,14 @@ public interface AccountPairingResponse {
      * the change in requirement for marginable securities, then this method
      * will return the total change to apply to an initial excess calculation.
      * <p>
-     * Typically this method would be called, with excludeOrderCost equal to false,
+     * Typically this method would be called, with includeOrderCost equal to true,
      * to find the total change to apply to buying power, for open orders.
      * It would also be used to show "open order reserves" for buying power.
      * 
-     * @param excludeOrderCost true, to exclude the order cost passed in the request
+     * @param includeOrderCost true, to include the order cost passed in the request
      * @return the change in initial requirement
      */
-    BigDecimal getInitialChange(boolean excludeOrderCost);
+    BigDecimal getInitialChange(boolean includeOrderCost);
     
     /**
      * The change in the maintenance option requirement, including the change due
@@ -136,14 +136,14 @@ public interface AccountPairingResponse {
      * the change in requirement for marginable securities, then this method
      * will return the total change to apply to a maintenance excess calculation.
      * <p>
-     * Typically this method would be called, with excludeOrderCost equal to false,
+     * Typically this method would be called, with includeOrderCost equal to true,
      * to find the total change to apply to buying power, for open orders.
      * It would also be used to show "open order reserves" for buying power.
      * 
-     * @param excludeOrderCost true, to exclude the order cost passed in the request
+     * @param includeOrderCost true, to include the order cost passed in the request
      * @return the change in initial requirement
      */
-    BigDecimal getMaintenanceChange(boolean excludeOrderCost);
+    BigDecimal getMaintenanceChange(boolean includeOrderCost);
     
     
     /**

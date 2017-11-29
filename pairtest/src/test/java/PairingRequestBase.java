@@ -104,6 +104,13 @@ public class PairingRequestBase {
             sb.append(", total maintenance value change=").append(totalMaintChange);
             sb.append("\n");
             
+            totalInitChange = accountResponse.getInitialChange(true);
+            totalMaintChange = accountResponse.getMaintenanceChange(true);
+            sb.append("typical display amounts for the margin requirement changes: ");
+            sb.append("total initial value change=").append(totalInitChange);
+            sb.append(", total maintenance value change=").append(totalMaintChange);
+            sb.append("\n");
+            
             accountResponse.getWorstCaseOrderOutcomes().entrySet().forEach( e -> {
                 
                 WorstCaseOrderOutcome worstOrderOutcome = e.getValue();
@@ -137,6 +144,10 @@ public class PairingRequestBase {
 
     protected void commonPrintInput(PairingRequest pairingRequest) {
         StringBuilder sb = new StringBuilder();
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        sb.append("----- Executing from: ");
+        sb.append(elements[2].getClassName() + "." + elements[2].getMethodName());
+        sb.append("\n");
         sb.append("--- Input for PairingRequest\n");
         pairingRequest.getOptionRoots().values().forEach( root -> {
             sb.append(root.toString()).append("\n");

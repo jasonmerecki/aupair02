@@ -96,8 +96,8 @@ public class PairingRequestBase {
         
         if (accountResponse.getWorstCaseOrderOutcomes() != null) {
             sb.append("- Orders -\n");
-            BigDecimal totalInitChange = accountResponse.getInitialChange(false);
-            BigDecimal totalMaintChange = accountResponse.getMaintenanceChange(false);
+            BigDecimal totalInitChange = accountResponse.getInitialChange(true);
+            BigDecimal totalMaintChange = accountResponse.getMaintenanceChange(true);
             
             sb.append("typical amounts used to change buying power: ");
             sb.append("total initial value change=").append(totalInitChange);
