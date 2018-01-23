@@ -407,12 +407,35 @@ public class PairingRequestOrderBuilderTest {
             .setOptionType(OptionType.P).setOptionStrike("92.00").setOptionExpiry("2016-01-15 16:00").setOrderLegPrice("40.75")
             .build();
         Order order = orderbuilder.setOrderId("OrderB").setOrderDescription("Sell to open 4 MSFT 90/92 put spread @ LM 1.50")
-            .setOrderMaintenanceCost("-600.00").setOrderInitialCost("-600.00")
+            .setOrderMaintenanceCost("-150.00").setOrderInitialCost("-150.00")
             .addOrderLeg(orderleg1)
             .addOrderLeg(orderleg2)
             .build();
     
         return order;
+    }
+    
+    public static AccountPairingRequest buildRequestOrder6a() {
+        AccountPairingRequestBuilder builder = AccountPairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // MSFT holdings, put spread symbols
+        builder.setPositionSymbol("MSFT  160115P00080000").setPositionOptionRoot("MSFT").setPositionQty(5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("80.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("28.70").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00082000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("82.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("30.19").addPosition();
+        
+        builder.setPositionSymbol("MSFT  160115P00090000").setPositionOptionRoot("MSFT").setPositionQty(-4)
+        .setPositionOptionType(OptionType.P).setPositionOptionStrike("90.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("28.70").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00092000").setPositionOptionRoot("MSFT").setPositionQty(5)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("92.00").setPositionOptionExpiry("2016-01-15 16:00").setPositionPrice("30.19").addPosition();
+    
+        AccountPairingRequest pairingRequest = builder.build("account1"); // "apexMargin"
+        return pairingRequest;
     }
 
     public static PairingRequest buildRequestOrderPFE() {

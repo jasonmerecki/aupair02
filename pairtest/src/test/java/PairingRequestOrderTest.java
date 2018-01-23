@@ -226,6 +226,28 @@ public class PairingRequestOrderTest extends PairingRequestBase {
     }
     
     @Test
+    public void buildAndPair6a() {
+        
+        // adding a bp-releasing order
+        AccountPairingRequest pairingRequest = PairingRequestOrderBuilderTest.buildRequestOrder6a();
+        commonPrintInput(pairingRequest);
+        AccountPairingResponse accountPairingResponse = pairingService.processAccountRequest(pairingRequest);
+        commonTestAndPrintOutput(accountPairingResponse);
+        
+        // now we are going to add only one new order (bp-releasing) to the request
+        Order newOrder = PairingRequestOrderBuilderTest.buildOrder6();
+        pairingRequest.getAccount().addOrder(newOrder);
+        commonPrintInput(pairingRequest);
+        AccountPairingResponse accountPairingResponseWithOrder = pairingService.processAccountRequest(pairingRequest);
+        commonTestAndPrintOutput(accountPairingResponseWithOrder);
+        
+        boolean found = findOrderOutcome(accountPairingResponseWithOrder, "MSFT", "OrderB", true, new BigDecimal("400.00"));
+        assertTrue(found);
+        
+    }
+    
+    
+    @Test
     public void buildAndPairPFE() {
         
         // this one confirms that when an order is BP-releasing due to option strategy changes,
