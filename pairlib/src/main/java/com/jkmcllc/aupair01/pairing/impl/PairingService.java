@@ -25,6 +25,11 @@ import com.jkmcllc.aupair01.pairing.WorstCaseOrderOutcome;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.OptionRootStore;
 import com.jkmcllc.aupair01.structure.Account;
+import com.jkmcllc.aupair01.structure.DeliverableType;
+import com.jkmcllc.aupair01.structure.ExerciseStyle;
+import com.jkmcllc.aupair01.structure.OptionRoot;
+import com.jkmcllc.aupair01.structure.OptionRoot.OptionRootBuilder;
+import com.jkmcllc.aupair01.structure.UnderlyerType;
 import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public class PairingService implements PairingProcessor {
@@ -82,7 +87,29 @@ public class PairingService implements PairingProcessor {
     private Map<String, AccountPairingResponse> serviceInternal(PairingRequest pairingRequest) {
         OptionRootStore optionRootStore = OptionRootStore.getInstance();
         optionRootStore.addRoots(pairingRequest.getOptionRoots());
-        
+        // need to loop through all accounts and positions and ensure that 
+        // all stocks have an associated option root with a deliverable, 
+        // otherwise a dummy root will be added
+        pairingRequest.getAccounts().stream().map(a -> a.getPositions())
+            .flatMap(p -> p.stream())
+            .filter(p -> p.getOptionConfig() == null)
+            .map(p -> {
+            		OptionRoot root = optionRootStore.findRootByRootSymbol(p.getSymbol());
+            		return root == null ? p : null;
+            }).filter(p -> p != null).forEach(p -> {
+            		optionRootStore.addRoot(buildDummyRoot(p.getSymbol()));
+            });
+        pairingRequest.getAccounts().stream().map(a -> a.getOrders())
+	        .flatMap(p -> p.stream())
+	        .flatMap(p -> p.getOrderLegs().stream())
+	        .filter(p -> p.getOptionConfig() == null)
+	        .map(p -> {
+	        		OptionRoot root = optionRootStore.findRootByRootSymbol(p.getSymbol());
+	        		return root == null ? p : null;
+	        }).filter(p -> p != null).forEach(p -> {
+	        		optionRootStore.addRoot(buildDummyRoot(p.getSymbol()));
+	        });
+
         boolean isRequestAllStrategyLists = pairingRequest.isRequestAllStrategyLists();
 
         ConcurrentMap<String, AccountPairingResponse> resultMap = pairingRequest.getAccounts().parallelStream().collect(Collectors.toConcurrentMap(
@@ -91,6 +118,15 @@ public class PairingService implements PairingProcessor {
                 ));
         
         return resultMap;
+    }
+    
+    private OptionRoot buildDummyRoot(String symbol) {
+    		OptionRootBuilder builder = OptionRoot.newBuilder();
+        builder.setDeliverableSymbol(symbol).setDeliverableQty("0").setDeliverablePrice("0.00").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol(symbol).setExerciseStyle(ExerciseStyle.A)
+            .setUnderlyerType(UnderlyerType.S).setMultiplier("100.00");
+        OptionRoot optionRoot = builder.build();
+        return optionRoot;
     }
     
 

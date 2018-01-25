@@ -228,4 +228,23 @@ public class PairingRequestTest extends PairingRequestBase {
         assertEquals(totalMargin, new BigDecimal("79000.0000"));
     }
     
+    @Test
+    public void buildAndPair10() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest10();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        // test outcomes; always want 7 long call verticals even though there is enough stock to make more covered calls
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account2result = responseByAccount.get("account2").getStrategies();
+        boolean found = findStrategy(account2result, "MSFT", "CallVerticalLongNoStock", 7, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account2result, "MSFT", "CoveredCall", 3, new BigDecimal("1215.00"));
+        assertTrue(found);
+        // find the unpaired leg
+        found = findStrategy(account2result, "GE", "StockUnpairedLong", 35, new BigDecimal("0.00"));
+        assertTrue(found);
+    }
+    
+    
 }

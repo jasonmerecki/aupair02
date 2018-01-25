@@ -33,7 +33,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
             // most common case is that this is a single deliverable, optimize for that case
             AbstractStockLeg stockLeg = deliverableLegs.iterator().next();
             BigDecimal delivQty = deliverableLegsAndQty.get(stockLeg);
-            BigDecimal availQty = (new BigDecimal(stockLeg.resetQty)).setScale(0)
+            BigDecimal availQty = delivQty.signum() == 0 ? BigDecimal.ZERO : (new BigDecimal(stockLeg.resetQty)).setScale(0)
                     .divide(delivQty.setScale(0), RoundingMode.DOWN);
             deliverableLeg = new AbstractDeliverableLeg(stockLeg.symbol, stockLeg.description, 
                     availQty.intValue(), optionRoot.getDeliverables().getDeliverablesValue(), 
@@ -52,7 +52,7 @@ class AbstractDeliverableLeg extends AbstractLeg {
                 descriptionJoin.add(stockLeg.getDescription()); 
                 
                 BigDecimal delivQty = deliverableLegsAndQty.get(stockLeg);
-                BigDecimal availQty = (new BigDecimal(stockLeg.resetQty)).setScale(0)
+                BigDecimal availQty = delivQty.signum() == 0 ? BigDecimal.ZERO : (new BigDecimal(stockLeg.resetQty)).setScale(0)
                         .divide(delivQty.setScale(0), RoundingMode.FLOOR);
                 
                 return availQty;

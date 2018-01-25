@@ -7,9 +7,7 @@ import com.jkmcllc.aupair01.exception.PairingException;
 import com.jkmcllc.aupair01.store.Constants;
 
 abstract class AbstractLeg implements Leg {
-    static final String STOCK = "STOCK";
-    static final String STOCKOPTION = "STOCKOPTION";
-    static final String DELIVERABLE = "DELIVERABLE";
+
     static enum OpenClose {OPEN, CLOSE};
     
     protected final String symbol;

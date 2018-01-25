@@ -61,7 +61,7 @@ abstract class AbstractOptionLeg extends AbstractLeg {
             BigDecimal weightedItmCompliment = BigDecimal.ZERO;
             BigDecimal itmAmount = getItmAmount();
             BigDecimal deliverablesValue = this.optionRoot.getDeliverables().getDeliverablesValue();
-            if (itmAmount.signum() > 0) {
+            if (itmAmount.signum() > 0 && deliverablesValue.signum() != 0) {
                 for (Deliverable d : this.optionRoot.getDeliverables().getDeliverableList()) {
                     if (DeliverableType.S.equals(d.getDeliverableType()) 
                             && d.getPrice() != null && d.getQty() != null) {
