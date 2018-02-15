@@ -27,6 +27,8 @@ class StrategyMeta implements Cloneable {
     final List<String> exercisePatternStrings = new ArrayList<>();
     final List<JexlExpression> otherPatterns = new ArrayList<>();
     final List<String> otherPatternStrings = new ArrayList<>();
+    final List<JexlExpression> noUnderShortsPatterns = new ArrayList<>();
+    final List<String> nusPatternStrings = new ArrayList<>();
     final List<JexlExpression> maintenanceMarginPatterns = new ArrayList<>();
     final List<String> maintenanceMarginPatternStrings = new ArrayList<>();
     final List<JexlExpression> initialMarginPatterns = new ArrayList<>();
@@ -44,6 +46,7 @@ class StrategyMeta implements Cloneable {
             List<JexlExpression> widthPatterns, List<String> widthPatternStrings,
             List<JexlExpression> expirationPatterns, List<String> expirationPatternStrings,
             List<JexlExpression> otherPatterns, List<String> otherPatternStrings,
+            List<JexlExpression> noUnderShortsPatterns, List<String> nusPatternStrings,
             List<JexlExpression> maintenanceMarginPatterns, List<String> maintenanceMarginPatternStrings,
             List<JexlExpression> initialMarginPatterns, List<String> initialMarginPatternStrings, 
             List<JexlExpression> marginDebugPatterns, List<String> marginDebugPatternStrings) {
@@ -62,8 +65,8 @@ class StrategyMeta implements Cloneable {
         this.expirationPatternStrings.addAll(expirationPatternStrings);
         this.otherPatterns.addAll(otherPatterns);
         this.otherPatternStrings.addAll(otherPatternStrings);
-        this.otherPatterns.addAll(otherPatterns);
-        this.otherPatternStrings.addAll(otherPatternStrings);
+        this.noUnderShortsPatterns.addAll(noUnderShortsPatterns);
+        this.nusPatternStrings.addAll(nusPatternStrings);
         this.maintenanceMarginPatterns.addAll(maintenanceMarginPatterns);
         this.maintenanceMarginPatternStrings.addAll(maintenanceMarginPatternStrings);
         this.initialMarginPatterns.addAll(initialMarginPatterns);
@@ -160,6 +163,14 @@ class StrategyMeta implements Cloneable {
         }
         return this;
     }
+    StrategyMeta addNoUnderShortsPattern(String pattern) {
+        if (pattern != null) {
+            JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
+            noUnderShortsPatterns.add(p);
+            nusPatternStrings.add(pattern);
+        }
+        return this;
+    }
     StrategyMeta addMarginPattern(String pattern) {
         if (pattern != null) {
             JexlExpression p = TacoCat.getJexlEngine().createExpression(pattern);
@@ -209,6 +220,7 @@ class StrategyMeta implements Cloneable {
                 widthPatterns, widthPatternStrings, 
                 expirationPatterns, expirationPatternStrings, 
                 otherPatterns, otherPatternStrings, 
+                noUnderShortsPatterns, nusPatternStrings, 
                 maintenanceMarginPatterns, maintenanceMarginPatternStrings, 
                 initialMarginPatterns, initialMarginPatternStrings, 
                 marginDebugPatterns, marginDebugPatternStrings);

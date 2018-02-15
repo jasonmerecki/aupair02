@@ -65,6 +65,7 @@ public class StrategyConfigs {
     private static final String STRATEGY_EXPIRATION_PATTERN = "expirationPattern";
     private static final String STRATEGY_EXERCISE_PATTERN = "exercisePattern";
     private static final String STRATEGY_OTHER_PATTERN = "otherPattern";
+    private static final String STRATEGY_NO_UNDER_SHORTS_PATTERN = "noUnderShorts";
     private static final String STRATEGY_MAINTENANCE_MARGIN = "maintenanceMargin";
     private static final String STRATEGY_MARGIN_DEBUG = "marginDebug";
     private static final String STRATEGY_INITIAL_MARGIN = "initialMargin";
@@ -342,6 +343,19 @@ public class StrategyConfigs {
                 strategyMeta.addOtherPattern(patternVal);
             }
         } 
+        
+        tempPatternKey = STRATEGY_NO_UNDER_SHORTS_PATTERN;
+        nonEvalValues = strategySection.getAll(tempPatternKey);
+        if ( nonEvalValues != null && nonEvalValues.size() > 0) {
+            if (parentStrategyName != null) {
+                strategyMeta.noUnderShortsPatterns.clear();
+            } 
+            for (int i = 0; i < nonEvalValues.size(); i++) {
+                String patternVal = strategySection.fetch(tempPatternKey, i);
+                strategyMeta.addNoUnderShortsPattern(patternVal);
+            }
+        } 
+        
 
         String tempMarginKey = STRATEGY_MAINTENANCE_MARGIN;
         nonEvalValues = strategySection.getAll(tempMarginKey);

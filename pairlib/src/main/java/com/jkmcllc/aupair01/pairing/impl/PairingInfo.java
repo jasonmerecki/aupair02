@@ -68,12 +68,13 @@ class PairingInfo {
     final List<OrderPairingResultImpl> orderPairings = new CopyOnWriteArrayList<>();
     final AccountInfo accountInfo;
     final List<Leg> contextLegs = new ArrayList<>(4);
+    final List<Leg> undershorts = new ArrayList<>();
     final JexlContext legContext;
     
     private PairingInfo(OptionRoot optionRoot, Account account) {
         this.accountInfo = new AccountInfo(account.getAccountId());
         this.optionRoot = optionRoot;
-        this.legContext = TacoCat.buildPairingContext(contextLegs, this.accountInfo, this);
+        this.legContext = TacoCat.buildPairingContext(contextLegs, undershorts, this.accountInfo, this);
     };
     
     public String toString() {
@@ -367,6 +368,10 @@ class PairingInfo {
     
     List<? extends Leg> getShortDeliverables() {
         return shortDeliverables;
+    }
+    
+    List<? extends Leg> getUndershorts() {
+        return undershorts;
     }
     
     void sortNarrowStrike() {

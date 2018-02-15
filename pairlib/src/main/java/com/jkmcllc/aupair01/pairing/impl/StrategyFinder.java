@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 import com.jkmcllc.aupair01.store.Constants;
+import com.jkmcllc.aupair01.structure.OptionType;
 
 class StrategyFinder {
     
@@ -69,6 +70,7 @@ class StrategyFinder {
             pairingInfo.sortBy(strategyMeta.sort);
             return Collections.emptyList();
         }
+        pairingInfo.undershorts.clear();
         List<List<? extends Leg>> recursiveLists = getRecursiveLists(pairingInfo);
         if (recursiveLists == null) {
             return getFoundStrategies();
@@ -173,6 +175,11 @@ class StrategyFinder {
         for (JexlExpression pattern : strikesPatterns) {
             valid = (Boolean) pattern.evaluate(pairingInfo.legContext);
             if (!valid) {
+            		// keep the undershorts
+            		if (strategyMeta.noUnderShortsPatterns.size() > 0
+            				&& legList.size() == 2) {
+            			storeUnderShorts(legList);
+            		}
                 return;
             }
         }
@@ -195,6 +202,14 @@ class StrategyFinder {
         
         List<JexlExpression> otherPatterns = strategyMeta.otherPatterns;
         for (JexlExpression pattern : otherPatterns) {
+            valid = (Boolean) pattern.evaluate(pairingInfo.legContext);
+            if (!valid) {
+                return;
+            }
+        }
+        
+        List<JexlExpression> noUnderShortsPatterns = strategyMeta.noUnderShortsPatterns;
+        for (JexlExpression pattern : noUnderShortsPatterns) {
             valid = (Boolean) pattern.evaluate(pairingInfo.legContext);
             if (!valid) {
                 return;
@@ -257,6 +272,27 @@ class StrategyFinder {
                 foundStrategies.addAll(childFinder.getFoundStrategies());
             }
         }
+    }
+    
+    private void storeUnderShorts(List<Leg> legList) {
+		Leg l0 = legList.get(0);
+		Leg l1 = legList.get(1);
+		if (l0.getType() == Leg.STOCKOPTION && l1.getType() == Leg.STOCKOPTION) {
+			// legs.get(0).optionConfig.strikePrice.compareTo(legs.get(1).optionConfig.strikePrice) <= 0
+			OptionLeg ol0 = (OptionLeg) l0;
+			OptionLeg ol1 = (OptionLeg) l1;
+			if (!ol0.getOptionType().equals(ol1.getOptionType())) {
+				return;
+			}
+			if (OptionType.C.equals(ol0.getOptionType())
+					&& ol0.getStrikePrice().compareTo(ol1.getStrikePrice()) > 0) {
+				pairingInfo.undershorts.add(l1);
+			} else if (OptionType.P.equals(ol0.getOptionType())
+					&& ol0.getStrikePrice().compareTo(ol1.getStrikePrice()) < 0) {
+				pairingInfo.undershorts.add(l1);
+			}
+			
+		}
     }
     
     protected List<? extends Strategy> getFoundStrategies() {

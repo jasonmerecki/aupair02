@@ -105,4 +105,25 @@ public class PairingRequestApexDefaultTest extends PairingRequestBase {
         assertTrue(found);
     }
     
+    
+    @Test
+    public void buildAndPairPutWithHedges() {
+        PairingRequest pairingRequest = PairingRequestBuilderApexDefault.buildPutWithHedges();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        commonTestAndPrintOutput(pairingResponse, responseByAccount.size());
+        
+        boolean found = false;
+        Map<String, List<Strategy>> singleAccountResult = null;
+        singleAccountResult = responseByAccount.get("PutSpreadsHedged").getStrategies();
+
+        found = findStrategy(singleAccountResult, "CMG", "PutVerticalLong", 5, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(singleAccountResult, "CMG", "PutButterflyLong", 2, new BigDecimal("0"));
+        assertTrue(found);
+        
+    }
+    
+    
 }

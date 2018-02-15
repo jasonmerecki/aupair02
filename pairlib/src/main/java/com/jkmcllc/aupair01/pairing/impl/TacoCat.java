@@ -34,12 +34,12 @@ class TacoCat {
     static JexlEngine getJexlEngine() {
         return getTacoCat().jexlEngine;
     }
-    static JexlContext buildPairingContext(List<Leg> legs, AccountInfo accountInfo, PairingInfo pairingInfo) {
-        JexlContext context = buildCommonContext(legs, accountInfo, pairingInfo);
+    static JexlContext buildPairingContext(List<Leg> legs, List<Leg> undershorts, AccountInfo accountInfo, PairingInfo pairingInfo) {
+        JexlContext context = buildCommonContext(legs, undershorts, accountInfo, pairingInfo);
         return context;
     }
-    static JexlContext buildMarginContext(List<Leg> legs, AccountInfo accountInfo, PairingInfo pairingInfo, Strategy strategy) {
-        JexlContext context = buildCommonContext(legs, accountInfo, pairingInfo);
+    static JexlContext buildMarginContext(List<Leg> legs, List<Leg> undershorts, AccountInfo accountInfo, PairingInfo pairingInfo, Strategy strategy) {
+        JexlContext context = buildCommonContext(legs, undershorts, accountInfo, pairingInfo);
         context.set("strategy",strategy);
         context.set("strategyQuantity",new BigDecimal(strategy.getQuantity()));
         // special holder objects to swap out of context
@@ -62,7 +62,7 @@ class TacoCat {
         
         return context;
     }
-    private static JexlContext buildCommonContext(List<Leg> legs, AccountInfo accountInfo, PairingInfo pairingInfo) {
+    private static JexlContext buildCommonContext(List<Leg> legs, List<Leg> undershorts, AccountInfo accountInfo, PairingInfo pairingInfo) {
         JexlContext context = new MapContext();
         // some helpful constants
         context.set("zero",BigDecimal.ZERO);
@@ -74,6 +74,7 @@ class TacoCat {
         context.set("underlyerStock", UnderlyerType.S);
         // context-specific stuff
         context.set("legs", legs);
+        context.set("undershorts", undershorts);
         context.set("accountInfo", accountInfo);
         context.set("maintenanceMargin",BigDecimal.ZERO);
         PublicPairingInfo i = new PublicPairingInfo(pairingInfo);
@@ -95,6 +96,9 @@ class TacoCat {
         
         public List<? extends Leg> getShortDeliverables() {
             return pairingInfo.getShortDeliverables();
+        }
+        public List<? extends Leg> getUndershorts() {
+            return pairingInfo.getUndershorts();
         }
     }
     public static class NakedOptionLegWrapper {

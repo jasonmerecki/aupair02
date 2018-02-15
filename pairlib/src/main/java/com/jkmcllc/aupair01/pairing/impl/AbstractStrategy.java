@@ -1,6 +1,7 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,7 +40,7 @@ class AbstractStrategy implements Strategy {
         this.legs = legs;
         this.quantity = quantity;
 
-        JexlContext context = TacoCat.buildMarginContext(legs, accountInfo, pairingInfo, this);
+        JexlContext context = TacoCat.buildMarginContext(legs, Collections.emptyList(), accountInfo, pairingInfo, this);
         for (Leg leg : legs) { 
             if (leg instanceof OptionLeg && leg.getQty() < 0) {
                 OptionType optionType = null;

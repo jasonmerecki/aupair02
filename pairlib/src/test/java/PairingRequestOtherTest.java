@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jkmcllc.aupair01.pairing.AccountPairingResponse;
@@ -12,7 +13,7 @@ import com.jkmcllc.aupair01.pairing.PairingResponse;
 import com.jkmcllc.aupair01.pairing.strategy.Strategy;
 
 public class PairingRequestOtherTest extends PairingRequestBase {
-    @Test
+	@Ignore
     public void buildAndPair3other1() {
         PairingRequest pairingRequest = PairingRequestBuilderOthers.buildRequest3(true, false);
         commonPrintInput(pairingRequest);
