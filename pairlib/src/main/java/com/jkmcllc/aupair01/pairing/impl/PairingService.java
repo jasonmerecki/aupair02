@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import com.jkmcllc.aupair01.exception.ConfigurationException;
 import com.jkmcllc.aupair01.exception.PairingException;
@@ -34,7 +34,7 @@ import com.jkmcllc.aupair01.structure.impl.StructureImplFactory;
 
 public class PairingService implements PairingProcessor {
     public static Perfwatch PERFWATCH = null; // new Perfwatch();
-    private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
+    // private static final Logger logger = LoggerFactory.getLogger(PairingService.class);
     private static PairingService pairingServiceInstance;
     
     private StrategyConfigs strategyConfigs;
@@ -112,7 +112,7 @@ public class PairingService implements PairingProcessor {
 
         boolean isRequestAllStrategyLists = pairingRequest.isRequestAllStrategyLists();
 
-        ConcurrentMap<String, AccountPairingResponse> resultMap = pairingRequest.getAccounts().parallelStream().collect(Collectors.toConcurrentMap(
+        ConcurrentMap<String, AccountPairingResponse> resultMap = pairingRequest.getAccounts().stream().collect(Collectors.toConcurrentMap(
                 account -> account.getAccountId(), 
                 account -> { return pairAccount(account, optionRootStore, isRequestAllStrategyLists); }
                 ));

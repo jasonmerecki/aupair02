@@ -101,6 +101,10 @@ abstract class AbstractLeg implements Leg {
     public abstract BigDecimal getLegValue();
     
     @Override
+    public BigDecimal getPrice() {
+    		return price;
+    }
+    @Override
     public Integer getQty() {
         return qty;
     }

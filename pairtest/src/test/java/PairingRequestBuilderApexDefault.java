@@ -118,5 +118,49 @@ public class PairingRequestBuilderApexDefault {
         return pairingRequest;
     }
 
+    public static PairingRequest buildPutWithHedges() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        /*
+        Position: {symbol:CMG190118P00270000, qty: 7, price: 22.2000, optionConfig: {optionRoot: CMG, optionType: P, strike: 270.0, expiry: "2019-01-18 16:00"}}
+        Position: {symbol: CMG190118P00220000, qty: 7, price: 9.9000, optionConfig: {optionRoot: CMG, optionType: P, strike: 220.0, expiry: "2019-01-18 16:00"}}
+        Position: {symbol: CMG190118P00200000, qty: 10, price: 6.1000, optionConfig: {optionRoot: CMG, optionType: P, strike: 200.0, expiry: "2019-01-18 16:00"}}, 
+        Position: {symbol: CMG190118P00210000, qty: -5, price: 3.7000, optionConfig: {optionRoot: CMG, optionType: P, strike: 210.0, expiry: "2019-01-18 16:00"}}
+        Position: {symbol: CMG190118P00190000, qty: -5, price: 1.5000, optionConfig: {optionRoot: CMG, optionType: P, strike: 190.0, expiry: "2019-01-18 16:00"}}
+*/
+
+        // CMG root used for this example
+        builder.setDeliverableSymbol("CMG").setDeliverableQty("100").setDeliverablePrice("307.96").
+        setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("CMG").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        // cash secured put, prohibited short call
+        builder.setPositionSymbol("CMG190118P00270000").setPositionOptionRoot("CMG")
+        		.setPositionQty(7).setPositionOptionType(OptionType.P).setPositionOptionStrike("270.00")
+            .setPositionOptionExpiry("2019-01-18 16:00").setPositionPrice("22.20").addPosition();
+        builder.setPositionSymbol("CMG190118P00220000").setPositionOptionRoot("CMG")
+			.setPositionQty(7).setPositionOptionType(OptionType.P).setPositionOptionStrike("220.00")
+			.setPositionOptionExpiry("2019-01-18 16:00").setPositionPrice("9.90").addPosition();
+        builder.setPositionSymbol("CMG190118P00200000").setPositionOptionRoot("CMG")
+			.setPositionQty(10).setPositionOptionType(OptionType.P).setPositionOptionStrike("200.00")
+			.setPositionOptionExpiry("2019-01-18 16:00").setPositionPrice("6.10").addPosition();
+        builder.setPositionSymbol("CMG190118P00210000").setPositionOptionRoot("CMG")
+			.setPositionQty(-5).setPositionOptionType(OptionType.P).setPositionOptionStrike("210.00")
+			.setPositionOptionExpiry("2019-01-18 16:00").setPositionPrice("3.70").addPosition();
+        builder.setPositionSymbol("CMG190118P00190000").setPositionOptionRoot("CMG")
+		.setPositionQty(-5).setPositionOptionType(OptionType.P).setPositionOptionStrike("190.00")
+		.setPositionOptionExpiry("2019-01-18 16:00").setPositionPrice("1.50").addPosition();
+        
+        
+        builder.setAccountStrategyGroupName("apexMargin");
+        builder.addAccount("PutSpreadsHedged");
+
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+        
+    }
+    
 
 }

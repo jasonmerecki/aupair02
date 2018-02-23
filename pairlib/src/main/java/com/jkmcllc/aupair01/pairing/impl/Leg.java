@@ -1,5 +1,6 @@
 package com.jkmcllc.aupair01.pairing.impl;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 public interface Leg {
@@ -11,4 +12,5 @@ public interface Leg {
     String getDescription();
     String getType();
     Collection<? extends Leg> getMultiLegs();
+    BigDecimal getPrice();
 }

@@ -111,12 +111,12 @@ public interface OrderPairingResult {
     BigDecimal getMaintenanceChange();
     
     public static BigDecimal getOrderMaintenanceCost(Collection<? extends OrderPairingResult> orderPairingResults) {
-        BigDecimal totalMaintMargin = orderPairingResults.parallelStream().map(s1 -> s1.getOrderMaintenanceCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        BigDecimal totalMaintMargin = orderPairingResults.stream().map(s1 -> s1.getOrderMaintenanceCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return totalMaintMargin;
     }
     
     public static BigDecimal getOrderInitialCost(Collection<? extends OrderPairingResult> orderPairingResults) {
-        BigDecimal totalMaintMargin = orderPairingResults.parallelStream().map(s1 -> s1.getOrderInitialCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        BigDecimal totalMaintMargin = orderPairingResults.stream().map(s1 -> s1.getOrderInitialCost()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return totalMaintMargin;
     }
 

@@ -99,13 +99,13 @@ class PairingInfo {
         ConcurrentMap<String, PairingInfo> pairingInfoMap = new ConcurrentHashMap<>();
         CorePosLoader cpl = new CorePosLoader(pairingInfoMap, account, optionRootStore);
         
-        account.getPositions().parallelStream().forEach(cpl);
+        account.getPositions().stream().forEach(cpl);
         
         // Order sorting!
         // step 1:
         // forEach order, collect into a map using collect(Collectors.toMap( or toConcurrentMap
         // where the Key is OrderPairingResultImpl and the values are the List<Leg> of legs
-        Map<OrderPairingResultImpl, List<AbstractLeg>> orderLegMap = account.getOrders().parallelStream()
+        Map<OrderPairingResultImpl, List<AbstractLeg>> orderLegMap = account.getOrders().stream()
                 .collect(Collectors.toConcurrentMap(
                 ord -> {
                     return new OrderPairingResultImpl(ord.getOrderId(), ord.getOrderDescription(),
@@ -124,7 +124,7 @@ class PairingInfo {
         // with the resulting map, the entries can be streamed,
         // and be mapped so that the key OrderPairingResultImpl will grab and set its own List<Legs>
         // and then collected into a set of OrderPairingResultImpl objects
-        Set<OrderPairingResultImpl> orderInfoSet = orderLegMap.entrySet().parallelStream().map(entry -> {
+        Set<OrderPairingResultImpl> orderInfoSet = orderLegMap.entrySet().stream().map(entry -> {
             OrderPairingResultImpl orderpr = entry.getKey();
             List<AbstractLeg> legs = entry.getValue();
             orderpr.addOrderLegs(legs);
@@ -132,9 +132,9 @@ class PairingInfo {
         }).collect(Collectors.toSet());
 
         // step 3:
-        // the resulting set will be parallelStream and each OrderPairingResultImpl
+        // the resulting set will be stream and each OrderPairingResultImpl
         // will be assigned to the appropriate mapped PairingInfo (possibly more than one depending on the legs)
-        orderInfoSet.parallelStream().forEach(ordInfo -> {
+        orderInfoSet.stream().forEach(ordInfo -> {
             if (ordInfo.getStockLegsCount() != 0 && ordInfo.getOptionLegsCount() == 0) {
                 // only stock legs, add this to the 
                 StockLeg stockLeg = (StockLeg) ordInfo.getOrderLegs().stream().findFirst().get();
@@ -246,7 +246,7 @@ class PairingInfo {
     
     private void addToOrderPairings(OrderPairingResultImpl orderPairResult) {
         orderPairings.add(orderPairResult);
-        orderPairResult.getOrderLegs().parallelStream().forEach( l -> {
+        orderPairResult.getOrderLegs().stream().forEach( l -> {
             // set open or close if it hasn't been set
             AbstractLeg orderLeg = (AbstractLeg) l;
             String ordLegSymbol = orderLeg.getSymbol();
@@ -324,7 +324,7 @@ class PairingInfo {
         shortPuts.clear();
         longStocks.clear();
         shortStocks.clear();
-        legs.parallelStream().forEach(leg -> {
+        legs.stream().forEach(leg -> {
             if (avoidReset == false) leg.resetQty(hardReset);
             sortingHat(leg);
         });

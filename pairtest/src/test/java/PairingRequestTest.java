@@ -31,13 +31,13 @@ public class PairingRequestTest extends PairingRequestBase {
         assertTrue(found);
         found = findStrategy(account1234result, "MSFT", "PutVerticalLong", 4, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account1234result, "BP", "CallButterflyShort", 4, new BigDecimal("2000"));
+        found = findStrategy(account1234result, "BP", "CallVerticalLong", 4, new BigDecimal("0"));
         assertTrue(found);
         found = findStrategy(account1234result, "BP", "CallButterflyLong", 6, new BigDecimal("0"));
         assertTrue(found);
         found = findStrategy(account1234result, "BP", "PutButterflyLong", 6, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account1234result, "BP", "PutButterflyShort", 4, new BigDecimal("2000"));
+        found = findStrategy(account1234result, "BP", "IronCondorShort", 4, new BigDecimal("2000"));
         assertTrue(found);
     }
     
@@ -151,9 +151,9 @@ public class PairingRequestTest extends PairingRequestBase {
         
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
         Map<String, List<Strategy>> account71result = responseByAccount.get("account7_1").getStrategies();
-        boolean found = findStrategy(account71result, "GPRO", "IronCondorCalendarLong", 8, new BigDecimal("0"));
+        boolean found = findStrategy(account71result, "GPRO", "CallVerticalCalendarLong", 8, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account71result, "GPRO", "PutVerticalCalendarLong", 2, new BigDecimal("0"));
+        found = findStrategy(account71result, "GPRO", "PutVerticalCalendarLong", 10, new BigDecimal("0"));
         assertTrue(found);
         
         Map<String, List<Strategy>> account7result = responseByAccount.get("account7").getStrategies();

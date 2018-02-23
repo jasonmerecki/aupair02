@@ -169,7 +169,7 @@ public interface AccountPairingResponse {
      * @return the total option maintenance requirement for the given strategies
      */
     public static BigDecimal getMaintenanceRequirement(List<Strategy> strategies) {
-        BigDecimal totalMaintMargin = strategies.parallelStream().map(s1 -> s1.getMaintenanceRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        BigDecimal totalMaintMargin = strategies.stream().map(s1 -> s1.getMaintenanceRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return totalMaintMargin;
     }
     
@@ -180,7 +180,7 @@ public interface AccountPairingResponse {
      * @return the total option initial requirement for the given strategies
      */
     public static BigDecimal getInitialRequirement(List<Strategy> strategies) {
-        BigDecimal totalMaintMargin = strategies.parallelStream().map(s1 -> s1.getInitialRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        BigDecimal totalMaintMargin = strategies.stream().map(s1 -> s1.getInitialRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return totalMaintMargin;
     }
     
@@ -191,7 +191,7 @@ public interface AccountPairingResponse {
      * @return the total non option price requirement for the given strategies
      */
     public static BigDecimal getNonOptionPriceInitialRequirement(List<Strategy> strategies) {
-        BigDecimal total = strategies.parallelStream().map(s1 -> s1.getNonOptionPriceInitialRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        BigDecimal total = strategies.stream().map(s1 -> s1.getNonOptionPriceInitialRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return total;
     }
     
@@ -202,7 +202,7 @@ public interface AccountPairingResponse {
      * @return the total non option price requirement for the given strategies
      */
     public static BigDecimal getNonOptionPriceMaintenanceRequirement(List<Strategy> strategies) {
-        BigDecimal total = strategies.parallelStream().map(s1 -> s1.getNonOptionPriceMaintenanceRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
+        BigDecimal total = strategies.stream().map(s1 -> s1.getNonOptionPriceMaintenanceRequirement()).reduce(BigDecimal.ZERO, (a, b) -> a.add(b) );
         return total;
     }
     
