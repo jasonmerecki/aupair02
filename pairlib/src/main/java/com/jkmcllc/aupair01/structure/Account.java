@@ -17,6 +17,7 @@ public interface Account {
     public String getStrategyGroupName();
     public void addOrder(Order order);
     public Order removeOrder(String orderId);
+    public void mergePosition(Position position);
     
     public class AccountBuilder {
         private List<Position> legs;

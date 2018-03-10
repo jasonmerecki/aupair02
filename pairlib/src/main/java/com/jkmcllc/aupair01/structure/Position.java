@@ -53,6 +53,7 @@ public interface Position extends CorePosition {
             optionConfigBuilder.setExpiry(expiry);
             return this;
         }
+        
         protected boolean validate(String type) {
             if (symbol == null || qty == null || price == null /* || optionConfig == null */) {
                 List<String> missing = new ArrayList<>();
@@ -79,7 +80,42 @@ public interface Position extends CorePosition {
     }
     
     class PositionBuilder extends AbstractPositionBuilder {
-        public PositionBuilder setPositionPrice(String price) {
+    		@Override
+        public PositionBuilder setSymbol(String symbol) {
+            super.setSymbol(symbol);
+            return this;
+        }
+        @Override
+        public PositionBuilder setDescription(String description) {
+            super.setDescription(description);
+            return this;
+        }
+        @Override
+        public PositionBuilder setQty(Integer qty) {
+            super.setQty(qty);
+            return this;
+        }
+        @Override
+        public PositionBuilder setOptionRoot(String optionRoot) {
+            super.setOptionRoot(optionRoot);
+            return this;
+        }
+        @Override
+        public PositionBuilder setOptionType(OptionType optionType) {
+            super.setOptionType(optionType);
+            return this;
+        }
+        @Override
+        public PositionBuilder setOptionStrike(String strike) {
+            super.setOptionStrike(strike);
+            return this;
+        }
+        @Override
+        public PositionBuilder setOptionExpiry(String expiry) {
+            super.setOptionExpiry(expiry);
+            return this;
+        }
+    		public PositionBuilder setPositionPrice(String price) {
             try {
                 this.price = new BigDecimal(price);
             } catch (Exception e) {

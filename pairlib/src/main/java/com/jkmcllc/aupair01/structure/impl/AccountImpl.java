@@ -13,7 +13,7 @@ import com.jkmcllc.aupair01.structure.Order;
 import com.jkmcllc.aupair01.structure.Position;
 
 class AccountImpl implements Account {
-    private final List<Position> positions;
+    private List<Position> positions;
     private List<Order> orders;
     private final String accountId;
     private final Map<String, String> customProperties;
@@ -97,6 +97,25 @@ class AccountImpl implements Account {
         }
         this.orders = newlist;
         return found;
+    }
+    
+    @Override
+    public void mergePosition(Position newPosition) {
+    		Position existPosition = positions.stream().filter(epos -> epos.matches(newPosition)).findFirst().orElse(null);
+    		if (existPosition != null) {
+    			Integer newQty = newPosition.getQty() + existPosition.getQty();	
+    			Position addedPosition  = StructureImplFactory.buildPosition(existPosition.getSymbol(), existPosition.getDescription(), 
+    					newQty, existPosition.getPrice(), existPosition.getOptionConfig());
+    			List<Position> newPositions = new ArrayList<>(this.positions);
+    			int idx = this.positions.indexOf(existPosition);
+    			newPositions.set(idx, addedPosition);
+    			this.positions = Collections.unmodifiableList(newPositions);
+    		} else {
+    			List<Position> newPositions = new ArrayList<>(this.positions.size() + 1);
+    			newPositions.addAll(this.positions);
+    			newPositions.add(newPosition);
+    			this.positions = Collections.unmodifiableList(newPositions);
+    		}
     }
 
 

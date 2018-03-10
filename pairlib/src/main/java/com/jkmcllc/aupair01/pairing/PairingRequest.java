@@ -2,6 +2,7 @@ package com.jkmcllc.aupair01.pairing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public interface PairingRequest extends Request {
 
     public class PairingRequestBuilder {
         protected List<Account> accounts = new ArrayList<>();
-        protected List<Position> accountPositions = new ArrayList<>();
+        protected Map<String, Position> accountPositions = new LinkedHashMap<>();
         protected List<Order> accountOrders = new ArrayList<>();
         protected Map<String, OptionRoot> optionRoots = new HashMap<>();
         protected PositionBuilder positionBuilder = Position.newBuilder();
@@ -101,7 +102,15 @@ public interface PairingRequest extends Request {
             return this;
         }
         public PairingRequestBuilder addPosition() {
-            accountPositions.add(positionBuilder.build());
+        		Position newPosition = positionBuilder.build();
+        		Position existPosition = accountPositions.put(newPosition.getSymbol(), newPosition);
+        		if (existPosition != null && existPosition.matches(newPosition)) {
+        			// combine the two position quantities
+        			Integer newQty = newPosition.getQty() + existPosition.getQty();	
+        			newPosition = StructureImplFactory.buildPosition(existPosition.getSymbol(), existPosition.getDescription(), 
+        					newQty, existPosition.getPrice(), existPosition.getOptionConfig());
+        			accountPositions.put(newPosition.getSymbol(), newPosition);
+        		}
             return this;
         }
         
@@ -184,10 +193,11 @@ public interface PairingRequest extends Request {
         
         protected PairingRequestBuilder addAccountInternal(String accountId) {
             accountBuilder.setAccountId(accountId);
-            accountBuilder.setAccountPositions(accountPositions);
+            List<Position> newPositions = new ArrayList<>(accountPositions.values());
+            accountBuilder.setAccountPositions(newPositions);
             accountBuilder.setAccountOrders(accountOrders);
             accounts.add(accountBuilder.build());
-            accountPositions = new ArrayList<>();
+            accountPositions = new HashMap<>();
             accountOrders = new ArrayList<>();
             return this;
         }

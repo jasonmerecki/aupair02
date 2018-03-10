@@ -13,6 +13,7 @@ public interface CorePosition {
     Integer getQty();
     BigDecimal getPrice();
     OptionConfig getOptionConfig();
+    boolean matches(Object other);
 
     static String findDuplicate(Collection<? extends CorePosition> corePositions) {
         Set<OptionConfig> uniqConfigs = new HashSet<>();

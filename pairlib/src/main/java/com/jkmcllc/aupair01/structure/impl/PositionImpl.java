@@ -80,8 +80,24 @@ class PositionImpl implements Position {
         result = prime * result + ((symbol == null) ? 0 : symbol.hashCode());
         return result;
     }
+    
     @Override
     public boolean equals(Object obj) {
+    		boolean matches = matches(obj);
+    		if (!matches) {
+    			return false;
+    		}
+        PositionImpl other = (PositionImpl) obj;
+        if (qty == null) {
+            if (other.qty != null)
+                return false;
+        } else if (!qty.equals(other.qty))
+            return false;
+        return true;
+    }
+    
+    @Override
+    public boolean matches(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
@@ -89,16 +105,17 @@ class PositionImpl implements Position {
         if (getClass() != obj.getClass())
             return false;
         PositionImpl other = (PositionImpl) obj;
-        if (qty == null) {
-            if (other.qty != null)
-                return false;
-        } else if (!qty.equals(other.qty))
-            return false;
         if (symbol == null) {
             if (other.symbol != null)
                 return false;
         } else if (!symbol.equals(other.symbol))
             return false;
+        if (optionConfig != null && other.optionConfig == null)
+    			return false;
+        if (optionConfig == null && other.optionConfig != null)
+    			return false;
+        if (!optionConfig.equals(other.optionConfig)) 
+        		return false;
         return true;
     }
 
