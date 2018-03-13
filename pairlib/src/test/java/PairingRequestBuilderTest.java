@@ -129,9 +129,12 @@ public class PairingRequestBuilderTest {
         return pairingRequest;
     }
     
-    
     @Test 
-    public void buildAndTestAddPos1() {
+    public void buildAndTestPos2Add1() {
+    		buildPos2Add1();
+    }
+    
+    public static PairingRequest buildPos2Add1() {
     		PairingRequest pairingRequest = buildRequest2();
     		assertNotNull(pairingRequest);
     	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(0).getSymbol(), "MSFT  160115C00047500");
@@ -150,7 +153,35 @@ public class PairingRequestBuilderTest {
     	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(1).getQty(),  new Integer(4));
     	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(4).getSymbol(), "MSFT  160115C00045000");
     	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(4).getQty(),  new Integer(3));
+    	    return pairingRequest;
     }
+    
+    @Test 
+    public void buildAndTestPos2Add2() {
+    		buildPos2Add2();
+    }
+    
+    public static PairingRequest buildPos2Add2() {
+		PairingRequest pairingRequest = buildRequest2();
+		assertNotNull(pairingRequest);
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(0).getSymbol(), "MSFT  160115C00047500");
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(1).getSymbol(), "MSFT  160115C00050000");
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(2).getSymbol(), "MSFT  160115C00055000");
+	    PositionBuilder posBuilder = Position.newBuilder();
+	    // fully close position index 1 and check the quantity,
+	    // also will add some new position with strike 45 which should end up in the last index
+	    Position modifiedPosition = posBuilder.setSymbol("MSFT  160115C00050000").setOptionRoot("MSFT").setQty(-7).setOptionType(OptionType.C).setOptionStrike("50.00")
+	    		.setOptionExpiry("2016-02-19 16:00").setPositionPrice("9.89").build();
+	    pairingRequest.getAccounts().get(0).mergePosition(modifiedPosition);
+	    modifiedPosition = posBuilder.setSymbol("MSFT  160115C00055000").setOptionRoot("MSFT").setQty(7).setOptionType(OptionType.C).setOptionStrike("55.00")
+	    		.setOptionExpiry("2016-02-19 16:00").setPositionPrice("5.89").build();
+	    pairingRequest.getAccounts().get(0).mergePosition(modifiedPosition);
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(1).getSymbol(), "MSFT  160115C00050000");
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(1).getQty(),  new Integer(0));
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(2).getSymbol(), "MSFT  160115C00055000");
+	    assertEquals(pairingRequest.getAccounts().get(0).getPositions().get(2).getQty(),  new Integer(-3));
+	    return pairingRequest;
+}
     
     public static PairingRequest buildRequest2() {
         PairingRequestBuilder builder = PairingRequest.newBuilder();

@@ -73,6 +73,41 @@ public class PairingRequestTest extends PairingRequestBase {
     }
     
     @Test
+    public void buildAndPair2Add1() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildPos2Add1();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        // test outcomes; always want 7 long call verticals even though there is enough stock to make more covered calls
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("account2").getStrategies();
+        boolean found = findStrategy(account3result, "MSFT", "CallVerticalLongNoStock", 3, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account3result, "MSFT", "CallVerticalLongNoStock", 4, new BigDecimal("0"));
+        assertTrue(found);
+        found = findStrategy(account3result, "MSFT", "CoveredCall", 3, new BigDecimal("1215.00"));
+        assertTrue(found);
+    }
+    
+    @Test
+    public void buildAndPair2Add2() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildPos2Add2();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        // test outcomes; always want 7 long call verticals even though there is enough stock to make more covered calls
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account3result = responseByAccount.get("account2").getStrategies();
+        // for this outcome, the short quantity is reduced from -7 to -3, and all are used for covered call
+        boolean found = findStrategy(account3result, "MSFT", "CallVerticalLongNoStock", 3, new BigDecimal("0"));
+        assertFalse(found);
+        found = findStrategy(account3result, "MSFT", "CallVerticalLongNoStock", 4, new BigDecimal("0"));
+        assertFalse(found);
+        found = findStrategy(account3result, "MSFT", "CoveredCall", 3, new BigDecimal("1215.00"));
+        assertTrue(found);
+    }
+    
+    @Test
     public void buildAndPair3() {
         PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest3(false);
         commonPrintInput(pairingRequest);

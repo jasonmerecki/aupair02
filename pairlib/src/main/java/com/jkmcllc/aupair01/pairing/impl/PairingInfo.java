@@ -220,6 +220,9 @@ class PairingInfo {
         }
         @Override
         public void accept(CorePosition position) {
+        		if (position.getQty() == 0) {
+        			return;
+        		}
             OptionConfig optionConfig = position.getOptionConfig();
             String positionSymbol = position.getSymbol();
             boolean isOrder = (CorePositionType.ORDERLEG == position.getCorePositionType());
