@@ -31,7 +31,7 @@ public class PairingRequestTest extends PairingRequestBase {
         assertTrue(found);
         found = findStrategy(account1234result, "MSFT", "PutVerticalLong", 4, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account1234result, "BP", "CallVerticalLong", 4, new BigDecimal("0"));
+        found = findStrategy(account1234result, "BP", "IronCondorLong", 4, new BigDecimal("0"));
         assertTrue(found);
         found = findStrategy(account1234result, "BP", "CallButterflyLong", 6, new BigDecimal("0"));
         assertTrue(found);
@@ -186,9 +186,9 @@ public class PairingRequestTest extends PairingRequestBase {
         
         Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
         Map<String, List<Strategy>> account71result = responseByAccount.get("account7_1").getStrategies();
-        boolean found = findStrategy(account71result, "GPRO", "CallVerticalCalendarLong", 8, new BigDecimal("0"));
+        boolean found = findStrategy(account71result, "GPRO", "IronCondorCalendarLong", 8, new BigDecimal("0"));
         assertTrue(found);
-        found = findStrategy(account71result, "GPRO", "PutVerticalCalendarLong", 10, new BigDecimal("0"));
+        found = findStrategy(account71result, "GPRO", "PutVerticalCalendarLong", 2, new BigDecimal("0"));
         assertTrue(found);
         
         Map<String, List<Strategy>> account7result = responseByAccount.get("account7").getStrategies();
@@ -281,5 +281,20 @@ public class PairingRequestTest extends PairingRequestBase {
         assertTrue(found);
     }
     
+    @Test
+    public void buildAndPair11() {
+        PairingRequest pairingRequest = PairingRequestBuilderTest.buildRequest11();
+        commonPrintInput(pairingRequest);
+        PairingResponse pairingResponse = pairingService.service(pairingRequest);
+        commonTestAndPrintOutput(pairingResponse, 1);
+        // test outcomes; always want 7 long call verticals even though there is enough stock to make more covered calls
+        Map<String, AccountPairingResponse> responseByAccount = pairingResponse.getResultsByAccount();
+        Map<String, List<Strategy>> account2result = responseByAccount.get("account2").getStrategies();
+        boolean found = findStrategy(account2result, "MSFT", "PutButterflyShort", 6, new BigDecimal("3000.00"));
+        assertTrue(found);
+        // find the unpaired leg
+        found = findStrategy(account2result, "GE", "StockUnpairedLong", 35, new BigDecimal("0.00"));
+        assertTrue(found);
+    }
     
 }

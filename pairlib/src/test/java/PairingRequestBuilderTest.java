@@ -551,4 +551,29 @@ public class PairingRequestBuilderTest {
         return pairingRequest;
     }
     
+    public static PairingRequest buildRequest11() {
+        PairingRequestBuilder builder = PairingRequest.newBuilder();
+        
+        // Build MSFT root, first deliverables then root information
+        builder.setDeliverableSymbol("MSFT").setDeliverableQty("100").setDeliverablePrice("60.40").setDeliverableType(DeliverableType.S).addDeliverable();
+        builder.setOptionRootSymbol("MSFT").setOptionRootExerciseStyle(ExerciseStyle.A)
+            .setOptionRootUnderlyerType(UnderlyerType.S).setOptionRootMultiplier("100.00").addOptionRoot();
+        
+        builder.setPositionSymbol("MSFT  160115P00045000").setPositionOptionRoot("MSFT").setPositionQty(-6)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("45.00").setPositionOptionExpiry("2016-02-19 16:00").setPositionPrice("5.68").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00050000").setPositionOptionRoot("MSFT").setPositionQty(12)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("50.00").setPositionOptionExpiry("2016-02-19 16:00").setPositionPrice("9.89").addPosition();
+        builder.setPositionSymbol("MSFT  160115P00055000").setPositionOptionRoot("MSFT").setPositionQty(-6)
+            .setPositionOptionType(OptionType.P).setPositionOptionStrike("55.00").setPositionOptionExpiry("2016-02-19 16:00").setPositionPrice("12.89").addPosition();
+        builder.setPositionSymbol("MSFT").setPositionQty(960).setPositionPrice("60.40").addPosition();
+        
+        // add a stock position with no option root deliverable
+        builder.setPositionSymbol("GE").setPositionQty(35).setPositionPrice("143.25").addPosition();
+        
+        builder.addAccount("account2");
+        
+        PairingRequest pairingRequest = builder.build();
+        return pairingRequest;
+    }
+    
 }
