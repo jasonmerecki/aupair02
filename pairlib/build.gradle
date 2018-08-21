@@ -59,6 +59,20 @@ artifacts {
 }
 */
 
+/*
+jar {
+    from {
+        (configurations.runtime).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    baseName = 'aupair-fat'
+    manifest {
+        // attributes("Main-Class": "Main" )
+    }
+}
+*/
+
 uploadArchives {
     repositories {
         add project.repositories.pairlibout
