@@ -181,8 +181,8 @@ class AccountPairingResponseImpl implements AccountPairingResponse {
             List<OrderPairingResult> worstSelectedOrders = worstCaseOrderOutcomes.values().stream()
                     .map(out -> out.getOrders()).flatMap(orders -> orders.stream())
                     .filter(o -> o.isWorstCaseOutcome()).collect(Collectors.toList());
-            BigDecimal costInitialWorstOrders = OrderPairingResult.getOrderInitialCost(worstSelectedOrders);
-            change = change.subtract(costInitialWorstOrders);	   
+            BigDecimal costMaintnanceWorstOrders = OrderPairingResult.getOrderMaintenanceCost(worstSelectedOrders);
+            change = change.subtract(costMaintnanceWorstOrders);
     	} else {
             /* do not subtract the order cost because limit price on short unpaired
     		 * may not equal the market price and that throws off the math */

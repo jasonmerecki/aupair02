@@ -1,7 +1,7 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
-version = '1.0.18' 
+version = '1.0.19'
 description = 'Pairing engine'
 
 // In this section you declare where to find the dependencies of your project
@@ -40,7 +40,7 @@ jar {
                    "Implementation-Version": "1.0.11")
     }
     baseName 'pairing'
-    version '1.0.11'
+    version '1.0.19'
 }
 
 test {
