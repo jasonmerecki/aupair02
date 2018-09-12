@@ -59,7 +59,7 @@ artifacts {
 }
 */
 
-/*
+/**/
 jar {
     from {
         (configurations.runtime).collect {
@@ -71,7 +71,7 @@ jar {
         // attributes("Main-Class": "Main" )
     }
 }
-*/
+
 
 uploadArchives {
     repositories {

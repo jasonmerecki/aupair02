@@ -110,12 +110,13 @@ class PositionImpl implements Position {
                 return false;
         } else if (!symbol.equals(other.symbol))
             return false;
+        if (optionConfig != null && other.optionConfig != null &&
+                !optionConfig.equals(other.optionConfig))
+            return false;
         if (optionConfig != null && other.optionConfig == null)
     			return false;
         if (optionConfig == null && other.optionConfig != null)
     			return false;
-        if (!optionConfig.equals(other.optionConfig)) 
-        		return false;
         return true;
     }
 
