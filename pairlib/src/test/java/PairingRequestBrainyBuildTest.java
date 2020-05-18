@@ -40,10 +40,10 @@ public class  PairingRequestBrainyBuildTest {
 
 
         // call calendar
-        builder.setPositionSymbol("FB    200821P00150000").setPositionOptionRoot("FB").setPositionQty(1)
+        builder.setPositionSymbol("FB    200821C00150000").setPositionOptionRoot("FB").setPositionQty(1)
                 .setPositionOptionType(OptionType.C).setPositionOptionStrike("150.00")
                 .setPositionOptionExpiry("2020-08-21 16:00").setPositionPrice("0.70").addPosition();
-        builder.setPositionSymbol("FB    200619P00150000").setPositionOptionRoot("FB").setPositionQty(-1)
+        builder.setPositionSymbol("FB    200619C00150000").setPositionOptionRoot("FB").setPositionQty(-1)
                 .setPositionOptionType(OptionType.C).setPositionOptionStrike("150.00")
                 .setPositionOptionExpiry("2020-06-19 16:00").setPositionPrice("0.70").addPosition();
 
